@@ -1,42 +1,68 @@
 % Chapter Template
 
-\chapter{Using Preposition Supersenses for  Prepositional Phrase Attachment} % Main chapter title
+\chapter{Preposition Supersenses Disambiguation} % Main chapter title
 
-\label{ChapterX} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-
-%-----------------------------------
-%	SECTION 1
-%-----------------------------------
 \section{Overview}
 
-%-----------------------------------
-%	SECTION 2
-%-----------------------------------
-\section{Introduction to the PP attachment problem}
+\section{Problem Formulation}
+\subsection{Target Identification}
+\subsubsection{*Informal description}
+\subsubsection{*Formal description}
+\subsubsection{*Why this is not trivial}
+\subsection{Supersense Disambiguation}
+\subsubsection{*Informal description}
+\subsubsection{*Formal description}
 
-%-----------------------------------
-%	SECTION 3
-%-----------------------------------
-\section{Datasets}
-\subsection{World Stree Journal}
-\subsection{STREUSLE-based}
+\section{The STREUSLE Dataset}
+\subsection{*Oveview}
+\subsection{*Characteristics and notable stats}
+\subsection{Samples}
 
-%-----------------------------------
-%	SECTION 4
-%-----------------------------------
-\section{The model: HCPD extended with Prepositional Superses features
-}
+\section{Target Identification Heuristic}
+\subsection{*Credit}
+\subsection{*Brief description}
+\subsection{*Evaluation}
 
-%-----------------------------------
-%	SECTION 5
-%-----------------------------------
+\section{PSS Disambiguation Model}
+\subsection{*General Architecture}
+\subsubsection{*Embeddings are fed to Stacked BiLSTM}
+\subsubsection{*A vector is created for each preposition using LSTM output and preprocessed data}
+\subsubsection{*The vector is fed through an FF-Network followed by a softmax}
+
+\subsection{Constructing the Enriched Preposition Vector}
+\subsubsection{*LSTM vec is concatenated with}
+\subsubsection{*GOV/OBJ vecs with GOVOBJ_CONFIG}
+\subsubsection{*POS of PREP, GOV, OBJ}
+\subsubsection{*UD dep encoding of PREP, GOV, OBJ}
+\subsubsection{*NER encoding of GOV, OBJ}
+\subsubsection{*Other features}
+
+\section{Training}
+\subsection{*Loss function}
+\subsection{*Trainer, Initialization, Dropout}
+\subsection{Hyperparameter Tuning}
+\subsubsection{*Discuss the different hyperparameters and how tuning was made (maybe in the appendix)}
+
+\section{Settings}
+\subsection{Automatic/Gold Target Identification}
+\subsection{Automatic/Gold Preprocessing}
+\subseciton{WORD2VEC/ELMo Word Embeddings}
+
+\section{Baselines}
+\subsection{*Describe MF baselines}
+
 \section{Results}
-\subsection{World Stree Journal}
-\subsection{STREUSLE-based}
+\subsection{*P,R,F of each setting and baseline}
 
-%-----------------------------------
-%	SECTION 6
-%-----------------------------------
-\section{Conclusions}
+\section{Analysis}
+\subsection{Ablation Experiments?}
+\subsection{Error Analysis}
+\subsubseciton{*Confusion matrix}
+\subsubsection{*Cross-Hierarchy Errors}
+
+\section{Discussion?}
+
+\section{Future Work}
 
