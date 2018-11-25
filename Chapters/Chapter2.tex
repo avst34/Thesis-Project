@@ -8,58 +8,54 @@
 
 \section{Problem Formulation}
 \subsection{Target Identification}
-\subsubsection{*Informal description}
-\subsubsection{*Formal description}
+\subsubsection{*Informal and formal definition}
 \subsubsection{*Why this is not trivial}
 \subsection{Supersense Disambiguation}
-\subsubsection{*Informal description}
-\subsubsection{*Formal description}
+\subsubsection{*Informal and formal definition}
 
 \section{The STREUSLE Dataset}
-\subsection{*Oveview}
-\subsection{*Characteristics and notable stats}
-\subsection{Samples}
+\subsubsection{*Overview}
+\subsubsection{*Characteristics and notable stats}
+\subsubsection{*Samples}
 
 \section{Target Identification Heuristic}
-\subsection{*Credit}
-\subsection{*Brief description}
-\subsection{*Evaluation}
+\subsubsection{*Credit}
+\subsubsection{*Brief description}
+\subsubsection{*Evaluation}
 
 \section{PSS Disambiguation Model}
-\subsection{*General Architecture}
-\subsubsection{*Embeddings are fed to Stacked BiLSTM}
-\subsubsection{*A vector is created for each preposition using LSTM output and preprocessed data}
-\subsubsection{*The vector is fed through an FF-Network followed by a softmax}
-
+\subsubsection{*General Architecture}
+\subsubsection{* - Embeddings are fed to Stacked BiLSTM}
+\subsubsection{* - A vector is created for each preposition using LSTM output and preprocessed data}
+\subsubsection{* - The vector is fed through a FF-Network followed by Softmax}
+\pagebreak
 \subsection{Constructing the Enriched Preposition Vector}
 \subsubsection{*LSTM vec is concatenated with}
-\subsubsection{*GOV/OBJ vecs with GOVOBJ_CONFIG}
+\subsubsection{*GOV/OBJ vecs with GOVOBJ\_CONFIG}
 \subsubsection{*POS of PREP, GOV, OBJ}
 \subsubsection{*UD dep encoding of PREP, GOV, OBJ}
 \subsubsection{*NER encoding of GOV, OBJ}
 \subsubsection{*Other features}
 
 \section{Training}
-\subsection{*Loss function}
-\subsection{*Trainer, Initialization, Dropout}
-\subsection{Hyperparameter Tuning}
-\subsubsection{*Discuss the different hyperparameters and how tuning was made (maybe in the appendix)}
+\subsubsection{*Loss function}
+\subsubsection{*Trainer, Initialization, Dropout}
+\subsubsection{Hyperparameter Tuning}
 
 \section{Settings}
-\subsection{Automatic/Gold Target Identification}
-\subsection{Automatic/Gold Preprocessing}
-\subseciton{WORD2VEC/ELMo Word Embeddings}
+\subsubsection{*Automatic/Gold Target Identification}
+\subsubsection{*Automatic/Gold Preprocessing}
+\subsubsection{*WORD2VEC/ELMo Word Embeddings}
 
 \section{Baselines}
-\subsection{*Describe MF baselines}
+\subsubsection{*Describe MF baselines}
 
 \section{Results}
-\subsection{*P,R,F of each setting and baseline}
 
 \section{Analysis}
 \subsection{Ablation Experiments?}
 \subsection{Error Analysis}
-\subsubseciton{*Confusion matrix}
+\subsubsection{*Confusion matrix}
 \subsubsection{*Cross-Hierarchy Errors}
 
 \section{Discussion?}
