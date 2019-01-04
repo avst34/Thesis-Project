@@ -24,6 +24,77 @@
 %	SECTION 2
 %-----------------------------------
 \section{Neural Networks for NLP}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{Electron}
+  \caption{A single neuron with N inputs.}
+  \label{fig:neuron}
+\end{figure}
+
+Inspired by the neural networks of the biological brain, Artificial Neural Networks are a family of computational models widely used today across many different fields of Artificial Intelligence research. Neural-based machine learning models have consistently been able to achieve and outperform state-of-the-art results when obtained using previous approaches. In the past decade, they have been a key aspect of several breakthroughs in computer vision and speech recognition, which led to a growing interest and popularity among other research fields including Natural Language Processing. This section lays out the foundations required for understanding the use of neural networks throughout this work.
+
+\medskip
+
+A single neuron is the basic element of a neural network. Similarly to a biological neuron in the human brain, it emits a real-valued signal based on input signals it receives from other neurons it is connected to. The emitted signal could be fed into other neurons at an upper layer, and so on, thus forming a network. Input signals emitted into the bottom layer of neurons are considered the input of the network (image pixels, sound wave amplitudes, etc). Similarly, the outputs emitted from the top-most layer are considered the output of the network (class probabilities, regression value, etc). Typically, each neuron represents some detectable feature of the input. The strength of the emitted signal represents the certainty of the detected feature, or lack thereof. The hierarchical structure of the network allows low-level features, detected by neurons at lower layers, to be used for detection of more complex features by neurons at higher layers, and so on.
+
+\medskip
+
+The output of a single neuron is a composition of a weighted sum of its inputs (and perhaps a bias term), followed by a non-linearity - the Activation Function (see figure \ref{fig:neuron}). Equation \ref{eq:neuron} provides a formal definition of the neuron function:
+\begin{equation}
+y = \sigma(\vec{w}\cdot\vec{x} + b)
+\label{eq:neuron}
+\end{equation}
+
+Where \(\vec{x}\) is the vector of inputs, \(\vec{w}\) is the vector of weights, \(b\) is a bias term and \(\sigma\) is a non-linearity. Informally speaking, the weights determine which of the input signals the neuron is more sensitive to, and the bias term acts as a threshold for how strong the input signals should be for the neuron to "fire". The use of non linear activation functions allows the network to model real world data, which is often complex and non linear. Figure \ref{fig:activations} describes some of the commonly used activation functions.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{Electron}
+  \caption{Common activation functions}
+  \label{fig:activations}
+\end{figure}
+
+A set of \(k\) neurons operating on the same vector of input signals and sharing the same activation function \(\{y_i = \sigma(\vec{w_i}\cdot\vec{x} + b_i)\}\), is considered a single layer. Following eq. \ref{eq:neuron}, such layer computes an affine transformation on a vector of \(n\) input signals  \(\vec{x}_{nx1}\), followed by an element-wise non-linearity, as described in equation \ref{eq:neuronlayer}. 
+
+\begin{equation}
+    \vec{y}_{kx1} = \vec{\sigma}({W_{kxn}\vec{x}_{nx1}} + \vec{b}_{kx1})
+    \label{eq:neuronlayer}
+\end{equation}
+
+Where the \(i\)-th row of \(W_{kxn}\) and \(\vec{b}_{kx1}\) are respectively the weight vector and the bias term of the \(i\)-th neuron, and \(\vec{\sigma}\) performs element-wise calculation of the activation function \(\sigma\). Layers of neurons can be stacked on top of each other by setting the output of one layer to be the input to the next, as demonstrated in eq. \ref{eq:feedforward}:
+\begin{equation}
+    \begin{split}
+    \vec{y}^1_{kx1} = \vec{\sigma}^1({W^1_{kxn}\vec{x}_{nx1}} + \vec{b}^1_{kx1}) \\
+    \vec{y}^2_{kx1} = \vec{\sigma}^2({W^2_{kxk}\vec{y}^1_{kx1}} + \vec{b}^2_{kx1}) \\
+    \vec{y}^3_{kx1} = \vec{\sigma}^3({W^3_{kxk}\vec{y}^2_{kx1}} + \vec{b}^3_{kx1}) \\
+    out = \vec{\sigma}^{out}({W^{out}_{1xk}\vec{y}^3_{kx1}} + b^{out})
+    \end{split}
+    \label{eq:feedforward}
+\end{equation}
+
+Eq. \ref{eq:feedforward} describes a network with an input layer of size \(n\) followed by three layers of size \(k\) and an output layer consisting of a single neuron. Each layer has its own set of weights, bias terms and activation function. Neural networks consisting of such architecture - i.e a sequence of neuron layers stacked on top of each other, are known as \textbf{Feed Forward Networks}, or \textbf{Multi Layered Perceptrons} (due to the similarity of the early Perceptron model and a neuron).  A feed-forward network with a structure similar to that defined in eq. \ref{eq:feedforward} is shown in figure \ref{fig:feedforward}.
+
+\section{The Softmax Layer}
+A Softmax layer is a neuron layer that uses the Softmax activation function, which normalizes the outputs of the layer into a probability distribution. It is mostly used in the common case of a multiclass classifier, where each sample is to be assigned with a label from a predefined set of labels.
+
+The Softmax function is different from the previously mentioned activation functions, in the sense that it operates on an entire vector of signals rather than on each individual signal independently. It receives a vector of the (intermediate) outputs of a neuron layer as input, and it outputs a vector of probabilities of the same dimension. The Softmax activation function is defined as follows:
+
+\begin{equation}
+    Softmax( \vec{x} )_j = \frac{e^{\vec{x}_j}}{\sum_{i=1}^k e^{\vec{x}_i}}
+    \label{eq:softmax}
+\end{equation}
+
+Where $x \in \mathbb{R}^k$ is the vector of input signals. The equation of a Softmax layer is obtained by using Sofmax as the activation function \(\vec{\sigma}\) of eq.  \ref{eq:neuronlayer}.
+
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{Electron}
+  \caption{A feed-forward network with 3 hidden layers and an output layer consisting of a single neuron}
+  \label{fig:feedforward}
+\end{figure}
+
 \subsubsection{*Neural nets overview}
 \subsubsection{*Activation functions}
 \subsubsection{*Loss functions}
@@ -85,28 +156,6 @@
 %-----------------------------------
 %	SECTION 5
 %-----------------------------------
-\section{PPA work by Belinkov et. al 2014}
-\subsubsection{*Overview, relevance to this work}
-\subsubsection{*Intro to Belinkov work}
-\subsubsection{* -- Isolated PPA models}
-\subsubsection{* -- Incorporated to an existing parser}
-\subsubsection{* -- Model architecture in brief}
-\subsection{Datasets}
-\subsubsection{*Structure, size and other notable stats}
-\subsubsection{*Extraction process}
-\subsection{Model}
-\subsubsection{*Model framework}
-\subsubsection{*Score function variations}
-\subsubsection{The HPCD Variation}
-\subsection{Word Vector Representation}
-\subsubsection{*Word Embedding Variations}
-\subsubsection{*Vector Enrichment (WordNet, VerbNet, etc)}
-\subsubsection{*Full Vector Outline}
-\subsection{Training}
-\subsection{Results}
-\subsection{Conclusion}
-\subsubsection{*Brief summary and chapter 3 outline}
-\pagebreak
 
 %-----------------------------------
 %	SECTION 6
