@@ -74,7 +74,7 @@ A set of \(k\) neurons operating on the same vector of input signals and sharing
     \label{eq:neuronlayer}
 \end{equation}
 
-Where the \(i\)-th row of \(W_{kxn}\) and \(\vec{b}_{kx1}\) are respectively the weight vector and the bias term of the \(i\)-th neuron, and \(\vec{\sigma}\) performs element-wise calculation of the activation function \(\sigma\). Layers of neurons can be stacked on top of each other by setting the output of one layer to be the input to the next, as demonstrated in eq. \ref{eq:feedforward}:
+Where the \(i\)-th row of \(W_{kxn}\) and \(\vec{b}_{kx1}\) are respectively the weight vector and the bias term of the \(i\)-th neuron, and \(\vec{\sigma}\) performs element-wise computation of the activation function \(\sigma\). Layers of neurons can be stacked on top of each other by setting the output of one layer to be the input to the next, as demonstrated in eq. \ref{eq:feedforward}:
 \begin{equation}
     \begin{split}
     \vec{y}^1_{kx1} = \vec{\sigma}^1({W^1_{kxn}\vec{x}_{nx1}} + \vec{b}^1_{kx1}) \\
@@ -100,16 +100,44 @@ The Softmax function is different from the previously mentioned activation funct
 Where $x \in \mathbb{R}^k$ is a vector of input signals. The equation of a Softmax \emph{layer} is obtained by using Softmax as the activation function \(\vec{\sigma}\) of eq.  \ref{eq:neuronlayer}. A full outline of a multiclass network architecture using a Softmax layer is outlined in figure \ref{fig:networks} (iii).
 
 \subsection{Training a Neural Network}
-Given a neural network architecture, the process of training the network aims to find a good set of \emph{model parameters} for a particular task. The parameters of a network are defined to be the entire set of weights and biases of neurons in the network. For instance, the set of parameters of the network defined in eq. \ref{eq:feedforward} is $\theta = \{W^1, \vec{b^1}, W^2, \vec{b^2}, W^3, \vec{b^3}, W^{out}, \vec{b^{out}}\}$. We can therefore annotate a neural network as a function of an input sample and a set of model parameters: 
+Given a neural network architecture, the process of training the network aims to find a good set of \emph{model parameters} for a particular task. The parameters of a network are defined to be the entire set of weights and biases of neurons in the network. For instance, the set of parameters of the network defined in eq. \ref{eq:feedforward} is $\theta = \{W^1, \vec{b^1}, W^2, \vec{b^2}, W^3, \vec{b^3}, W^{out}, \vec{b^{out}}\}$. We can therefore consider a neural network as a function of an input sample $\vec{x}$ and a set of model parameters $\theta$: 
 $$ \vec{y} = \textbf{f}(\vec{x}, \theta) $$ 
-In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_i}, \vec{y_i})\}$ and we wish to obtain the best set of parameters $\hat{\theta}$ such that $\textbf{f}(\vec{x_i}, \hat{\theta})$ would be a good predictor of $y_i$ on average across all samples $(\vec{x_i}, \vec{y_i}) \in T$.  We use a \emph{loss function} $\textbf{l}$ to measure the distance between the ground truth $\vec{y_i}$ and the prediction $\textbf{f}(\vec{x_i}, \theta)$. This distance is also known as \emph{cost} or \emph{loss}. The learning process aims to minimize the average loss on the entire training set:
+In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_i}, \vec{y_i})\}$ and we wish to obtain the best set of parameters $\hat{\theta}$ such that $\textbf{f}(\vec{x_i}, \hat{\theta})$ would be a good predictor of $y_i$ on average across all samples $(\vec{x_i}, \vec{y_i}) \in T$.  We use a \emph{loss function} $\mathcal{L}$ to measure the distance between the ground truth $\vec{y_i}$ and the prediction $\textbf{f}(\vec{x_i}, \theta)$. This distance is also known as the \emph{cost} or \emph{loss} of the prediction. The learning process aims to minimize the average loss on the entire training set\footnote{In some cases, a regularization term $R(\theta)$ is added to the loss function as a mean to prevent overfitting. This is discussed in section todo.}:
 
 \begin{equation}
-\hat{\theta} = \argmin_{\theta} \sum_{i=1}^N \textbf{l}(\textbf{f}(\vec{x_i}, \theta), y_i)
+\hat{\theta} = \argmin_{\theta} \frac{1}{N}\sum_{i=1}^N \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), y_i)
 \label{eq:bestparams}    
 \end{equation}
 
+\subsubsection{Stochastic Gradient Descent and Back Propagation}
+While computing an exact solution for eq \ref{eq:bestparams} is often untraceable, there are many optimizers aiming to find a good estimation for the best set of parameters $\hat{\theta}$. Most of these optimizers are gradient-based, and are typically variations of the Gradient Descent (GD) minimization algorithm. GD is a iterative process aiming to minimize a differentiable function $t$. It begins with a randomly assigned $\theta$. In each iteration, the gradient $\nabla t = \frac{\partial t}{\partial \theta}$ is computed, and $\theta$ is updated accordingly:
 
+$$ \theta = \theta - \textit{lr} \cdot \nabla t $$
+
+This update step pushes $\theta$ in the opposite direction of the gradient, thus aiming to decrease $t(\theta)$. This process is repeated until a local minima is reached, a state which is practically detected by observing that $t(\theta)$ has not significantly decreased in the last window of iterations. The hyperparameter \textit{lr} - the \textit{learning rate} - controls the magnitude of the update step. A small learning rate may result in slow convergence, while a big learning rate may prevent the process from converging at all (as the magnified gradient could push $\theta$ too far and actually \emph{increase} $t(\theta)$). In some variations of GD, the learning rate is multiplied by a decay factor after each predefined number of iterations. 
+
+Following eq \ref{eq:bestparams}, the target function we wish to minimize in order to train the network is:
+
+$$ t(\theta) = \frac{1}{N}\sum_{i=1}^N \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), y_i) $$
+
+For $t$ to be differentiable with regards to $\theta$, we require choosing a neural network $f$ and a loss function $\mathcal{L}$ such that $f$ is differentiable with regards to $\theta$, and $\mathcal{L}$ is differentiable with regards to its first argument - the predicted vector.
+
+In practice, computing the gradient of $t$ is very computationally expensive for a large training set, as it requires computing the gradient of the loss of each training sample separately. Instead, in a process known as \textbf{Mini-Batch Gradient Descent} or \textbf{Stochastic Gradient Descent (SGD)}, an approximation of the gradient is computed. The set of input samples is divided into batches of size $BATCH\_SIZE$. At each step of the iteration, the gradient is computed on the average loss of only the next batch of samples:
+
+$$ \hat{t}(\theta) = \frac{1}{BATCH\_SIZE}\sum_{(\vec{x_i}, \vec{y_i}) \in Batch} \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})  $$
+
+$$ \theta = \theta - \textit{lr} \cdot \nabla \hat{t} $$
+
+This update step can be thought of as training the network on a batch of samples. An \emph{epoch} represents a full pass of training over the entire set of batches in the training set. It is very common to train a network through several epochs, while shuffling the samples in between. The amount of epochs depends on the convergence rate and the size of the training set.
+
+The following are a few commonly used variations of SGD:
+\begin{itemize}
+    \item \textbf{Adaptive Gradient Algorithm (AdaGrad)}: ???todo???
+    \item \textbf{Root Mean Square Propagation (RMSProp)}: ???todo???
+    \item \textbf{Adaptive Moment estimation (Adam}: ???todo???    
+\end{itemize}
+
+SGD (along with its variations) is a heuristic process and does not guarantee convergence to a global minima. Emprical results consistently show, however, that neural networks can be trained successfully event when using plain SGD.
 
 \subsubsection{*Neural nets overview}
 \subsubsection{*Activation functions}
