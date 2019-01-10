@@ -110,7 +110,7 @@ In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_
 \end{equation}
 
 \subsubsection{Stochastic Gradient Descent with Backpropagation}
-While computing an exact solution for eq \ref{eq:bestparams} is often intractable, there are many optimizers aiming to find a good estimation for the best parameter vector $\hat{\theta}$. Most of these optimizers are gradient-based, and are typically variations of the Gradient Descent (GD) minimization algorithm. GD is a iterative process aiming to minimize a differentiable function $t$. It begins with a randomly assigned $\theta$. In each iteration, the gradient $\nabla t = \frac{\partial t}{\partial \theta}$ is computed, and $\theta$ is updated accordingly:
+While computing an exact solution for eq \ref{eq:bestparams} is often intractable, there are many optimizers aiming to find a good estimation of the best parameter vector $\hat{\theta}$. Most of these optimizers are gradient-based, and are typically variations of the Gradient Descent (GD) minimization algorithm. GD is an iterative process aiming to minimize a differentiable function $t$. It begins with a randomly assigned $\theta$. In each iteration, the gradient $\nabla t = \frac{\partial t}{\partial \theta}$ is computed, and $\theta$ is updated accordingly:
 
 $$ \theta \leftarrow \theta - \textit{lr} \cdot \nabla t(\theta) $$
 
@@ -139,8 +139,37 @@ The following are a few commonly used variations of SGD:
 
 SGD (along with its variations) is a heuristic process and is not guaranteed to converge to a global minima. Emprical results consistently show, however, that neural networks can be trained successfully even when using plain SGD.
 
-The gradient of the loss of a single sample in the training set -  $\frac{\partial \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})}{\partial \theta}$ - can be computed efficiently in a process known as \textbf{Backpropagation}. The Backpropagation
-algorithm is able to efficiently compute the gradient of a real function $t(\theta)$, provided that $t$ holds several key properties: (a) $t$ is a composition of real functions, (b) each function takes only elements from $\theta$ or on output of another function as inputs, (c) each element from $\theta$ is a direct input of exactly one function, and (d) the partial derivative of each function can be computed efficiently. Considering that a feed-forward network is basically a composition of neurons with easy-to-differentiate activation functions,
+The gradient for a single sample in the training set -  $\frac{\partial \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})}{\partial \theta}$ - can be computed efficiently in a process known as \textbf{Backpropagation}. The Backpropagation
+algorithm is able to efficiently compute the gradient of a real function $t(\theta)$, provided that it holds several key properties: (a) $t$ is a composition of real functions, (b) each function takes only elements from $\theta$ or an output of another function as inputs, and (c) the partial derivatives of each function can be computed efficiently.  
+
+It follows from (a), (b) that $t$ can be described as a directed acyclic graph, where each graph node $\textbf{v}$ represents an element from $\theta$ (a \textit{$\theta$-node}), or an output of an intermediate function (where the function and output are notated as $\textbf{f}_{\textbf{v}}$ and $o_{\textbf{v}}$ respectively). An edge $\textbf{u}\rightarrow\textbf{v}$ is present when $o_{\textbf{u}}$ is an input of $\textbf{f}_\textbf{v}$. It holds for the (single) sink node $\textbf{s}$ that $o_{\textbf{s}} = t(\theta)$. Nodes representing elements from $\theta$  are the only ones with no incoming edges. 
+
+The Backpropagation process computes a partial derivative value of $t$ for each \emph{edge} in the graph. It begins with edges connected to the sink node, and going backwards in reversed topological order (utilizing the chain rule for function derivation). The partial derivative of each element in $\theta$ is then the sum of partial derivatives over all outgoing edges from the corresponding element node.
+
+The following briefly outlines a single Backpropagation step computing the partial derivative for a single edge $\textbf{u}\rightarrow\textbf{v}$ (notated as $\delta_{\textbf{u}\rightarrow\textbf{v}}$):   
+
+\begin{equation}
+    \delta_{\textbf{u}\rightarrow\textbf{v}} = \frac{\partial o_{\textbf{v}}}{\partial o_{\textbf{u}}} \cdot
+    \begin{cases}
+     \sum\limits_{e \in OutEdges(\textbf{v})} \delta_{e}     & \text{if $OutEdges(\textbf{v}) \neq \emptyset$}\\
+    1       & \text{otherwise}
+    \end{cases}
+    \label{backprop}
+\end{equation}
+
+Where $OutEdges(\textbf{v})$ is the set out all outgoing edges from node $\textbf{v}$. The partial derivative of $t(\theta)$ w.r.t $\theta_i$,  where $\textbf{w}$ is the corresponding $\theta$\textit{-node}, is then:
+
+$$\frac{\partial t(\theta)}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})} \delta_{e} $$ 
+
+Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate. The process of computing the gradient on a 3-layered network is described in figure \ref{fig:backprop}
+
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{Backpropagation demonstrated on a 3-layered feed forward neural network}
+    \label{fig:backprop}
+\end{figure}
+
 
 \subsubsection{*Neural nets overview}
 \subsubsection{*Activation functions}
