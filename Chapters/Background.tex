@@ -110,11 +110,11 @@ In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_
 \end{equation}
 
 \subsubsection{Stochastic Gradient Descent with Backpropagation}
-While computing an exact solution for eq \ref{eq:bestparams} is often intractable, there are many optimizers aiming to find a good estimation of the best parameter vector $\hat{\theta}$. Most of these optimizers are gradient-based, and are typically variations of the Gradient Descent (GD) minimization algorithm. GD is an iterative process aiming to minimize a differentiable function $t$. It begins with a randomly assigned $\theta$. In each iteration, the gradient $\nabla t = \frac{\partial t}{\partial \theta}$ is computed, and $\theta$ is updated accordingly:
+While computing an exact solution for eq \ref{eq:bestparams} is often intractable, there are many optimizers aiming to find a good estimation of the best parameter vector $\hat{\theta}$. Most of these optimizers are gradient-based, and are typically variations of the Gradient Descent (GD) minimization algorithm. GD is an iterative process aiming to minimize a differentiable function $t$. It begins with a randomly assigned $\theta$. In each iteration, the gradient $\nabla t(\theta)$ is computed, and $\theta$ is updated accordingly:
 
 $$ \theta \leftarrow \theta - \textit{lr} \cdot \nabla t(\theta) $$
 
-This update step pushes $\theta$ in the opposite direction of the gradient, thus aiming to decrease $t(\theta)$. This process is repeated until a local minima is reached, a state which is practically detected by observing that $t(\theta)$ has not significantly decreased in the last window of iterations. The hyperparameter \textit{lr} - the \textit{learning rate} - controls the magnitude of the update step. A small learning rate may result in slow convergence, while a big learning rate may prevent the process from converging at all (as the magnified gradient could push $\theta$ too far and actually \emph{increase} $t(\theta)$). In some variations of GD, the learning rate is multiplied by a decay factor after each predefined number of iterations. 
+This update step pushes $\theta$ in the opposite direction of the gradient, thus aiming to decrease $t(\theta)$. This process is repeated until a local minima is reached, a state which is practically detected by observing that $t(\theta)$ has not significantly decreased in the last window of iterations. The hyperparameter \textit{lr} - the \textit{learning rate} - controls the magnitude of the update step. A small learning rate may result in slow convergence, while a large learning rate may prevent the process from converging at all (as the magnified gradient could push $\theta$ too far and actually \emph{increase} $t(\theta)$). In some variations of GD, the learning rate is multiplied by a decay factor after each predefined number of iterations. 
 
 Following eq \ref{eq:bestparams}, the target function we wish to minimize in order to train the network is:
 
@@ -128,7 +128,7 @@ $$ \hat{t}(\theta) = \frac{1}{BATCH\_SIZE}\sum_{(\vec{x_i}, \vec{y_i}) \in Batch
 
 $$ \theta \leftarrow \theta - \textit{lr} \cdot \nabla \hat{t}(\theta) $$
 
-This update step can be thought of as training the network on a batch of samples. An \emph{epoch} represents a full pass of training over the entire set of batches in the training set. It is very common to train a network through several epochs, while shuffling the samples in between. The amount of epochs depends on the convergence rate and the size of the training set.
+This update step can be thought of as training the network on a batch of samples. An \emph{epoch} represents a full pass of training over the entire set of batches in the training set. It is very common to train a network through several epochs, while shuffling the order of samples between each epoch. The right amount of epochs depends on the convergence rate and the size of the training set.
 
 The following are a few commonly used variations of SGD:
 \begin{itemize}
@@ -139,14 +139,14 @@ The following are a few commonly used variations of SGD:
 
 SGD (along with its variations) is a heuristic process and is not guaranteed to converge to a global minima. Emprical results consistently show, however, that neural networks can be trained successfully even when using plain SGD.
 
-The gradient for a single sample in the training set -  $\frac{\partial \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})}{\partial \theta}$ - can be computed efficiently in a process known as \textbf{Backpropagation}. The Backpropagation
+The gradient for a single sample in the training set -  $\nabla_\theta \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})$ - can be computed efficiently in a process known as \textbf{Backpropagation}. The Backpropagation
 algorithm is able to efficiently compute the gradient of a real function $t(\theta)$, provided that it holds several key properties: (a) $t$ is a composition of real functions, (b) each function takes only elements from $\theta$ or an output of another function as inputs, and (c) the partial derivatives of each function can be computed efficiently.  
 
-It follows from (a), (b) that $t$ can be described as a directed acyclic graph, where each graph node $\textbf{v}$ represents an element from $\theta$ (a \textit{$\theta$-node}), or an output of an intermediate function (where the function and output are notated as $\textbf{f}_{\textbf{v}}$ and $o_{\textbf{v}}$ respectively). An edge $\textbf{u}\rightarrow\textbf{v}$ is present when $o_{\textbf{u}}$ is an input of $\textbf{f}_\textbf{v}$. It holds for the (single) sink node $\textbf{s}$ that $o_{\textbf{s}} = t(\theta)$. Nodes representing elements from $\theta$  are the only ones with no incoming edges. 
+It follows from (a), (b) that $t$ can be described as a directed acyclic graph, where each graph node $\textbf{v}$ represents an element from $\theta$ (a \textit{$\theta$-node}), or an output of an intermediate function (where the function and output are notated as $\textbf{f}_{\textbf{v}}$ and $o_{\textbf{v}}$ respectively). An edge $\textbf{u}\rightarrow\textbf{v}$ is present when $o_{\textbf{u}}$ is an input of $\textbf{f}_\textbf{v}$. It holds for the (single) sink node $\textbf{s}$ that $o_{\textbf{s}} = t(\theta)$. The \textit{$\theta$-nodes} are the only ones with no incoming edges. 
 
-The Backpropagation process computes a partial derivative value of $t$ for each \emph{edge} in the graph. It begins with edges connected to the sink node, and going backwards in reversed topological order (utilizing the chain rule for function derivation). The partial derivative of each element in $\theta$ is then the sum of partial derivatives over all outgoing edges from the corresponding element node.
+The Backpropagation process computes a partial derivative value of $t$ for each \emph{edge} in the graph. It begins with edges connected to the sink node, and going backwards in reversed topological order (utilizing the chain rule for function derivation). The partial derivative of each element in $\theta$ is then the sum of partial derivatives over all outgoing edges from the corresponding \textit{$\theta$-node}.
 
-The following briefly outlines a single Backpropagation step computing the partial derivative for a single edge $\textbf{u}\rightarrow\textbf{v}$ (notated as $\delta_{\textbf{u}\rightarrow\textbf{v}}$):   
+The following briefly outlines a single Backpropagation step, i.e computing the partial derivative for a single edge $\textbf{u}\rightarrow\textbf{v}$ (notated as $\delta_{\textbf{u}\rightarrow\textbf{v}}$):   
 
 \begin{equation}
     \delta_{\textbf{u}\rightarrow\textbf{v}} = \frac{\partial o_{\textbf{v}}}{\partial o_{\textbf{u}}} \cdot
@@ -157,11 +157,11 @@ The following briefly outlines a single Backpropagation step computing the parti
     \label{backprop}
 \end{equation}
 
-Where $OutEdges(\textbf{v})$ is the set out all outgoing edges from node $\textbf{v}$. The partial derivative of $t(\theta)$ w.r.t $\theta_i$,  where $\textbf{w}$ is the corresponding $\theta$\textit{-node}, is then:
+Where $OutEdges(\textbf{v})$ is the set out all outgoing edges from node $\textbf{v}$. The partial derivative of $t(\theta)$ w.r.t $\theta_i$, is then:
 
-$$\frac{\partial t(\theta)}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})} \delta_{e} $$ 
+$$\frac{\partial t}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})} \delta_{e} $$ 
 
-Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate. The process of computing the gradient on a 3-layered network is described in figure \ref{fig:backprop}
+ Where $\textbf{w}$ is the corresponding $\theta$\textit{-node} for $\theta_i$. Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate\footnote{This also applies for convex functions which are non-differentiable (e.g $ReLU$), in which case a subgradient is used.}. The process of computing the gradient on a 3-layered network is described in figure \ref{fig:backprop}.
 
 \begin{figure}
     \centering
@@ -169,6 +169,78 @@ Backpropagation thus can be used to compute the gradient for the loss of a given
     \caption{Backpropagation demonstrated on a 3-layered feed forward neural network}
     \label{fig:backprop}
 \end{figure}
+
+\subsection{Commonly Used Loss Functions}
+
+A loss function $\mathcal{L}(\hat{y}, y)$ computes a (usually non-negative) value, measuring the inconsistency between a prediction $\hat{y}$ and ground truth $y$ for a given sample. 
+As this work deals mostly with classification tasks, the following will describe two very common loss functions used for classification: the Cross Entropy loss, and the Hinge loss.
+
+\subsubsection{Cross-Entropy Loss}
+The Cross-Entropy loss function assumes the predicted vector $\hat{y}_{1xn}$ is a probability distribution, where $\hat{y}_i$ is the probability assigned to the $i$-th class from a set of $n$ classes. It is usually modeled by using Softmax as the output layer of the network. The ground truth $y$ is therefore a one-hot vector, with a probability of 1 assigned to the correct label (and 0 for the rest). The Cross-Entropy loss is the defined as the cross-entropy between the true distribution and the predicted one:
+
+\begin{equation}
+    \mathcal{L}_{CE}(\hat{y}, y) = \sum_{i=1}^{n} -y_{i}log(\hat{y}_i)
+    \label{crossentropy}
+\end{equation}
+
+In the described setting, the Cross-Entropy boils down to simply taking the (minus) log of the probability assigned by the model to the correct label. It is worth noting, however, that Cross-Entropy loss can be used just as well for settings where the ground truth is not a single correct label, but a \emph{probability distribution} over the set of labels. 
+A key property of Cross-Entropy loss is that it tends to infinity as the predicted probability tends to zero, rapidly penalizing the model for predictions that are both incorrect and confident.
+
+\subsubsection{Hinge Loss}
+The Hinge loss is suitable for scenarios where the model assigns each candidate with an unbounded score (rather than a probability), and the highest scoring candidate is considered as the predicted candidate. It takes a marginal approach, by penalizing predictions where the score assigned to the correct prediction is not larger then the rest by at least 1. The Hinge loss then corresponds to the score difference that violates this constraint mostly:
+
+\begin{equation}
+    \mathcal{L}_{Hinge}(\hat{y}, y) = max(0, 1 + max(\{\hat{y}_{i} | i \neq t\}) - \hat{y}_t)    \label{hingeloss}
+\end{equation}
+
+Where $t$ is the index of the correct candidate (obtained from $y$). Predictions assigning the correct candidate with the highest score, by a margin of at least 1, will receive a loss of 0. Otherwise, the loss is the violating difference:  $ 1 + \hat{y}_p - \hat{y}_t $ where $p$ is the index corresponding to the highest scoring candidate.
+
+\subsection{Model Regularization and Overfitting}
+
+As with any machine learning model, neural networks are also capable of overfitting the training data. This is especially true for deep networks, which have a very large amount of parameters and therefore more complexity. Simply picking the set of parameters that minimizes the loss on the training set is likely to overfit, at least to some degree. The common method of applying a regularization term (e.g $l1$, $l2$ regularization) in addition to the loss, can also be applied to the training process of a neural network. First, we define the \emph{cost} of a parameter vector $\theta$ w.r.t a of training sample $(\vec{x_i}, \vec{y_i})$ as the sum of its loss and a regularization term $R(\theta)$:
+
+$$ Cost(\theta, \vec{x_i}, \vec{y_i}) = \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i}) + \lambda \cdot R(\theta) $$
+
+Where $\lambda$ is a hyperparameter. Then, we modify the training process by minimizing the average cost instead of the average loss, so the function $t$ subject to minimization becomes:
+
+$$ t(\theta) = \frac{1}{|Train|}\sum_{(\vec{x_i}, \vec{y_i}) \in Train} Cost(\theta, \vec{x_i}, \vec{y_i}) $$
+
+Assuming that $R$ can be differentiated efficiently, the training process can just as well be applied to the modified $t$.
+
+\subsubsection{Validation Loss and Early Stopping}
+
+A common machine learning methodology for detection and prevention of overfitting is the use of a validation set. A validation set is a set of samples held out of the training set, on which the performance of a trained model is measured. As the validation samples had not been used for training, a high performance on the validation set is an indication of the model being able to generalize well. On the other hand, a model with a high performance on the training set and a low performance on the validation set, had likely to overfit. 
+
+A validation set can be further utilized for prevention of overfitting, by examinig the loss on the validation set (the validation loss) throughout training. As training progresses, the loss on the training set generally decreases until reaching a local minima. The validation loss is also expected to decrease, until the model had overfitted the training set. At this point, the training loss may keep decreasing, but the validation loss may increase due to overfitting. A detection of such increase in validation loss may imply that the model had overfitted, and further training could hurt performance. Training is stopped at this point, and the set of parameters with the lowest validation loss seen throughout training is chosen. This adjustment to the training process is known as Early-Stopping. 
+
+Detecting the point where the validation loss begins to increase due to overfitting is not so trivial. While the training loss is expected to decrease in general, specific training steps may increase it due to the fact the (a) the gradient of the loss is only estimated, and (b) the learning rate may be too big. Similarly, the validation loss may increase in some training steps before decreasing into its optimal value. Therefore, a single increase in validation loss is not enough. Some variations of early stopping does not allow stopping before a certain amount of epochs is completed. Others will stop only when the validation loss had not been decreased below its minimum in the last window of iterations. Another variation allows the training process to continue until the training loss stabilizes, and only then the best parameters are chosen. This variation have no risk of stopping too early, at the cost of a longer training process.
+
+% \begin{tikzpicture}
+% \begin{axis}[
+%     axis lines = left,
+%     xlabel = $x$,
+%     ylabel = {$f(x)$},
+% ]
+% %Below the red parabola is defined
+% \addplot [
+%     domain=-10:10, 
+%     samples=100, 
+%     color=red,
+% ]
+% {x^2 - 2*x - 1};
+% \addlegendentry{$x^2 - 2x - 1$}
+% %Here the blue parabloa is defined
+% \addplot [
+%     domain=-10:10, 
+%     samples=100, 
+%     color=blue,
+%     ]
+%     {x^2 + 2*x + 1};
+% \addlegendentry{$x^2 + 2x + 1$}
+ 
+% \end{axis}
+% \end{tikzpicture}
+
 
 
 \subsubsection{*Neural nets overview}
