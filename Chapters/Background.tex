@@ -99,10 +99,35 @@ The Softmax function is different from the previously mentioned activation funct
 
 Where $x \in \mathbb{R}^k$ is a vector of input signals. The equation of a Softmax \emph{layer} is obtained by using Softmax as the activation function \(\vec{\sigma}\) of eq.  \ref{eq:neuronlayer}. A full outline of a multiclass network architecture using a Softmax layer is outlined in figure \ref{fig:networks} (iii).
 
+\subsection{Loss Functions}
+
+A loss function $\mathcal{L}(\hat{y}, y)$ computes a (usually non-negative) value, measuring the inconsistency between a prediction $\hat{y}$ and ground truth $y$ for a given sample. 
+As this work deals mostly with classification tasks, the following will describe two very common loss functions used for classification: the Cross Entropy loss, and the Hinge loss.
+
+\subsubsection{Cross-Entropy Loss}
+The Cross-Entropy loss function assumes the predicted vector $\hat{y}_{1xn}$ is a probability distribution, where $\hat{y}_i$ is the probability assigned to the $i$-th class from a set of $n$ classes. It is usually modeled by using Softmax as the output layer of the network. The ground truth $y$ is therefore a one-hot vector, with a probability of 1 assigned to the correct label (and 0 for the rest). The Cross-Entropy loss is then defined as the cross-entropy between the true distribution and the predicted one:
+
+\begin{equation}
+    \mathcal{L}_{CE}(\hat{y}, y) = \sum_{i=1}^{n} -y_{i}log(\hat{y}_i)
+    \label{crossentropy}
+\end{equation}
+
+In the described setting, the Cross-Entropy boils down to simply taking the (minus) log of the probability assigned by the model to the correct label. It is worth noting, however, that Cross-Entropy loss can be used just as well for settings where the ground truth is not a single correct label, but a \emph{probability distribution} over the set of labels. 
+A key property of Cross-Entropy loss is that it tends to infinity as the predicted probability tends to zero, rapidly penalizing the model for predictions that are both incorrect and confident.
+
+\subsubsection{Hinge Loss}
+The Hinge loss is suitable for scenarios where the model assigns each candidate with an unbounded score (rather than a probability), and the highest scoring candidate is considered as the predicted candidate. It takes a marginal approach, by penalizing predictions where the score assigned to the correct prediction is not larger than the rest by at least 1. The Hinge loss then corresponds to the score difference that violates this constraint mostly:
+
+\begin{equation}
+    \mathcal{L}_{Hinge}(\hat{y}, y) = max(0, 1 + max(\{\hat{y}_{i} | i \neq t\}) - \hat{y}_t)    \label{hingeloss}
+\end{equation}
+
+Where $t$ is the index of the correct candidate (obtained from $y$). Predictions assigning the correct candidate with the highest score, by a margin of at least 1, will receive a loss of 0. Otherwise, the loss is the violating difference:  $ 1 + \hat{y}_p - \hat{y}_t $ where $p$ is the index corresponding to the highest scoring candidate.
+
 \subsection{Training a Neural Network}
 Given a neural network architecture, the process of training the network aims to find a good set of \emph{model parameters} for a particular task. The parameters of a network are defined to be the entire set of weights and biases of neurons in the network. For instance, the set of parameters of the network defined in eq. \ref{eq:feedforward} is $\theta = \{W^1, \vec{b^1}, W^2, \vec{b^2}, W^3, \vec{b^3}, W^{out}, \vec{b^{out}}\}$. We can therefore consider $\theta$ as a vector of real-valued parameters by ordering and flattening the matrices and vectors in the set. Then, a neural network can be thought of as a function of an input sample $\vec{x}$ and a vector of model parameters $\theta$: 
 $$ \vec{y} = \textbf{f}(\vec{x}, \theta) $$ 
-In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_i}, \vec{y_i})\}$ and we wish to obtain the best parameter vector $\hat{\theta}$ such that $\textbf{f}(\vec{x_i}, \hat{\theta})$ would be a good predictor of $y_i$ on average across all samples $(\vec{x_i}, \vec{y_i}) \in T$.  We use a \emph{loss function} $\mathcal{L}$ to measure the inconsistency between the ground truth $\vec{y_i}$ and the prediction $\textbf{f}(\vec{x_i}, \theta)$, which is also known as the \emph{cost} or \emph{loss} of the prediction. The learning process aims to minimize the average loss on the entire training set\footnote{In some cases, a regularization term $R(\theta)$ is added to the loss function as a mean to prevent overfitting. This is discussed in section todo.}:
+In the supervised setting, we have a set of $N$ training samples $T = \{(\vec{x_i}, \vec{y_i})\}$ and we wish to obtain the best parameter vector $\hat{\theta}$ such that $\textbf{f}(\vec{x_i}, \hat{\theta})$ would be a good predictor of $y_i$ on average across all samples $(\vec{x_i}, \vec{y_i}) \in T$.  We use a loss function $\mathcal{L}$ to measure the inconsistency between the ground truth $\vec{y_i}$ and the prediction $\textbf{f}(\vec{x_i}, \theta)$, which is also known as the \emph{cost} or \emph{loss} of the prediction. The learning process aims to minimize the average loss on the entire training set\footnote{In some cases, a regularization term $R(\theta)$ is added to the loss function as a mean to prevent overfitting. This is discussed in section todo.}:
 
 \begin{equation}
 \hat{\theta} = \argmin_{\theta} \frac{1}{N}\sum_{i=1}^N \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), y_i)
@@ -170,34 +195,9 @@ $$\frac{\partial t}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})
     \label{fig:backprop}
 \end{figure}
 
-\subsection{Commonly Used Loss Functions}
-
-A loss function $\mathcal{L}(\hat{y}, y)$ computes a (usually non-negative) value, measuring the inconsistency between a prediction $\hat{y}$ and ground truth $y$ for a given sample. 
-As this work deals mostly with classification tasks, the following will describe two very common loss functions used for classification: the Cross Entropy loss, and the Hinge loss.
-
-\subsubsection{Cross-Entropy Loss}
-The Cross-Entropy loss function assumes the predicted vector $\hat{y}_{1xn}$ is a probability distribution, where $\hat{y}_i$ is the probability assigned to the $i$-th class from a set of $n$ classes. It is usually modeled by using Softmax as the output layer of the network. The ground truth $y$ is therefore a one-hot vector, with a probability of 1 assigned to the correct label (and 0 for the rest). The Cross-Entropy loss is the defined as the cross-entropy between the true distribution and the predicted one:
-
-\begin{equation}
-    \mathcal{L}_{CE}(\hat{y}, y) = \sum_{i=1}^{n} -y_{i}log(\hat{y}_i)
-    \label{crossentropy}
-\end{equation}
-
-In the described setting, the Cross-Entropy boils down to simply taking the (minus) log of the probability assigned by the model to the correct label. It is worth noting, however, that Cross-Entropy loss can be used just as well for settings where the ground truth is not a single correct label, but a \emph{probability distribution} over the set of labels. 
-A key property of Cross-Entropy loss is that it tends to infinity as the predicted probability tends to zero, rapidly penalizing the model for predictions that are both incorrect and confident.
-
-\subsubsection{Hinge Loss}
-The Hinge loss is suitable for scenarios where the model assigns each candidate with an unbounded score (rather than a probability), and the highest scoring candidate is considered as the predicted candidate. It takes a marginal approach, by penalizing predictions where the score assigned to the correct prediction is not larger then the rest by at least 1. The Hinge loss then corresponds to the score difference that violates this constraint mostly:
-
-\begin{equation}
-    \mathcal{L}_{Hinge}(\hat{y}, y) = max(0, 1 + max(\{\hat{y}_{i} | i \neq t\}) - \hat{y}_t)    \label{hingeloss}
-\end{equation}
-
-Where $t$ is the index of the correct candidate (obtained from $y$). Predictions assigning the correct candidate with the highest score, by a margin of at least 1, will receive a loss of 0. Otherwise, the loss is the violating difference:  $ 1 + \hat{y}_p - \hat{y}_t $ where $p$ is the index corresponding to the highest scoring candidate.
-
 \subsection{Model Regularization and Overfitting}
 
-As with any machine learning model, neural networks are also capable of overfitting the training data. This is especially true for deep networks, which have a very large amount of parameters and therefore more complexity. Simply picking the set of parameters that minimizes the loss on the training set is likely to overfit, at least to some degree. The common method of applying a regularization term (e.g $l1$, $l2$ regularization) in addition to the loss, can also be applied to the training process of a neural network. First, we define the \emph{cost} of a parameter vector $\theta$ w.r.t a of training sample $(\vec{x_i}, \vec{y_i})$ as the sum of its loss and a regularization term $R(\theta)$:
+As with any machine learning model, neural networks are also capable of overfitting the training data. This is especially true for deep networks, which have a very large amount of parameters and therefore more complexity. Simply picking the set of parameters that minimizes the loss on the training set is likely to overfit, at least to some degree. The common method of applying a regularization term (e.g $l_1$, $l_2$ regularization) in addition to the loss, can also be applied to the training process of a neural network. First, we define the \emph{cost} of a parameter vector $\theta$ w.r.t a of training sample $(\vec{x_i}, \vec{y_i})$ as the sum of its loss and a regularization term $R(\theta)$:
 
 $$ Cost(\theta, \vec{x_i}, \vec{y_i}) = \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i}) + \lambda \cdot R(\theta) $$
 
@@ -213,7 +213,13 @@ A common machine learning methodology for detection and prevention of overfittin
 
 A validation set can be further utilized for prevention of overfitting, by examinig the loss on the validation set (the validation loss) throughout training. As training progresses, the loss on the training set generally decreases until reaching a local minima. The validation loss is also expected to decrease, until the model had overfitted the training set. At this point, the training loss may keep decreasing, but the validation loss may increase due to overfitting. A detection of such increase in validation loss may imply that the model had overfitted, and further training could hurt performance. Training is stopped at this point, and the set of parameters with the lowest validation loss seen throughout training is chosen. This adjustment to the training process is known as Early-Stopping. 
 
-Detecting the point where the validation loss begins to increase due to overfitting is not so trivial. While the training loss is expected to decrease in general, specific training steps may increase it due to the fact the (a) the gradient of the loss is only estimated, and (b) the learning rate may be too big. Similarly, the validation loss may increase in some training steps before decreasing into its optimal value. Therefore, a single increase in validation loss is not enough. Some variations of early stopping does not allow stopping before a certain amount of epochs is completed. Others will stop only when the validation loss had not been decreased below its minimum in the last window of iterations. Another variation allows the training process to continue until the training loss stabilizes, and only then the best parameters are chosen. This variation have no risk of stopping too early, at the cost of a longer training process.
+Detecting the point where the validation loss begins to increase due to overfitting is not so trivial. While the training loss is expected to decrease in general, specific training steps may increase it due to the fact the (a) the gradient of the loss is only estimated, and (b) the learning rate may be too big. Similarly, the validation loss may increase in some training steps before decreasing into its optimal value. Therefore, a single increase in validation loss is not enough. Some variations of early stopping does not allow stopping before a certain amount of epochs is completed. Others will stop only when the validation loss had not been decreased below its minimum in the last window of iterations. Another variation allows the training process to continue until the training loss stabilizes, and only then the best parameters are chosen. This variation have a low risk of stopping too early, at the cost of a longer training process.
+
+\subsubsection{Dropout Regularization}
+
+Dropout (todo:ref) is another technique for overfit prevention and regularization of a neural network. At each training step, the network structure is slightly altered by randomly removing hidden neurons from the network. Each neuron is removed independently with a probability of $p$ (a hyperparameter). The output of each neuron subject to dropout is rescaled by $1/p$ to preserve the average neuron output\footnote{This variation of dropout is known as Inverted Dropout}. Both dropping and rescaling of neurons take place only during training. 
+
+As the dropout technique involves many model variations, it can be considered as an approximation of model ensembling, which is known to reduce generalization errors. Dropout has been consistently shown to be effective across many different tasks, often replacing more conventional methods such as the aforementioned $l_1,l_2$ regularization.
 
 % \begin{tikzpicture}
 % \begin{axis}[
@@ -241,19 +247,104 @@ Detecting the point where the validation loss begins to increase due to overfitt
 % \end{axis}
 % \end{tikzpicture}
 
-
-
-\subsubsection{*Neural nets overview}
-\subsubsection{*Activation functions}
-\subsubsection{*Loss functions}
-\subsubsection{*Training}
-\subsubsection{*Hyperparameters vs. Model parameters, tuning}
-\subsubsection{*Regularization and drop-out}
-\subsection{Feed Forward Networks}
 \subsection{Recurrent Neural Networks}
-\subsubsection{Bidirectional RNN}
-\subsubsection{Stacked RNNs}
+
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{A Recurrent neural network operating on a sequence $x_1,..,x_k$. An RNN function transforms an input $x_t$ and the current state $h_t$ into an output $y_t$ and the next state the $h_{t+1}$}
+    \label{fig:rnn}
+\end{figure}
+
+A Recurrent Neural Network (RNN) is one class of neural network models aiming to deal with sequence processing. In contrast to feed-forward networks, where the input and output dimensions are fixed, RNNs are able to process and produce sequences of varying lengths. RNNs have proven to be extremely successful in a wide variety of NLP tasks, which mostly deal with processing and producing word sequences. 
+
+A typical RNN is stateful - it processes one sequence item at a time, while maintaining an internal state. For each sequence item $x_t$ (and provided the current internal state $h_t$), the RNN produces an output $y_t$ and an updated state $h_{t+1}$ to be used when processing the next item (see figure \ref{fig:rnn}. An RNN models the above computation as a single function, applied repeatedly over a sequence $x_1, ... ,x_k$:
+
+$$ RNN(x_t, h_t) \rightarrow y_t, h_{t+1} $$
+
+The initial state $h_1$ is usually defined to be a zero vector, a randomly initialized vector, or a trainable model parameter. 
+
+An RNN function could be as simple as a single layered feed-forward network. The following is an example\footnote{This is in fact the SimpleRNN module from the DyNet framework (todo ref)} of such RNN, where the output is also used as the next hidden state:
+
+$$h_{t+1} = tanh(W_x \cdot x_t + W_h \cdot h_t + b)$$
+$$y_t = h_{t+1}$$
+
+The training process of an RNN is similar to that of a feed forward network: minimizing a loss function using (a variant of) SGD. Computing the gradient of the loss is usually done using \textbf{Backpropagation-Through-Time}, which briefly consists of performing backpropagation on the unfolded computation graph, treating each RNN unit as a different component, and then taking the sum of the gradients of the shared parameters. 
+
+A common pattern is to have an RNN as a part of a larger model, where the outputs of the RNN are fed into a subsequent network for further processing. For instance, consider the task of Part-of-Speech (POS) tagging, where each word in a sentence of length $k$ (represented by a sequence of $k$ vectors $w_1,...,w_k$\footnote{Word vector representations are discussed in section todo}), is to be assigned with its corresponding POS label. A typical RNN based model could consist of feeding the word vectors through an RNN, yielding $k$ outputs $y_1,...y_k$. Each RNN output could later be fed into a feed-forward network with a Softmax output layer, computing POS label probabilities for each word. While it would be possible to bypass the RNN and feed the word vectors to the FFN directly, the RNN outputs have the advantage of being \emph{contextualized}: an RNN output for a given word is also a function of the previous words, which the network is expected to compute in a manner useful for the task at hand. An output $y_i$ can thus be considered as a \emph{contextualized domain-specific representation} of the $i$-th word in the sentence.
+
+\subsubsection{Bidirectional RNNs}
+
+A contextualized representation generated using a single RNN has the limitation of being dependent solely on the inputs preceding the corresponding sequence item. This prevents the representation from incorporating important information signaled by following items. For instance, the words following a preposition in a sentence are sometimes crucial for determining the role of the preposition. A frequently used method for overcoming this is to introduce a second RNN unit (with the same architecture, but different set of parameters) and apply in on the sequence in the opposite direction. The contextualized representation is then the concatenation of both outputs:
+
+$$ RNN_{\rightarrow}(x_t, h^{\rightarrow}_{t}) = y^{\rightarrow}_t,h^{\rightarrow}_{t + 1} $$
+$$ RNN_{\leftarrow}(x_t, h^{\leftarrow}_{t}) = y^{\leftarrow}_t,h^{\leftarrow}_{t - 1} $$
+$$ y_t = [y^{\rightarrow}_t:y^{\leftarrow}_t] $$
+
+The resulting representation then encapsulates context from both sides of the represented sequence item.
+
+\subsubsection{Stacking RNNs}
+
+The idea of stacking RNNs together follows the overall success of deep networks in learning complex features. A stacked RNN Architecture consists of applying multiple RNN units over a sequence, forming multiple layers of produced sequences. Each layer processes and recombines information from previous layers, creating representations that perhaps encode features with higher level of abstraction. A network consisting of $L$ stacked RNN layers is defined as follows:
+
+$$ RNN^1(x_t, h^1_t) = y^1_t, h^1_{t+1} $$
+$$ RNN^2(y^1_t, h^2_t) = y^2_t, h^2_{t+1} $$
+$$ ... $$
+$$ RNN^k(y^{k-1}_t, h^k_t) = y^k_t, h^k_{t+1} $$
+$$ ... $$
+$$ RNN^L(y^{L-1}_t, h^L_t) = y^L_t, h^L_{t+1} $$
+$$ y_t = y^L_t $$
+
+The set of RNN units $RNN_1,..,RNN_L$ share the same network architecture, with each unit having its own set of trainable network parameters. In the bidirectional setting, RNN stacking is applied similarly in both directions.
+
 \subsubsection{Long-Short-Term-Memory (LSTM)}
+
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{An LSTM network}
+    \label{fig:lstm}
+\end{figure}
+
+Vanilla RNNs are limited in their ability to capture long range dependencies. For instance, consider the task of assigning the syntactic heads of sentence words. An RNN learning this task could be significantly affected by this limitation, as the distance between a word and its head might be long, causing the network to "forget" the existence of the head by the time the word is reached. \textbf{Long-Short-Term-Memory (LSTM) networks} (todo: ref) is an RNN implementation designed to overcome this limitation. It was shown to be extremely successful at a variety of tasks, which made it tremendously popular and one of the most widely used RNN architectures across the literature.  
+
+LSTM is an implementation of the RNN interface described above. Its internal state is split into two vectors: the cell state $c_t$ and the hidden state $h_t$. The LSTM architecture comprises of the following equations, defining the current output $y_t$ and next cell state $c_{t + 1}, h_{t + 1}$ as a function of the current cell state $c_t, h_t$ and input sequence item $x_t$:
+
+\begin{equation}
+   f_t = sigmoid(W_f[x_t;h_t] + b_f) 
+   \label{eq:lstm_ft}
+\end{equation}
+\begin{equation}
+   i_t = sigmoid(W_i[x_t;h_t] + b_i)
+   \label{eq:lstm_it}
+\end{equation}
+\begin{equation}
+   \hat{C}_t = tanh(W_C[x_t;h_t] + b_C)
+   \label{eq:lstm_cht}
+\end{equation}
+\begin{equation}
+   C_{t + 1} = f_t \circ C_t + i_t \circ \hat{C}
+   \label{eq:lstm_ct+1}
+\end{equation}
+\begin{equation}
+   o_t = sigmoid(W_o[x_t;h_t] + b_o)
+   \label{eq:lstm_ot}
+\end{equation}
+\begin{equation}
+   y_t = o_t \circ tanh(C_{t + 1})
+   \label{eq:lstm_yt}
+\end{equation}
+\begin{equation}
+   h_{t + 1} = h_{t + 1}
+   \label{eq:lstm_ht+1}
+\end{equation}
+
+The LSTM archirtecture is depcited in figure \ref{fig:lstm}. The cell state is updated in two stages: forgetting old information, and inserting new information. $h_t$ and $x_t$ are fed into a sigmoid layer, computing the \emph{forget vector} $f_i$ (sharing the same dimension of the cell state) with all elements ranging from 0 to 1 (eq. \ref{eq:lstm_ft}). Each element represents the portion of the corresponding element in the cell state to forget. Forgetting is then performed by an element-wise multiplication of the current cell state $C_t$ and $f_t$ (first half of eq. \ref{eq:lstm_ct+1}). This updating technique is known as \emph{gating}. 
+Then, the network computes the new information to be added to the cell state $\hat{C}_t$ by feeding $h_t$ and $x_t$ into a $tanh$ layer (eq. \ref{eq:lstm_cht}). They are also used to compute a \emph{insert vector} $i_t$ similar to $f_i$, determining the portion of the new information to be added into the cell state (eq. \ref{eq:lstm_it}). The new information vector $\hat{C}_t$ is then multiplied element-wise by $i_t$ and added to the current cell state (second half of eq. \ref{eq:lstm_ct+1}).
+Finally, a third sigmoid layer taking $h_t$ and $x_t$ as inputs (producing $o_t$) is used to the determine the portion of the cell state to be used as the LSTM output (eq. \ref{eq:lstm_ot} and \ref{eq:lstm_yt}), which is also used as the next hidden state $h_{t+1}$ (eq. \ref{eq:lstm_ht+1}). 
+
+This architecture explicitly models the notion of state as a memory cell, updated only due to learnable detected triggers. The cell state can be considered as a memory cell, where new information added is to be preserved as long as not explicitly removed. This allows the network to pass detected signals across a long sequence of recurrent iterations. 
+
 \subsection{Lookup Tables}
 \subsection{The Stacked BiLSTM-MLP-Softmax Architecture}
 \subsection{Neural Networks in this work}
