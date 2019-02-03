@@ -271,7 +271,7 @@ $$y_t = h_{t+1}$$
 
 The training process of an RNN is similar to that of a feed forward network: minimizing a loss function using (a variant of) SGD. Computing the gradient of the loss is usually done using \textbf{Backpropagation-Through-Time}, which briefly consists of performing backpropagation on the unfolded computation graph, treating each RNN unit as a different component, and then taking the sum of the gradients of the shared parameters. 
 
-A common pattern is to have an RNN as a part of a larger model, where the outputs of the RNN are fed into a subsequent network for further processing. For instance, consider the task of Part-of-Speech (POS) tagging, where each word in a sentence of length $k$ (represented by a sequence of $k$ vectors $w_1,...,w_k$\footnote{Word vector representations are discussed in section todo}), is to be assigned with its corresponding POS label. A typical RNN based model could consist of feeding the word vectors through an RNN, yielding $k$ outputs $y_1,...y_k$. Each RNN output could later be fed into a feed-forward network with a Softmax output layer, computing POS label probabilities for each word. While it would be possible to bypass the RNN and feed the word vectors to the FFN directly, the RNN outputs have the advantage of being \emph{contextualized}: an RNN output for a given word is also a function of the previous words, which the network is expected to compute in a manner useful for the task at hand. An output $y_i$ can thus be considered as a \emph{contextualized domain-specific representation} of the $i$-th word in the sentence.
+A common pattern is to have an RNN as a part of a larger model, where the outputs of the RNN are fed into a subsequent network for further processing. For instance, consider the task of Part-of-Speech (POS) tagging, where each word in a sentence of length $k$ (represented by a sequence of $k$ vectors $w_1,...,w_k$\footnote{Word vector representations are discussed in sections \ref{section:lookuptables} and \ref{section:wordembeddings}}), is to be assigned with its corresponding POS label. A typical RNN based model could consist of feeding the word vectors through an RNN, yielding $k$ outputs $y_1,...y_k$. Each RNN output could later be fed into a feed-forward network with a Softmax output layer, computing POS label probabilities for each word. While it would be possible to bypass the RNN and feed the word vectors to the FFN directly, the RNN outputs have the advantage of being \emph{contextualized}: an RNN output for a given word is also a function of the previous words, which the network is expected to compute in a manner useful for the task at hand. An output $y_i$ can thus be considered as a \emph{contextualized domain-specific representation} of the $i$-th word in the sentence.
 
 \subsubsection{Bidirectional RNNs}
 
@@ -345,15 +345,19 @@ Finally, a third sigmoid layer taking $h_t$ and $x_t$ as inputs (producing $o_t$
 
 This architecture explicitly models the notion of state as a memory cell, updated only due to learnable detected triggers. The cell state can be considered as a memory cell, where new information added is to be preserved as long as not explicitly removed. This allows the network to pass detected signals across a long sequence of recurrent iterations. 
 
-\subsection{Lookup Tables}
-\subsection{The Stacked BiLSTM-MLP-Softmax Architecture}
-\subsection{Neural Networks in this work}
-\pagebreak
+\subsection{Lookup Tables} \label{section:lookuptables}
 
-%-----------------------------------
-%	SECTION 3
-%-----------------------------------
-\section{Word Embeddings Overview}
+As with most machine learning models, the inputs and outputs of a neural network consist entirely of numeric vectors. Non-numeric input must therefore be vectorized into a numeric representation in a manner suitable for the network. As each neuron typically detects some useful feature based on its inputs, a good vector representation would follow this principle by being comprised of numeric elements, each signaling some independent and useful feature of the represented information.  
+
+Categorical information sources such as words, grammatical dependency labels, and POS labels are frequently used as input features for various NLP tasks. A well known method for representing such features is the one-hot vector representation. Although complete, this representation is very shallow - it does not provide the network with any additional information regarding the relation between the input signal and the particular task at hand. The network is expected to learn how to extract such information by neurons in subsequent layers.  
+
+Another categorical feature representation method, aiming to explicitly model the aforementioned behaviour, is the use of lookup tables. A lookup table allows the network to \emph{learn} vector representations which are useful for the particular task. A categorical feature with a vocabulary of size $|V|$ is represented by a lookup table comprised of $|V|$ vectors of dimension $dim_V$ (a hyperparameter). These vectors are considered as part of the model parameters. They are initialized randomly\footnote{todo: initialization example}, and updated during training together with the rest of the parameters.
+
+A lookup table entry is only updated upon training over a sample with the corresponding feature value. A small vocabulary (such as POS labels, usually containing no more then a few dozens of labels) could be well covered by a reasonably sized, task specific, annotated training set. The English vocabulary, on the other hand, could require an enormous amount of training samples in order for the network to learn meaningful word representations, even when only considering frequent words. As collecting training sample could be costly for tasks requiring human supervision (which are very common in NLP), such tasks are rarely equipped with the necessary amount of training data. 
+
+A common approach to this problem is to initialize the corresponding lookup table with pretrained word vectors, obtained by a separate model designed to learn meaningful word vectors in an unsupervised fashion. Such models are described in greater detail in section \ref{section:wordembeddings} (todo the following section).
+
+\subsection{Pretrained Word Embeddings} \label{section:wordembeddings}
 \subsection{Main Approches}
 \subsubsection{The Skip-Gram Model (Word2Vec)}
 \subsubsection{Global Vectors for Word Representation (GLoVe)}
@@ -372,6 +376,16 @@ This architecture explicitly models the notion of state as a memory cell, update
 \subsubsection{*By learning an internal representation}
 \subsubsection{*Character-based embeddings}
 \subsection{Use of Word Embeddings in this work}
+
+
+\subsection{Neural Networks in this work}
+\subsection{The Stacked BiLSTM-MLP-Softmax Architecture}
+
+\pagebreak
+
+%-----------------------------------
+%	SECTION 3
+%-----------------------------------
 \pagebreak
 
 
