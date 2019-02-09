@@ -358,11 +358,25 @@ A lookup table entry is only updated upon training over a sample with the corres
 A common approach to this problem is to initialize the corresponding lookup table with pretrained word vectors, obtained by a training separate model designed to learn meaningful word vectors in an unsupervised fashion. Such models are described in greater detail in section \ref{section:wordembeddings} (todo the following section).
 
 \subsection{Pretrained Word Embeddings} \label{section:wordembeddings}
-Word embedding models are a class of learning techniques aiming to map a set of words from a vocabulary into a numeric vector space. A good word embedding model would capture and represent semantic information emitted by the word, typically with the property that words with similar meanings have similar representations. Word embedding models provide a general-purpose set of word vector representations that can later be used by any subsequent task-specific model. They are usually obtained in an unsupervised manner, training a model over a large set of unannotated sentences. The development of word embeddings models have been a key aspect in the progress of NLP research throughout the last decade.
+Word embedding models are a class of learning techniques aiming to map a set of words from a vocabulary into a numeric vector space. A good word embedding model would capture and represent semantic information emitted by the word, typically with the property that words with similar meanings have similar representations. Word embedding models provide a general-purpose set of word vector representations that can later be used by any subsequent task-specific model. They are usually obtained in an unsupervised manner, training a model over a large corpus of unannotated sentences (usually obtained by harvesting various public web resources such as Wikipedia). The development of word embedding models have been a key aspect in the progress of NLP research throughout the last decade.
 
 \subsubsection{Word2Vec}
 
 SkipGram and Continuous-Bag-Of-Words (CBOW) are two similar neural word embedding models jointly referred to as Word2Vec (todo: ref). They have perhaps been the first neural word embedding models to be both rather simple yet very successful at the task. Despite following improvements and progress made in recent years, they are still widely used nowadays due to their simplicity and effectiveness. Many pretrained Word2Vec models are publicly available, eliminating the need to train a model in order to obtain the word vectors. 
+
+Both models follow the \emph{distributional hypothesis}, assuming that distributional properties of a word - specifically, the distribution of context words - correlate with the word and its meaning. They model the relation between the word and its context, by predicting one from the other. 
+
+In the SkipGram model, a word vector for a sentence word $w_t$ is used to predict the presence of a context word $w_{t+d}$ $(1 \leq |d| \leq k)$, where a context word is limited to a window of size $k$ (a hyperparameter). The training set therefore consists of word and context word pairs $(w_t, w_{t+d})$. In the simple (yet impractical) formulation of SkipGram, the word vector for $w_t$ is fed into a softmax layer of size $|V|$, producing a probability for each word in the vocabulary $V$ to appear as a context word. The network would then be trained to maximize the probability for the correct context word $w_{t+d}$ by minimizing the cross-entropy loss. The word vectors are learned during training (following the lookup table pattern described in section \ref{section:lookuptables}).
+
+In practice, computing a probability for each word in the vocabulary for every training sample is too computationally expensive. Instead, two approximation methods are suggested: Hierarchical Softmax (todo ref) and Negative Sampling. 
+
+Hierachical Softmax is an approximation of full softmax which indirectly models the probability distribution using a binary tree, where leaves represent vocabulary words. Non-leaf nodes are assigned with a branching probability for each child node. This defines a random walk from the root node to a leaf, where the probability to arrive at a certain leaf is the multiplication of the probabilities for each branch in the corresponding path. It follows that computing the probability for a single word requires evaluating about $log_2(|V|)$ probabilities assigned by the model (instead of $|V|$ probabilities in the case of full softmax).
+
+In Negative Sampling, each word is assigned with a \emph{score} rather a probability. The model objective then aims to separate the score of the correct word from the rest, by maximizing the difference between the correct score and the sum of scores assigned to $r$ incorrect words sampled from the vocabulary ($r$ is a hyperparameter). The score of an individual word is modeled as a minus-log-sigmoid layer. Mikolov et al. empirically show  that an $r$ as small as  $2 - 5$ is suffice for a large training corpus. 
+
+
+
+
 
 \subsection{Main Approches}
 \subsubsection{The Skip-Gram Model (Word2Vec)}
