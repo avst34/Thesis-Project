@@ -339,11 +339,11 @@ LSTM is an implementation of the RNN interface described above. Its internal sta
    \label{eq:lstm_ht+1}
 \end{equation}
 
-The LSTM archirtecture is depcited in figure \ref{fig:lstm}. The cell state is updated in two stages: forgetting old information, and inserting new information. $h_t$ and $x_t$ are fed into a sigmoid layer, computing the \emph{forget vector} $f_i$ (sharing the same dimension of the cell state) with all elements ranging from 0 to 1 (eq. \ref{eq:lstm_ft}). Each element represents the portion of the corresponding element in the cell state to forget. Forgetting is then performed by an element-wise multiplication of the current cell state $C_t$ and $f_t$ (first half of eq. \ref{eq:lstm_ct+1}). This updating technique is known as \emph{gating}. 
+The LSTM archirtecture is depicted in figure \ref{fig:lstm}. The cell state is updated in two stages: forgetting old information, and inserting new information. $h_t$ and $x_t$ are fed into a sigmoid layer, computing the \emph{forget vector} $f_i$ (sharing the same dimension of the cell state) with all elements ranging from 0 to 1 (eq. \ref{eq:lstm_ft}). Each element represents the portion of the corresponding element in the cell state to forget. Forgetting is then performed by an element-wise multiplication of the current cell state $C_t$ and $f_t$ (first half of eq. \ref{eq:lstm_ct+1}). This updating technique is known as \emph{gating}. 
 Then, the network computes the new information to be added to the cell state $\hat{C}_t$ by feeding $h_t$ and $x_t$ into a $tanh$ layer (eq. \ref{eq:lstm_cht}). They are also used to compute a \emph{insert vector} $i_t$ similar to $f_i$, determining the portion of the new information to be added into the cell state (eq. \ref{eq:lstm_it}). The new information vector $\hat{C}_t$ is then multiplied element-wise by $i_t$ and added to the current cell state (second half of eq. \ref{eq:lstm_ct+1}).
 Finally, a third sigmoid layer taking $h_t$ and $x_t$ as inputs (producing $o_t$) is used to the determine the portion of the cell state to be used as the LSTM output (eq. \ref{eq:lstm_ot} and \ref{eq:lstm_yt}), which is also used as the next hidden state $h_{t+1}$ (eq. \ref{eq:lstm_ht+1}). 
 
-This architecture explicitly models the notion of state as a memory cell, updated only due to learnable detected triggers. The cell state can be considered as a memory cell, where new information added is to be preserved as long as not explicitly removed. This allows the network to pass detected signals across a long sequence of recurrent iterations. 
+This architecture explicitly models the notion of state as a memory cell, updated only due to learnable detected triggers. The cell state can be considered as a memory cell, where new information added is to be preserved as long as not explicitly removed. This allows the network to pass detected signals across a long sequence of recurrent iterations.  
 
 \subsection{Lookup Tables} \label{section:lookuptables}
 
@@ -355,51 +355,52 @@ Another categorical feature representation method, aiming to explicitly model th
 
 A lookup table entry is only updated upon training over a sample with the corresponding feature value. A small vocabulary (such as POS labels, usually containing no more then a few dozens of labels) could be well covered by a reasonably sized, task specific training set. The English vocabulary, on the other hand, could require an enormous amount of training samples in order for the network to learn meaningful word representations, even when only considering frequent words. As collecting training samples could be costly for tasks requiring human supervision (which are very common in NLP), such tasks are rarely equipped with the necessary amount of training data. 
 
-A common approach to this problem is to initialize the corresponding lookup table with pretrained word vectors, obtained by a training separate model designed to learn meaningful word vectors in an unsupervised fashion. Such models are described in greater detail in section \ref{section:wordembeddings} (todo the following section).
+A common approach to this problem is to initialize the corresponding lookup table with pretrained word vectors, obtained by a training separate model designed to learn meaningful word vectors in an unsupervised fashion. Such models are described in greater detail in section \ref{section:wordembeddings} (todo the following section). When using pretrained embeddings, it is possible to treat the lookup table as a constant, instead of updating the vectors during training. 
 
 \subsection{Pretrained Word Embeddings} \label{section:wordembeddings}
 Word embedding models are a class of learning techniques aiming to map a set of words from a vocabulary into a numeric vector space. A good word embedding model would capture and represent semantic information emitted by the word, typically with the property that words with similar meanings have similar representations. Word embedding models provide a general-purpose set of word vector representations that can later be used by any subsequent task-specific model. They are usually obtained in an unsupervised manner, training a model over a large corpus of unannotated sentences (usually obtained by harvesting various public web resources such as Wikipedia). The development of word embedding models have been a key aspect in the progress of NLP research throughout the last decade.
 
 \subsubsection{Word2Vec}
 
-SkipGram and Continuous-Bag-Of-Words (CBOW) are two similar neural word embedding models jointly referred to as Word2Vec (todo: ref). They have perhaps been the first neural word embedding models to be both rather simple yet very successful at the task. Despite following improvements and progress made in recent years, they are still widely used nowadays due to their simplicity and effectiveness. Many pretrained Word2Vec models are publicly available, eliminating the need to train a model in order to obtain the word vectors. 
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{Word2Vec models: SkipGram (left) and Continuous-Bag-of-Words (right) todo}
+    \label{fig:word2vec}
+\end{figure}
 
-Both models follow the \emph{distributional hypothesis}, assuming that distributional properties of a word - specifically, the distribution of context words - correlate with the word and its meaning. They model the relation between the word and its context, by predicting one from the other. 
+SkipGram and Continuous-Bag-Of-Words (CBOW) are two similar neural word embedding models jointly referred to as \textbf{Word2Vec} (todo: ref). They have perhaps been the first neural word embedding models to be both rather simple and fast to train, yet very successful at the task. Despite following improvements and progress made in recent years, they are still widely used nowadays due to their simplicity and effectiveness. Many pretrained Word2Vec models are publicly available, eliminating the need to train a model in order to obtain the word vectors. 
 
-In the SkipGram model, a word vector for a sentence word $w_t$ is used to predict the presence of a context word $w_{t+d}$ $(1 \leq |d| \leq k)$, where a context word is limited to a window of size $k$ (a hyperparameter). The training set therefore consists of word and context word pairs $(w_t, w_{t+d})$. In the simple (yet impractical) formulation of SkipGram, the word vector for $w_t$ is fed into a softmax layer of size $|V|$, producing a probability for each word in the vocabulary $V$ to appear as a context word. The network would then be trained to maximize the probability for the correct context word $w_{t+d}$ by minimizing the cross-entropy loss. The word vectors are learned during training (following the lookup table pattern described in section \ref{section:lookuptables}).
+Both models follow the \emph{distributional hypothesis}, assuming that distributional properties of a word - specifically, the distribution of context words - correlate with the word and its meaning. They model the relation between the word and its context, by predicting one from the other. The models are deipicted in figure \ref{fig:word2vec}. 
+
+In the \textbf{SkipGram} model, a word vector for a sentence word $w_t$ is used to predict the presence of a context word $w_{t+d}$ $(1 \leq |d| \leq k)$, where a context word is limited to a window of size $k$ (a hyperparameter). The training set therefore consists of word and context word pairs $(w_t, w_{t+d})$. In the simple (yet impractical) formulation of SkipGram, the word vector for $w_t$ is fed into a softmax layer of size $|V|$, producing a probability for each word in the vocabulary $V$ to appear as a context word. The network is then trained to maximize the probability of the correct context word $w_{t+d}$ by minimizing the cross-entropy loss. The word vectors are learned during training (following the lookup table pattern described in section \ref{section:lookuptables}).
+
+\textbf{Continuous-Bag-Of-Words (CBOW)} goes the other way around, predicting the word $w_t$ is by its context $\{w_{t+i} | 1 \leq |d| \leq k\}$. The average of all context word vectors are fed into a softmax layer assigning each vocabulary word with a probability, similarly to the SkipGram model. 
 
 In practice, computing a probability for each word in the vocabulary for every training sample is too computationally expensive. Instead, two approximation methods are suggested: Hierarchical Softmax (todo ref) and Negative Sampling. 
 
-Hierachical Softmax is an approximation of full softmax which indirectly models the probability distribution using a binary tree, where leaves represent vocabulary words. Non-leaf nodes are assigned with a branching probability for each child node. This defines a random walk from the root node to a leaf, where the probability to arrive at a certain leaf is the multiplication of the probabilities for each branch in the corresponding path. It follows that computing the probability for a single word requires evaluating about $log_2(|V|)$ probabilities assigned by the model (instead of $|V|$ probabilities in the case of full softmax).
+\textbf{Hierachical Softmax}, first presented by (todo: ref), is an approximation of full softmax which indirectly models the probability distribution using a binary tree, where leaves represent vocabulary words. Non-leaf nodes are assigned with a branching probability for each child node. This defines a random walk from the root node to a leaf, where the probability to arrive at a certain leaf is the multiplication of the probabilities for each branch in the corresponding path. It follows that computing the probability for a single word requires evaluating about $log_2(|V|)$ probabilities assigned by the model (instead of $|V|$ probabilities in the case of full softmax).
 
-In Negative Sampling, each word is assigned with a \emph{score} rather a probability. The model objective then aims to separate the score of the correct word from the rest, by maximizing the difference between the correct score and the sum of scores assigned to $r$ incorrect words sampled from the vocabulary ($r$ is a hyperparameter). The score of an individual word is modeled as a minus-log-sigmoid layer. Mikolov et al. empirically show  that an $r$ as small as  $2 - 5$ is suffice for a large training corpus. 
+In \textbf{Negative Sampling}, each word is assigned with a \emph{score} rather a probability. The model objective then aims to separate the score of the correct word from the rest, by maximizing the difference between the correct score and the sum of scores assigned to $r$ incorrect words sampled from the vocabulary ($r$ is a hyperparameter). The score of an individual word is modeled as a minus-log-sigmoid layer. Mikolov et al. empirically show that a sample size $r$ as small as $2 - 5$ is suffice for a large training corpus. 
 
+Other than being successful as inputs to subsequent tasks, Word2Vec vectors posses some notable intrinsic properties indicating their success at capturing semantic information. For instance, they are successful at capturing word associations such as $king - male + female \approx queen$, using the cosine similarity measure. This is an indication that the primary goal of constructing word vectors with meaningful \emph{dimensions} is well obtained by Word2Vec models.
 
+\subsubsection{Contextualized Word Embeddings}
+Pretrained word embeddings as described above have the inherent limitation of lacking context. For instance, the same word vector representation for "table" is used in "table of contents" and "dinner table" despite the different lexical meaning. A subsequent task-specific model could generate context-aware representations, for instance by feeding the vectors into a recurrent layer such as LSTM. Such tasks, however, usually require some level of human supervision, limiting the size of the obtainable training set and the quality of the learned context-aware representations as a result. 
 
+Instead, a few unsupervised methods for learning context aware word representations have been introduced. A recent one is \textbf{Embeddings from Language Models (ELMo)} (todo ref). The ELMo architecture consists of learning multi-layered LSTMs capable of language modeling. First, a context-insensitive representation is learned for each word in a sentence, by applying a convolutional network over the characters \footnote{Convolutional Networks are a class of neural networks rarely used for NLP, and therefore remain out of scope for this work.}. For each training sentence, these word vectors are fed into a multi-layered forward LSTM followed by a softmax layer, predicting the next word (forward language model). Similarly, the sentence words are fed in reverse order into a backward multi-layered LSTM followed by softmax, predicting the previous word (backward language model). The weights for the backward and forward softmax layers are shared. 
 
+ELMo uses two layers of forward and backward LSTMs. By concatenating the outputs of the forward and backward layers, and considering the bottom layer of context-insensitive vectors, it follows that the model couples each sentence word with three layers of vector representations (where two of them are context aware). Peters et al. (todo ref) demonstrate empirically that syntactic information is better captured at the lower layers of the representation, while the higher levels are better at capturing the semantics of the word.  A subsequent model can use a (learned) linear combination of the three representations, in a manner best suitable for the task at hand. 
 
-\subsection{Main Approches}
-\subsubsection{The Skip-Gram Model (Word2Vec)}
-\subsubsection{Global Vectors for Word Representation (GLoVe)}
-\subsubsection{Syntactic Embeddings}
-\subsubsection{FastText?}
-\subsection{Contextualized Embeddings}
-\subsubsection{ELMo}
-\subsection{Multi-Lingual Word Embeddings}
-\subsubsection{MUSE}
-\subsection{Learning via Word Embeddings}
-\subsubsection{*Basic usage with a FF-Network}
-\subsubsection{*Updating embeddings through training}
-\subsubsection{*Contextutalized representations with RNNs}
-\subsection{Handling Out-Of-Vocabulary words}
-\subsubsection{*By stemming}
-\subsubsection{*By learning an internal representation}
-\subsubsection{*Character-based embeddings}
-\subsection{Use of Word Embeddings in this work}
-
+The result is an unsupervised, pretrained model capable of producing context-aware word representations for a given sentence. As ELMo receives characters as inputs, it is even capable of producing vectors for words unseen during training. The integration of pretrained ELMo vectors has been consistently shown to boost performance of various NLP models, when compared to previous word embedding methods. 
 
 \subsection{Neural Networks in this work}
-\subsection{The Stacked BiLSTM-MLP-Softmax Architecture}
+
+In chapter \ref{Chapter2}, a neural classifier capable of PSS disambiguation is presented. It comprises of a multi-layered bidirectional LSTM followed by two MLP-softmax layers, assigning prediction probabilities for the Role and Function PSS of a preposition. Words are embedded using SkipGram or ELMo, and various syntactic information is also embedded as input to the network with the use of lookup tables. 
+
+Chapter \ref{Chapter3} deals with incorporating PSS features into an existing neural Prepositional-Phrase-Attachment\footnote{The Prepositional-Phrase-Attachment is thoroughly described in section \ref{sec:ppatt}} model in an attempt to boost attachment accuracy. The original model, by Belinkov et al. 2014 (todo ref), consists of a two-layerd feed forward network assigning scores to attachment candidates, and trained using the hinge-loss. They use \emph{syntactic} word embeddings, obtained using a slight modification of SkipGram which uses syntactic word dependencies to define the context of a word, following Bansal et al. (2014) (todo ref). The PSS information is integrated into the model using lookup tables.
+
+(todo chapter 4)
 
 \pagebreak
 
@@ -412,7 +413,7 @@ In Negative Sampling, each word is assigned with a \emph{score} rather a probabi
 %-----------------------------------
 %	SECTION 4
 %-----------------------------------
-\section{Natural Language Parsing and the Prepositional Phrase Attachment Problem}
+\section{Natural Language Parsing and the Prepositional Phrase Attachment Problem} \label{sec:ppatt}
 \subsubsection{*Outline}
 \subsection{Sentence Parsing}
 \subsubsection{Dependency vs. Constituency Based Parsing}
