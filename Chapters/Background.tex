@@ -407,24 +407,71 @@ Chapter \ref{Chapter3} deals with incorporating PSS features into an existing ne
 %-----------------------------------
 %	SECTION 3
 %-----------------------------------
-\pagebreak
-
-
-%-----------------------------------
-%	SECTION 4
-%-----------------------------------
 \section{Natural Language Parsing and the Prepositional Phrase Attachment Problem} \label{sec:ppatt}
-\subsubsection{*Outline}
+
+Chapter \ref{Chapter2} examines how beneficial the information provided by PSS could be for Prepositional-Phrase Attachment Disambiguation (PPA)  - one of the highly known kinds of syntactic ambiguity in sentence processing literature. In this section we describe this problem in detail, and explain the motivation behind using PSS information as a mean to improve disambiguation accuracy. 
+
 \subsection{Sentence Parsing}
+
+The PP-Attachment problem can be considered as a subtask of sentence parsing - a key task in NLP that is used heavily as as a preprocessing step for various kinds of NLP applications.  Sentence parsing is the process of analyzing a given natural language sentence, and as a result, generating a tree-like structure called a parse-tree that references the original sentence, and enriches it with additional layers of information through structure and the use of labeled arcs and/or nodes. The task of sentence parsing can be thought of as picking the correct parse-tree out of a set of valid candidates for a given sentence. Most modern parsers are trained to do so using machine learning techniques and existing manually-annotated corpora.
+
+ Different parsing tasks typically vary from one another by the structure of the resulting parse-tree (dependency based/constituency based), and the kind of information represented (on the spectrum between mostly syntactic to mostly semantic).
+
 \subsubsection{Dependency vs. Constituency Based Parsing}
+
+In \emph{dependency parsing} tasks, the nodes in the tree usually represent words in a sentence, and tree arcs connect a dependent word (and its sub-tree) with its head (or governor), sometimes with a complementary dependency label, indicating the kind of dependency relations between different parts of the sentence. A notable and widely used example of such parsing task is Universal Dependencies (UD) (todo:ref), which is also extensively used in this work. The UD project aims to facilitate a dependency annotation scheme that can be applicable to a variety of languages, along with a large corpora of annotated sentences to support it. The basic UD dependency representation (see figure todo) forms a dependency tree as described above. The UD schema is explained in greater detail in section (todo ref).
+
+Constituency based parsing tasks assign labels to words and phrases in a sentence. Depending on the task and the corresponding parse-tree schema, the parse-tree may or may not cover the entire sentence, contain multiple layers of labels, and in the latter case - it may or may not be projective (meaning that a labeled phrase cannot only be partially contained in another). Projective schemes typically form a tree similar to that of a context free grammar (and in fact, many constituency based parsing tasks are based on such grammar). The Penn Treebank - a large corpus of annotated sentences from the World Street Journal, uses a prominent projective constituency-based annotation scheme (see figure todo). It is wildey used in the field of NLP in general, and as a training data for PP-Attachment research in particular.
+
 \subsubsection{Syntactic vs. Semantic Parsers}
+
+A key distinguisher between different parsers is the kind of information that they capture, and whether it has to do with syntax (i.e part-of-speech, low-level dependencies such as: "A is a modifier of B", "C is a determiner of D"), or with semantics (such as: “A is a SCENE that B is a PARTICIPANT of, and C is an ACTION performed by B on OBJECT D”, where A,B,C,D are sentence words or phrases and SCENE, PARTICIPANT, ACTION, OBJECT are from a bank of labels). The distinction between semantic and syntactic information is not well defined, and most parsing schemes are in fact somewhere in the middle of this spectrum. While UD and Penn-Treebank are considered to be mostly syntactic, Abstract Meaning Representation (AMR) and Universal Conceptual Cognitive Annotation (UCCA) are two recent parsing schemas that are closer to the semantic edge of the spectrum. As demonstrated in figure todo, they both add a layer of semantic information in the form of a directed-acyclic-graph (todo: verify for AMR). 
+
 \subsection{The PP-Attachment problem}
-\subsubsection{*Overview, examples}
+
+The PP-Attachment problem involves deciding which part of a sentence  - typically a noun-phrase (NP) or a verb-phrase (VP) - is modified by a prepositional phrase (PP). That part of the sentence (or its head word) is considered to be the governor or head of the PP (or its preposition). In most cases, a preposition is followed by a NP, which is considered to be the object of the preposition. Though it may seem mostly syntax related, the decision process significantly involves the semantics of the sentence. For instance, consider the following sentences and their corresponding parse trees: 
+
+
+[I]NP [am reading]VP [a book]NP [with [a hard cover]NP]PP.
+(todo: two parse trees, both valid but only the NP attached one is correct)
+[with a hard cover]PP modifies [the book]NP (The book has a hard cover), hence (b) is the parse tree with the correct attachment. “book” is the governor of “with” and “cover” is the object.
+
+
+[I]NP [am reading]VP [a book]NP [with  [my children]NP]PP.
+(todo: two parse trees, both valid but only the NP attached one is correct)
+[with my children]PP modifies [am reading]VP (I am reading with my children), hence (a) is the parse tree with the correct attachment. “reading” is the governor of “with” and “children” is the object.
+
+
+[I]NP [am reading]VP [a book]NP [about [psychology]NP]PP.
+(todo: two parse trees, both valid and both may be correct)
+In this example, both attachments are semantically correct: [about psychology]PP could be attached to [a book]NP (The book was about psychology), but it could also be attached to [am reading]VP (I am reading about psychology).
+
+
+[I]NP [was watching]VP [the movie]NP [with my friends]PP. 
+(todo: two parse trees, both valid but only one is correct, we don’t know which one but one is more likely)
+The parse trees reflect two valid but different interpretations to this sentence: in one, [with my friends]PP is attached to [“was watching”]VP (the speaker was with her friends while watching the movie), and in the other, it is attached to [“the movie”]NP (the speaker’s friends appeared in the movie).
+ 
+
+All parse trees presented here are syntactically valid, thus deciding which is correct requires a deeper understanding of the semantics conveyed by the sentence and its context.
+Sentences (1) and (2) differ only in the object of the preposition (a hard cover/my children), and it’s our knowledge of the real world which dictates that “a hard cover” is a property of a book and that “my children” are participants in the reading activity. Sentence (3) shows a case where there is more than one correct attachment - demonstrating that PP-Attachment is not always binary that sense. Sentence (4) is an even harder example - it has two semantically-valid interpretations, which requires a context broader than sentence level for disambiguation.  
 \subsection{PP Attachment Disambiguation Approaches}
+
 \subsubsection{As a sub-task of sentence parsing}
+As demonstrated in the example above (todo: ref), the chosen attachment has a direct effect on the structure of a corresponding prediction of a syntactic parse tree. Furthermore, considering that different attachments correspond to different sentence meanings, semantic parsers are also to be affected by this choice. 
+(todo - show a ucca and ud parsing mistakes that arise from pp-att)
+This makes PP-Attachment a sub-task of many parsing tasks, though many parsers do not address it explicitly. Transition based parsing (todo: ref) for example, is a parsing architecture that generates the output parse-tree incrementally by applying a set of transitions - each can modify the tree, or the internal state of the parser. The next transition to perform is chosen depending on the current internal state, the input, and a set of (learned, model dependent) parameters. Hence, the architecture of such parsers does not deal explicitly with PP-Attachment, or any syntax ambiguity, but instead they rely on the underlying decision-making model to keep implicit, learned representations of such ambiguities through the process of training over human annotated corpora. 
+
+
+A comparative evaluation of parser performance on the Wall Street Journal corpus by Kummerfeld et al. (2012) indicates that PP attachment is the largest source of errors across all parsers.  Previous work had been made on the subject of improving PP-Attachment accuracy in the context of full parsing. (Belinkov et al, 2014) shows that incorporating PP-Attachment specific features into an existing parser can increase parsing accuracy. They trained a PP-Attachment disambiguation model, and incorporated its predictions as features into the RBG dependency parser (todo: ref), increasing PP-Attachment accuracy from 88.4\% to 90.1\%.  (Agirre et al.,2008) addressed this by incorporating semantic features based on WordNet (todo: ref and describe) into two dependency parsers: the Bikel parser (todo: ref) and the Charniak parser (todo: ref). They report an increase in both overall parsing accuracy, as well as PP-Attachment accuracy. [Henestroza & Candito 2011] took the parser-agnostic approach of post-parsing error correction - they trained a feature-rich model which modifies an existing parse-tree by re-attaching some of its nodes. 
+
 \subsubsection{As an isolated task}
+
+Despite all said above, the majority of the work done on the subject is in the context of PP-Attachment alone. A typical attempt at solving PP-Attachment assumes the following problem formulation: given a verb (V), a noun (N), a preposition (P), and an optional second noun (N2), should P be attached to V or N? In sentence (1), for example, we would get: (V=reading, N=book, P=with, N2=cover), and N=book is the correct attachment.  As pointed out by (Atterer & Schütze 2007) and (Belinkov 2014), this approach is problematic as it assumes an attachment-candidates oracle that narrows down the list of possible attachments to a single noun and verb. In practice, such oracle is not available for parsers, which may deal with long and complex sentences, containing much more than two candidates for a given preposition. For this reason, accuracies reported for such scenarios are to be taken with a grain of salt as to whether they would replicate in a practical NLP application. (Atterer & Schütze 2007) argue that since oracle-based approaches tend to perform better, PP attachment should not be evaluated in isolation, but instead as an integral component of a parsing system, without using information from the gold-standard oracle. (Belinkov 2014) partially addresses this problem by presenting a PP-Attachment disambiguation model that can take an arbitrary number of candidates, and a dataset that contains multiple candidates per preposition, and is only loosely based on the gold parse-tree (see section todo for a detailed description).     
+
 \subsection{PP Attachment and PSS}
-\subsubsection{*Motivation of using PSS for PPA}
+
+As shown in example (todo: ref), different PP-Attachment candidates represent different semantic interpretations of a sentence. We try to exploit the fact that in such cases, each interpretation may yield a different PSS for the corresponding preposition. For instance, consider sentences (1) and (2) - in (1), “with” would be annotated with (todo CHARACTERISTIC??) while in (2) the correct annotation would be (todo PARTICIPANT??). This provides evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. We experiment with an existing PP-Attachment model from (Belinkov et al 2017 todo) described in ??, by incorporating PSS features into it, expecting to see an improvement in disambiguation accuracy. Unfortunately, perhaps due to the use of a relatively small PSS corpus, the experiment didn’t show such improvement.
+
 \pagebreak
 
 %-----------------------------------
