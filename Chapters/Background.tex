@@ -22,7 +22,7 @@ In the former, \emph{in} is used to convey a temporal relation, while in the lat
 
 In fact, most prepositions are ambiguous in these aspects. In order to resolve this ambiguity, one has to examine not only the preposition itself, but also the context of the preposition. Such a disambiguation, which assigns each preposition with its correct semantic relation, could provide another layer of information about the meaning of the sentence. That information may be useful for downstream NLP tasks.
 
-\subsection{The SNACS Scheme}
+\subsection{The SNACS Scheme} \label{sec:snacsscheme}
 
 \begin{figure}
     \centering
@@ -31,7 +31,7 @@ In fact, most prepositions are ambiguous in these aspects. In order to resolve t
     \label{fig:snacs}
 \end{figure}
 
-A recent class-based approach for characterizing such semantic relations, which this work focuses on, is \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) (todo: reference) by Schneider et al 2017. SNACS covers adpositions, cases and a broad range of preposition-like phrases, such as: multiword prepositions (e.g., \emph{out of} , \emph{in front of}), intransitive particles (\emph{He flew \textbf{away}}), purpose infinitive clauses (\emph{Open the door \textbf{to} let in some air}), prepositions with clausal complements (\emph{It rained \textbf{before} the party started}), and idiomatic prepositional phrases (\textit{\textbf{at} large}). It consists of an hierarchical inventory of labels (which from here on will be referred to as preposition supersenses or PSS), representing different semantic relations (See figure \ref{fig:snacs}). The SNACS hierarchy aims to cover a broad range of semantic ideas on the one hand, but on the other doing so using a relatively small and annotator-friendly set of supersenses.
+A recent class-based approach for characterizing such semantic relations, which this work focuses on, is \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) (todo: reference) by Schneider et al 2017. SNACS covers adpositions, cases and a broad range of preposition-like phrases, such as: multiword prepositions (e.g., \emph{out of} , \emph{in front of}), intransitive particles (\emph{He flew \textbf{away}}), purpose infinitive clauses (\emph{Open the door \textbf{to} let in some air}), prepositions with clausal complements (\emph{It rained \textbf{before} the party started}), and idiomatic prepositional phrases (\textit{at large}). It consists of an hierarchical inventory of labels (which from here on will be referred to as preposition supersenses or PSS), representing different semantic relations (See figure \ref{fig:snacs}). The SNACS hierarchy aims to cover a broad range of semantic ideas on the one hand, but on the other doing so using a relatively small and annotator-friendly set of supersenses.
 
 \subsubsection{SNACS Label Hierarchy}
 
@@ -57,7 +57,7 @@ The 3 subtrees loosely parallel adverbial adjuncts, event arguments, and adnomin
 
 For AGENT , CO-AGENT , EXPERIENCER , ORIGINATOR , RECIPIENT, BENEFICIARY , POSSESSOR , and SOCIAL REL, the object of the preposition is prototypically animate. Because prepositions and possessives cover a vast swath of semantic space, the limit of 50 categories requires addressing a great many nonprototypical, borderline, and special cases, yielding a 75-page annotation manual with over 400 example sentences ( Schneider et al. , 2018). SNACS can be considered as an refinement of Universal Semantic Tagset (Abzianidze and Bos , 2017) - a crosslinguistic inventory of semantic classes for content and function words. In their specification, prepositions and possessives are simply tagged with REL, which does not disambiguate the nature of the relational meaning. SNACS supersenses categories can thus be understood as refinements to REL.
 
-\subsubsection{Construal Analysis}
+\subsubsection{Construal Analysis} \label{sec:construal}
 
 The SNACS schema assigns an instance of an adposition with two supersenses: a role supersense and a function supersense (both from the SNACS hierarchy). The choice to use not one but two supersenses for each adposition, arises from the construal analysis performed by Hwang et al.(2017). They shows how in some cases, the supersense suggested by the preposition and the verb (corresponding to the function supersense) would be different than the situation of the established scene (corresponding to the role supersense). For instance, consider the following sentences:
 

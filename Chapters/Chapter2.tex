@@ -9,17 +9,22 @@
 
 This chapter begins with a more formal description of the task as a pipline of two subtasks - (i) target identification (section \ref{sec:probform_ident}) - identifying the adpositions of a sentence requiring a PSS annotation, and (ii) disambiguation (section \ref{sec:probform_disam}) - deciding on the correct PSS annotation of an identified adposition. It follows with an in-depth description of the STREUSLE corpus used for training and evaluation (section \ref{sec:streusle}), and the heuristic process used for target identification (section \ref{sec:ident}). The following sections present the architecture of the neural PSS disambiguation model and data preprocessing steps (section \ref{sec:pssdisambg}), the training process (section \ref{sec:psstraining}), and the different model and evaluation settings used throughout the experiment (section \ref{sec:psssettings}).  Finally, the evaluation of the model compared to a set of baselines is presented and analysed (sections \ref{sec:pssbaselines}, \ref{sec:pssresults}, and \ref{sec:pssanalysis}).
 
-
-
-
 \section{Problem Formulation} \label{sec:probform}
 \subsection{Target Identification}\label{sec:probform_ident}
-\subsubsection{*Informal and formal definition}
-\subsubsection{*Why this is not trivial}
-\subsection{Supersense Disambiguation}\label{sec:probform_disam}
-\subsubsection{*Informal and formal definition}
+The target identification task deals with identifying the PSS-bearing units in a given sentence. A PSS bearing unit is not limited to just prepositions (despite the confusing terminology) - a PSS can also be applied to postpositions (\emph{"ago", "aside"}), cases (\emph{"Harry\textbf{'s} wand", "\textbf{his} wand"}) and many other phrases that impose a preposition-like behaviour (\emph{"in front of", "out of"})\footnote{A more thorough categorization of PSS bearing units is provided in section \ref{sec:snacsscheme}}.  The set of PSS bearing units is therefore comprised of non-overlapping, consecutive token sequences, as defined by the SNACS specification and annotation guide. 
 
-\section{The STREUSLE Dataset}\label{sec:streusle}
+Most PSS-bearing units are plain adpositions, and thus can be easily identified using POS labels or even a predefined adposition vocabulary. In many cases, however, lexicality alone is not enough to determine a preposition. The word \emph{to}, for instance, is considered a PSS-bearing preposition in \emph{"They worked \textbf{to} fix the issue."} (PURPOSE), but not considered one in \emph{"I need \textbf{to} leave."} (infinitive-clause), despite the similar structure. POS information is also not enough for a comprehensive identification - while 61.2\% of the units annotated in the STREUSLE corpus are adpositions according to gold POS an-
+notation, 20.2\% are possessives, and 18.6\% belong
+to other POS classes. The task of identifying the correct PSS units is therefore not trivial as one might expect. This work makes use of a PSS identification heuristic by (todo ref), described in section \ref{sec:ident}.
+
+\subsection{Supersense Disambiguation}\label{sec:probform_disam}
+
+The identified units are to be assigned with a \emph{Scene Role} and \emph{Function} PSS, both from the same bank of labels defined in the SNACS specification (section \ref{sec:construal}). Role and Function labels tend to collide, as demonstrated by the STREUSEL corpus, where 67.8\% of instances are annotated with the same label for both. The neural PSS disambiguation model presented in section \ref{sec:pssdisambg} jointly predicts both labels.
+
+\section{The STREUSLE corpus}\label{sec:streusle}
+The STREUSLE corpus of PSS annotated sentences (todo ref) was constructed by applying the SNACS scheme to a collection of online consumer reviews taken from the English Web Treebank (Bies et al., 2012 todo ref). Standard train/dev/test splits are used, consisting of 2,723/554/535 sentences and 4,522/453/480 annotated targets respectively. 305 (5.5\%) of units in total are multiword expressions, and for a total of 3,702 (67.8\%) units it holds that Role = Function. The most frequent PSS label in the corpus is LOCUS - annotated as Role (11.6\%), Function (14.2\%) and as both (10.4\%). 
+
+
 \subsubsection{*Overview}
 \subsubsection{*Characteristics and notable stats}
 \subsubsection{*Samples}
