@@ -5,7 +5,7 @@
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 \section{Overview}
-\textbf{Semantic Network of Adposition and Case Supersense} (SNACS) (todo: reference), by Schneider et al 2017, is a labeling schema assigning semantic attributes to adpositions. Each adposition is assigned with a pair of \emph{role} and \emph{function} supersenses, from a bank of 50 labels called \emph{Preposition Supersenses} or \emph{PSS} \footnote{See section (todo ref) for a detailed description of the SNACS schema.}. These annotations provide an additional layer of semantic information regarding the sentence, which could be beneficial for downstream NLP applications. In this chapter, we present a neural PSS disambiguation model, trained and evaluated on the STREUSLE corpus of gold-standard PSS annotations. (todo - ref to ACL paper)
+\textbf{Semantic Network of Adposition and Case Supersense} (SNACS) (todo: reference), by Schneider et al 2017, is a labeling schema assigning semantic attributes to adpositions. Each adposition is assigned with a pair of \emph{role} and \emph{function} supersenses, from a bank of 50 labels called \emph{Preposition Supersenses} or \emph{PSS} \footnote{See section (todo ref) for a detailed description of the SNACS schema.}. These annotations provide an additional layer of semantic information regarding a sentence, which could be beneficial for downstream NLP applications. In this chapter, we present a neural PSS disambiguation model, trained and evaluated on the STREUSLE corpus of gold-standard PSS annotations. (todo - ref to ACL paper)
 
 This chapter begins with a more formal description of the task as a pipline of two subtasks - (i) target identification (section \ref{sec:probform_ident}) - identifying the adpositions of a sentence requiring a PSS annotation, and (ii) disambiguation (section \ref{sec:probform_disam}) - deciding on the correct PSS annotation of an identified adposition. It follows with an in-depth description of the STREUSLE corpus used for training and evaluation (section \ref{sec:streusle}), and the heuristic process used for target identification (section \ref{sec:ident}). The following sections present the architecture of the neural PSS disambiguation model and data preprocessing steps (section \ref{sec:pssdisambg}), the training process (section \ref{sec:psstraining}), and the different model and evaluation settings used throughout the experiment (section \ref{sec:psssettings}).  Finally, the evaluation of the model compared to a set of baselines is presented and analysed (sections \ref{sec:pssbaselines}, \ref{sec:pssresults}, and \ref{sec:pssanalysis}).
 
@@ -13,8 +13,7 @@ This chapter begins with a more formal description of the task as a pipline of t
 \subsection{Target Identification}\label{sec:probform_ident}
 The target identification task deals with identifying the PSS-bearing units in a given sentence. A PSS bearing unit is not limited to just prepositions (despite the confusing terminology) - a PSS can also be applied to postpositions (\emph{"ago", "aside"}), cases (\emph{"Harry\textbf{'s} wand", "\textbf{his} wand"}) and many other phrases that impose a preposition-like behaviour (\emph{"in front of", "out of"})\footnote{A more thorough categorization of PSS bearing units is provided in section \ref{sec:snacsscheme}}.  The set of PSS bearing units is therefore comprised of non-overlapping, consecutive token sequences, as defined by the SNACS specification and annotation guide. 
 
-Most PSS-bearing units are plain adpositions, and thus can be easily identified using POS labels or even a predefined adposition vocabulary. In many cases, however, lexicality alone is not enough to determine a preposition. The word \emph{to}, for instance, is considered a PSS-bearing preposition in \emph{"They worked \textbf{to} fix the issue."} (PURPOSE), but not considered one in \emph{"I need \textbf{to} leave."} (infinitive-clause), despite the similar structure. POS information is also not enough for a comprehensive identification - while 61.2\% of the units annotated in the STREUSLE corpus are adpositions according to gold POS an-
-notation, 20.2\% are possessives, and 18.6\% belong
+Most PSS-bearing units are plain adpositions, and thus can be easily identified using POS labels or even a predefined adposition vocabulary. In many cases, however, lexicality alone is not enough to determine a preposition. The word \emph{to}, for instance, is considered a PSS-bearing preposition in \emph{"They worked \textbf{to} fix the issue."} (PURPOSE), but not considered one in \emph{"I need \textbf{to} leave."} (infinitive-clause), despite the similar structure. POS information is also not enough for a comprehensive identification - while 61.2\% of the units annotated in the STREUSLE corpus are adpositions according to gold POS annotation, 20.2\% are possessives, and 18.6\% belong
 to other POS classes. The task of identifying the correct PSS units is therefore not trivial as one might expect. This work makes use of a PSS identification heuristic by (todo ref), described in section \ref{sec:ident}.
 
 \subsection{Supersense Disambiguation}\label{sec:probform_disam}
@@ -22,14 +21,55 @@ to other POS classes. The task of identifying the correct PSS units is therefore
 The identified units are to be assigned with a \emph{Scene Role} and \emph{Function} PSS, both from the same bank of labels defined in the SNACS specification (section \ref{sec:construal}). Role and Function labels tend to collide, as demonstrated by the STREUSEL corpus, where 67.8\% of instances are annotated with the same label for both. The neural PSS disambiguation model presented in section \ref{sec:pssdisambg} jointly predicts both labels.
 
 \section{The STREUSLE corpus}\label{sec:streusle}
-The STREUSLE corpus of PSS annotated sentences (todo ref) was constructed by applying the SNACS scheme to a collection of online consumer reviews taken from the English Web Treebank (Bies et al., 2012 todo ref). Standard train/dev/test splits are used, consisting of 2,723/554/535 sentences and 4,522/453/480 annotated targets respectively. 305 (5.5\%) of units in total are multiword expressions, and for a total of 3,702 (67.8\%) units it holds that Role = Function. The most frequent PSS label in the corpus is LOCUS - annotated as Role (11.6\%), Function (14.2\%) and as both (10.4\%). 
+
+\begin{figure}
+\begin{exe}\raggedright
+\ex This cottage is a charming homely, friendly, place \p{to}/\rf{Characteristic}{Purpose} stay.
+\ex I came in \p{to}/\psst{Purpose} get a nice gift \p{for}/\rf{Recipient}{Direction} \p{my}/\rf{SocialRel}{Gestalt} wife.
+\ex He worked \p{on}/\psst{Theme} it right \p{on}/\psst{Locus} the back \p{of}/\psst{Whole} \p{my}/\psst{Possessor} car.
+\end{exe}
+\caption{Annotated sentences from the STREUSLE corpus. PSS labels are annotated as \rf{Role}{Function}, or a single lable when they collide}
+\label{fig:streuslesamples}
+\end{figure}
 
 
-\subsubsection{*Overview}
-\subsubsection{*Characteristics and notable stats}
-\subsubsection{*Samples}
+The STREUSLE corpus of PSS annotated sentences (todo ref) was constructed by applying the SNACS scheme to a collection of online consumer reviews taken from the English Web Treebank (Bies et al., 2012 todo ref). Standard train/dev/test splits are used, consisting of 2,723/554/535 sentences and 4,522/453/480 annotated targets respectively. 305 (5.5\%) of units  are multiword expressions, and for a total of 3,702 (67.8\%) units the Role and Function labels collide. The corpus contains 249 different types of PSS-bearing units, from which 149 are mutiword expressions. The most frequent PSS label in the corpus is LOCUS - annotated for Role (11.6\%), Function (14.2\%), and both (10.4\%).
+
+Sentences in the English Web Treebank corpus are equipped with manually -annotated syntactic information, in the form of tokenization, lemmatization, and a full Universal Dependencies parse tree. The STREUSLE corpus is bundled with this information, which from here on out is referred to as \emph{gold syntax}. Similarly, the set of manually-identified PSS bearing units are refered to as \emph{gold identification}. Exemple sentences from the corpus, along with their PSS annotations, are available in figure \ref{fig:streuslesamples}.
 
 \section{Target Identification Heuristic} \label{sec:ident}
+
+A fully automated PSS annotation system requires the ability to automatically identify PSS bearing units, without relying on human annotated targets such as in the STREUSLE corpus. This work makes use of a PSS target identification heuristic by (?? todo credit), jointly developed along with the neural PSS disambiguator presented in this work in a collaborative manner, to facilitate a fully automated PSS annotator. 
+
+As a preprocקssing step, the algorithm makes use of the training portion of the STREUSLE corpus to construct a set of lexical lists:
+\begin{enumerate}
+    \item A blacklist of non PSS-bearing multiword expressions containing preposition tokens (e.g., \emph{take care of}).
+    \item A whitelist of PSS-bearing multiword expressions.
+    \item A whitelist of PSS-bearing single word expressions.
+    \item A whitelist and a blacklist of governors for PSS-bearing and non PSS-bearing instances of \emph{to} respectively, 
+\end{enumerate}
+
+For (4), the algorithm makes use of the UD parse-tree. List (1), (2) and (3) are enriched with a set of manually identified lexical terms. The identification process is then performed as follows: sentences are first scanned for multiword expressions using lists (1) and (2). From the remaining segments, single-word candidates are identified by matching a high-recall set of parts of speech,
+then filtered through 5 different heuristics for adpositions, possessives, subordinating conjunctions,
+adverbs, and infinitivals. Most heuristics use a combination of rules involving syntax information and the use of list (3) for filtering. The infinitival heuristic also makes use of the learned whitelist and blacklist described in (4).
+
+\begin{table}[t]\centering\small
+\begin{tabular}{lccc}
+Syntax & P & R & F \\
+\toprule
+gold & 88.8 & 89.6 & 89.2 \\
+auto & 86.0 & 85.8 & 85.9 \\
+\end{tabular}
+\caption{Target identification results on the STREUSLE test set, when using gold vs. automatically parsed syntax information.}
+\label{tab:targetid}
+\end{table}
+
+Table \ref{table:identresults}
+reports the precision, recall, and F-score (P/R/F) of
+the target identification heuristic on the test portion of the STREUSLE corpus. This evaluation compares the use of gold vs. automatically parsed syntax information, showing a slight decrease of quality when using the latter. 47 of 54 false positives (87\%) can be ascribed to tokens that are part of a (non-adpositional or larger adpositional) multiword expression. 9 of the 50 false negatives (18\%) are rare multiword expressions not
+occurring in the training data, and there are 7 partially identified ones, which are counted as both
+false positives and false negatives.
+
 \subsubsection{*Credit}
 \subsubsection{*Brief description}
 \subsubsection{*Evaluation}

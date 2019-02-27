@@ -56,6 +56,17 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
+\newcommand{\sst}[1]{\lbl{#1}} % supersense tag label
+
+\newcommand{\rf}[2]{\psst{#1}$\leadsto$\psst{#2}}
+
+\definecolor{mdgreen}{rgb}{0.05,0.6,0.05}
+
+\newcommand{\psst}[1]{\textcolor{mdgreen}{\sst{#1}}}
+\newcommand{\p}[1]{\textbf{\textsf{#1}}} % preposition type
+
+% preposition supersense tag label
+
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
 %----------------------------------------------------------------------------------------
@@ -93,6 +104,9 @@ headsepline, % Uncomment to get a line under the header
 \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
 \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
 }
+
+\usepackage{amssymb}
+\usepackage{gb4e} \noautomath
 
 \begin{document}
 
