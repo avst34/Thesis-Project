@@ -100,9 +100,9 @@ yield the predicted probabilities for the Role and
 Function labels:
 
 $$ p^{Role}_{start:end} = Softmax(MLP_{Role}(u_{start:end})) $$
-$$ p^{Func}_{start:end} = Softmax(MLP_{Func}(u_{start:end})) $$
+$$ p^{Function}_{start:end} = Softmax(MLP_{Function}(u_{start:end})) $$
 
-$p^{Role}_{start:end}$ and $p^{Func}_{start:end}$ are then the corresponding predicted probability distributions for Role and Function labels respectively. The number of MLP layers and dimensions, as well as the activation functions used by the MLP layers, are all considered model hyperparameters. 
+$p^{Role}_{start:end}$ and $p^{Function}_{start:end}$ are then the corresponding predicted probability distributions for Role and Function labels respectively. The number of MLP layers and dimensions, as well as the activation functions used by the MLP layers, are all considered model hyperparameters. 
 
 \subsection{Constructing the Preposition Feature Vector} \label{sec:enrichedvec}
 The preposition feature vector is obtained by constructing and concatenating feature vectors for the preposition, and its object and governor headwords. The object and governor of a preposition are determined in a heuristic process (described in section \ref{sec:govobj}), which also emits the preposition's lexical category - a syntactic label indicating whether the preposition is
@@ -113,10 +113,12 @@ A single feature vector for a word $w_i$ is obtained by concatenating its contex
 \subsection{Extracting the Governor and Object of a Preposition} \label{sec:govobj}
 
 The governor and object of a preposition may provide a great deal of information regarding the semantics of the preposition. The heuristic process used for identifying the governor and object of a preposition was developed by Nathan Schnieder (todo ref) as part of a collaborative effort on the task of PSS disambiguation. In addition to identification, it also sorts the prepositions into 5 lexical categories: stranded (\emph{"The book I told you \textbf{about}"}), predicative (\emph{"The dog is \textbf{under} the table"}), possessive (\emph{"The dog\textbf{'s} food"}), subordinating (\emph{"I will arrive \textbf{before} sunset"}), or none of these. The heuristic applies a set of rules using the UD parse tree and POS labels: first, the UD dependency label of the preposition is examined. For prepositions with \emph{case} or \emph{mark}, the parent and grandparent of the preposition in the UD tree are usually the object and governor, respectively. Prepositions with different labels are typically not attached to an object, with their parent being the governor.  The \emph{nmod:poss} UD label is an indication of a possessive preposition. The heuristic process then attempts to handle exceptions to the above, by explicitly matching against patterns corresponding to stranded prepositions and copular constructions.  
+\section{Training and Hyperparameter Tuning} \label{sec:psstraining}
 
-\pagebreak
+The model is trained using the cross-entropy loss function. More specifically, the loss of a single identified PSS target is defined to be the negated log-sum of the probabilites assigned to the correct labels: 
+$$ Loss(x, y) = - log(p^{Role}_{start:end}[r]) - log(p^{Function}_{start:end}[f]) $$
 
-\section{Training} \label{sec:psstraining}
+Where $r$ and $f$ are the corresponding indices for the correct Role and Function labels ($y$) for the given sentence and identified PSS unit ($x$), and $p^{Role}_{start:end}, p^{Role}_{start:end}$ are the probability distribution assigned by the model.
 \subsubsection{*Loss function}
 \subsubsection{*Trainer, Initialization, Dropout}
 \subsubsection{Hyperparameter Tuning}
