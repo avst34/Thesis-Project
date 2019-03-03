@@ -35,11 +35,11 @@ The identified units are to be assigned with a \emph{Scene Role} and \emph{Funct
 
 The STREUSLE corpus of PSS annotated sentences (todo ref) was constructed by applying the SNACS scheme to a collection of online consumer reviews taken from the English Web Treebank (Bies et al., 2012 todo ref). Standard train/dev/test splits are used, consisting of 2,723/554/535 sentences and 4,522/453/480 annotated targets respectively. 305 (5.5\%) of units  are multiword expressions, and for a total of 3,702 (67.8\%) units the Role and Function labels collide. The corpus contains 249 different types of PSS-bearing units, from which 149 are mutiword expressions. The most frequent PSS label in the corpus is LOCUS - annotated for Role (11.6\%), Function (14.2\%), and both (10.4\%).
 
-Sentences in the English Web Treebank corpus are equipped with manually -annotated syntactic information, in the form of tokenization, lemmatization, and a full Universal Dependencies parse tree. The STREUSLE corpus is bundled with this information, which from here on out is referred to as \emph{gold syntax}. Similarly, the set of manually-identified PSS bearing units are refered to as \emph{gold identification}. Exemple sentences from the corpus, along with their PSS annotations, are available in figure \ref{fig:streuslesamples}.
+Sentences in the English Web Treebank corpus are equipped with manually -annotated syntactic information, in the form of tokenization, lemmatization, and a full Universal Dependencies parse tree. The STREUSLE corpus is bundled with this information, which from here on out is referred to as \emph{gold syntax}. Similarly, the set of manually-identified PSS bearing units are refered to as \emph{gold identification}. Example sentences from the corpus, along with their PSS annotations, are available in figure \ref{fig:streuslesamples}.
 
 \section{Target Identification Heuristic} \label{sec:ident}
 
-A fully automated PSS annotation system requires the ability to automatically identify PSS bearing units, without relying on human annotated targets such as in the STREUSLE corpus. This work makes use of a PSS target identification heuristic by (?? todo credit), jointly developed along with the neural PSS disambiguator presented in this work in a collaborative manner, to facilitate a fully automated PSS annotator. 
+A fully automated PSS annotation system requires the ability to automatically identify PSS-bearing units, without relying on human annotated targets such as in the STREUSLE corpus. This work makes use of a PSS target identification heuristic by (?? todo credit), jointly developed along with the neural PSS disambiguator presented in this work in a collaborative manner, to facilitate a fully automated PSS annotator. 
 
 As a preprocקssing step, the algorithm makes use of the training portion of the STREUSLE corpus to construct a set of lexical lists:
 \begin{enumerate}
@@ -49,7 +49,7 @@ As a preprocקssing step, the algorithm makes use of the training portion of the
     \item A whitelist and a blacklist of governors for PSS-bearing and non PSS-bearing instances of \emph{to} respectively, 
 \end{enumerate}
 
-For (4), the algorithm makes use of the UD parse-tree. List (1), (2) and (3) are enriched with a set of manually identified lexical terms. The identification process is then performed as follows: sentences are first scanned for multiword expressions using lists (1) and (2). From the remaining segments, single-word candidates are identified by matching a high-recall set of parts of speech,
+For (4), the algorithm makes use of the UD parse-tree. List (1), (2) and (3) are enriched with a set of manually identified lexical terms. The identification process is then performed as follows: sentences are first scanned for multiword expressions using lists (1) and (2). From the remaining segments, single-word candidates are identified by matching a high-recall set of POS tags,
 then filtered through 5 different heuristics for adpositions, possessives, subordinating conjunctions,
 adverbs, and infinitivals. Most heuristics use a combination of rules involving syntax information and the use of list (3) for filtering. The infinitival heuristic also makes use of the learned whitelist and blacklist described in (4).
 
@@ -70,23 +70,51 @@ the target identification heuristic on the test portion of the STREUSLE corpus. 
 occurring in the training data, and there are 7 partially identified ones, which are counted as both
 false positives and false negatives.
 
-\subsubsection{*Credit}
-\subsubsection{*Brief description}
-\subsubsection{*Evaluation}
-
 \section{PSS Disambiguation Model} \label{sec:pssdisambg}
-\subsubsection{*General Architecture}
-\subsubsection{* - Embeddings are fed to Stacked BiLSTM}
-\subsubsection{* - A vector is created for each preposition using LSTM output and preprocessed data}
-\subsubsection{* - The vector is fed through a FF-Network followed by Softmax}
+
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{The full neural PSS dismabiguation model. Tokens are fed into stacked BiLSTM layers. For each PSS-bearing unit, a feature vector is constructed and fed into two MLP-Softmax layers, predicting label probabilities for Role and Function}
+    \label{fig:pssmodel}
+\end{figure}
+
+The neural PSS disambiguation model presented in this work is a multilayer perceptron (MLP) stacked on top of a multilayered BiLSTM. Such architectures have proven to be successful for a variety of NLP tasks (todo ref goldberg, maybe more). The model architecture is largely comparable to that of Gonen and Goldberg (2016) (todo ref), who experimented with a coarsened version of STREUSLE. The main difference is their use of unlabeled multilingual datasets to improve prediction by exploiting the differences in preposition ambiguities across languages. The model makes use of syntactic information in the form of tokenization, lemmatization, NER annotation, and a full Universal Dependencies parse tree, all which are assume to be given as inputs in addition to the actual sentence and target words.  The full model architecture is depicted in figure \ref{fig:pssmodel}. 
+
+Each sentence word $w_i$ is first converted into a vector using pretrained word embeddings, and a vocabulary-sized lookup table for an internal representation of each word. We experiment with contextualized (ELMo) and non-contextualized (SkipGram) pretrained embeddings\footnote{See section \ref{section:wordembeddings} for more details regarding each embedding method.}. For ELMo, the pretrained model from the allennlp python module is used (todo ref). For skip gram, the pretrained FastText vectors are used (todo ref). The full word embedding $e_i$ is therefore a concatenation of three vectors: the pretrained embeddings of the word $e^{word}_i$ and lemma $e^{lemma}_i$, and the internal word representation $e^{internal}_i$. 
+
+$$ e_i = [e^{word}_i;e^{lemma}_i;e^{internal}_i] $$
+
+Hyperparameters control which pretrained embeddings to use (ELMo/SkipGram), and in the case of FastText, whether the pretrained vectors remain fixed or get updated during training. A single ELMo layer in the pretrained model consists of 1000 elements, whereas for FastTask the vectors are of size 300. The dimension of the internal representation (if used) is also determined by a hyperparameter. The size of the full vector is therefore largely dependent of the choice of hyperparameters. A $NONE$ label is used to represent words lacking a pretrained representation, both in training and at test time.
+
+The resulting word embeddings $e_1, .. ,e_n$ are then fed into a multilayered BiLSTM, yielding contextualized word representations $c_1, .. ,c_n$. The number of LSTM layers, the dimension of the LSTM output, and whether the bidirectional variant is used, are all controlled by hyperparameters.
+
+$$ c_1, ... , c_n = Multilayerd\_BiLSTM(e_1, ... ,e_n)$$
+
+A vector $u_{start:end}$ is then constructed for an identified PSS-bearing target span $(w_{start}, .., w_{end})$, using the corresponding contextualized vectors and the external syntactic information (collectively denoted here as \emph{syntax}). The exact structure of this vector, which is refereed to as the Preposition Feature Vector, is explained in section \ref{sec:enrichedvec}. 
+
+$$u_{start:end} = Build\_Prep\_Feature\_Vec(c_1, ... ,c_n, start, end, syntax)$$
+
+Each feature vector $u$ is then fed into two separate MLPs, followed by separate Softmax layers that
+yield the predicted probabilities for the Role and
+Function labels:
+
+$$ p^{Role}_{start:end} = Softmax(MLP_{Role}(u_{start:end})) $$
+$$ p^{Func}_{start:end} = Softmax(MLP_{Func}(u_{start:end})) $$
+
+$p^{Role}_{start:end}$ and $p^{Func}_{start:end}$ are then the corresponding predicted probability distributions for Role and Function labels respectively. The number of MLP layers and dimensions, as well as the activation functions used by the MLP layers, are all considered model hyperparameters. 
+
+\subsection{Constructing the Preposition Feature Vector} \label{sec:enrichedvec}
+The preposition feature vector is obtained by constructing and concatenating feature vectors for the preposition, and its object and governor headwords. The object and governor of a preposition are determined in a heuristic process (described in section \ref{sec:govobj}), which also emits the preposition's lexical category - a syntactic label indicating whether the preposition is
+predicative/stranded/possesive/subordinating/none of these. 
+
+A single feature vector for a word $w_i$ is obtained by concatenating its contextualized representation $c_i$, with the embeddings of its POS, UD dependency and NER labels. The preposition vector is also concatenated with the embedding of its lexical category, and a binary indicator of whether either of the two tokens following the preposition is capitalized. In the case of multiword prepositions, the first token is used (todo consider averaging). All labels are embedded using randomly initialized lookup tables, with dimensions determined by hyperparameters.
+
+\subsection{Extracting the Governor and Object of a Preposition} \label{sec:govobj}
+
+The governor and object of a preposition may provide a great deal of information regarding the semantics of the preposition. The heuristic process used for identifying the governor and object of a preposition was developed by Nathan Schnieder (todo ref) as part of a collaborative effort on the task of PSS disambiguation. In addition to identification, it also sorts the prepositions into 5 lexical categories: stranded (\emph{"The book I told you \textbf{about}"}), predicative (\emph{"The dog is \textbf{under} the table"}), possessive (\emph{"The dog\textbf{'s} food"}), subordinating (\emph{"I will arrive \textbf{before} sunset"}), or none of these. The heuristic applies a set of rules using the UD parse tree and POS labels: first, the UD dependency label of the preposition is examined. For prepositions with \emph{case} or \emph{mark}, the parent and grandparent of the preposition in the UD tree are usually the object and governor, respectively. Prepositions with different labels are typically not attached to an object, with their parent being the governor.  The \emph{nmod:poss} UD label is an indication of a possessive preposition. The heuristic process then attempts to handle exceptions to the above, by explicitly matching against patterns corresponding to stranded prepositions and copular constructions.  
+
 \pagebreak
-\subsection{Constructing the Enriched Preposition Vector}
-\subsubsection{*LSTM vec is concatenated with}
-\subsubsection{*GOV/OBJ vecs with GOVOBJ\_CONFIG}
-\subsubsection{*POS of PREP, GOV, OBJ}
-\subsubsection{*UD dep encoding of PREP, GOV, OBJ}
-\subsubsection{*NER encoding of GOV, OBJ}
-\subsubsection{*Other features}
 
 \section{Training} \label{sec:psstraining}
 \subsubsection{*Loss function}
@@ -102,6 +130,8 @@ false positives and false negatives.
 \subsubsection{*Describe MF baselines}
 
 \section{Results} \label{sec:pssresults}
+
+The manner in which the model jointly predicts both Role and Function labels can be considered as a form of multitask learning, as the LSTM layers are shared for both tasks.
 
 \section{Analysis} \label{sec:pssanalysis}
 \subsection{Ablation Experiments?}
