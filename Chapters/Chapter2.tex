@@ -91,7 +91,7 @@ The resulting word embeddings $e_1, .. ,e_n$ are then fed into a multilayered Bi
 
 $$ c_1, ... , c_n = Multilayerd\_BiLSTM(e_1, ... ,e_n)$$
 
-A vector $u_{start:end}$ is then constructed for an identified PSS-bearing target span $(w_{start}, .., w_{end})$, using the corresponding contextualized vectors and the external syntactic information (collectively denoted here as \emph{syntax}). The exact structure of this vector, which is refereed to as the Preposition Feature Vector, is explained in section \ref{sec:enrichedvec}. 
+A vector $u_{start:end}$ is then constructed for an identified PSS-bearing target span $(w_{start}, .., w_{end})$, using the corresponding contextualized vectors and the auxiliary syntactic information (collectively denoted here as \emph{syntax}). The exact structure of this vector, which is refereed to as the Preposition Feature Vector, is explained in section \ref{sec:enrichedvec}. 
 
 $$u_{start:end} = Build\_Prep\_Feature\_Vec(c_1, ... ,c_n, start, end, syntax)$$
 
@@ -113,27 +113,70 @@ A single feature vector for a word $w_i$ is obtained by concatenating its contex
 \subsection{Extracting the Governor and Object of a Preposition} \label{sec:govobj}
 
 The governor and object of a preposition may provide a great deal of information regarding the semantics of the preposition. The heuristic process used for identifying the governor and object of a preposition was developed by Nathan Schnieder (todo ref) as part of a collaborative effort on the task of PSS disambiguation. In addition to identification, it also sorts the prepositions into 5 lexical categories: stranded (\emph{"The book I told you \textbf{about}"}), predicative (\emph{"The dog is \textbf{under} the table"}), possessive (\emph{"The dog\textbf{'s} food"}), subordinating (\emph{"I will arrive \textbf{before} sunset"}), or none of these. The heuristic applies a set of rules using the UD parse tree and POS labels: first, the UD dependency label of the preposition is examined. For prepositions with \emph{case} or \emph{mark}, the parent and grandparent of the preposition in the UD tree are usually the object and governor, respectively. Prepositions with different labels are typically not attached to an object, with their parent being the governor.  The \emph{nmod:poss} UD label is an indication of a possessive preposition. The heuristic process then attempts to handle exceptions to the above, by explicitly matching against patterns corresponding to stranded prepositions and copular constructions.  
-\section{Training and Hyperparameter Tuning} \label{sec:psstraining}
+\section{Training the Model} \label{sec:psstraining}
 
-The model is trained using the cross-entropy loss function. More specifically, the loss of a single identified PSS target is defined to be the negated log-sum of the probabilites assigned to the correct labels: 
-$$ Loss(x, y) = - log(p^{Role}_{start:end}[r]) - log(p^{Function}_{start:end}[f]) $$
+The model was trained using the cross-entropy loss function. More specifically, the loss of a single identified PSS target is defined as the negated log-sum of the probabilities assigned to the correct labels: 
+$$ Loss(x, y) = - log(p_r) - log(p_f) $$
 
-Where $r$ and $f$ are the corresponding indices for the correct Role and Function labels ($y$) for the given sentence and identified PSS unit ($x$), and $p^{Role}_{start:end}, p^{Role}_{start:end}$ are the probability distribution assigned by the model.
-\subsubsection{*Loss function}
-\subsubsection{*Trainer, Initialization, Dropout}
+Where $p_r$ and $p_f$ are the probabilities assigned by the model to the correct Role and Function labels ($y$) for the given sentence and identified PSS unit ($x$).
+
+Model parameters are initialized randomly using the Xavier initialization (Glorot and Bengio, 2010 todo ref).  Inverted dropout was applied for the LSTM and MLP layers. Training was performed using SGD with Backpropagation for 130 epochs, and a minibatch of size 20. To avoid overfitting, the model parameters corresponding to the best performing epoch on the development set are selected. The dropout probabilities, SGD learning rate and learning rate decay factor are all hyperparameters. The model was implemented with the DyNet library (Neubig et al., 2017 todo ref).
+
 \subsubsection{Hyperparameter Tuning}
 
-\section{Settings} \label{sec:psssettings}
-\subsubsection{*Automatic/Gold Target Identification}
-\subsubsection{*Automatic/Gold Preprocessing}
-\subsubsection{*WORD2VEC/ELMo Word Embeddings}
+The development section of the STREUSLE corpus was used to tune hyperparameters using a random search process. Hyperparameters are iteratively sampled and used to train a model in the process described above. The best performing set of hyperparameters is selected. Hyperparameters were used in this manner for tuning the structure of the network (number of layers, dimensions, activations), tuning the optimizer (learning rate and learning rate decay), and feature selection (e.g. which syntactic information and word embeddings to use). The complete list of hyperparameters and candidate values is available in table (todo ref).
+
+\section{Experiment Settings} \label{sec:psssettings}
+
+The aformetioned PSS dismabiguation model heavily relies on two preprocessing steps: syntactic information extraction (tokenization, lemmatization, UD parsing, NER labeling, and so on), followed by PSS target identification (section \ref{sec:probform_ident}). The required syntactic information - with the exception of NER labels - is entirely available through the gold standard annotations of the STREUSLE corpus, referred to here as \textit{gold-syntax}. To better handle real-life scenarios where such syntactic information is not available, the model is also evaluated using an automatically parsed syntactic information instead, by applying the CoreNLP parser (todo ref) to the entire corpus. The settings in which such syntactic information is used are referred to as \textit{auto-syntax}. Each setting is using the corresponding syntactic information source throughout the entire process of target identification, training and testing. 
+
+We take a similar approach with the target identification step: the model is evaluated using the gold-standard identifications in the STREUSLE corpus (\textit{gold-id} settings), and also using the automatic identification heuristic from section \ref{sec:ident} (\textit{auto-id} settings).
+
+The model is evaluated for each of the four combinations of \textit{gold-id/gold-syntax} and \textit{auto-id/auto-syntax}. The training and tuning processes described above are applied to each setting individually.
 
 \section{Baselines} \label{sec:pssbaselines}
-\subsubsection{*Describe MF baselines}
+
+In addition to the neural model, we also evaluate the following two PSS disambiguation baselines:
+
+\begin{itemize}
+    \item \textbf{Most Frequent Label (MF)} - always predicting the most frequent PSS label seen in the training data.
+    \item \textbf{Most Frequent Label per Preposition (MF-Prep)} - predicting the most frequent PSS label for the specific (lemmatized) preposition, according to the training data.
+\end{itemize}
+
+Both baselines are evaluated and compared with the full model for each of the four experiment settings. 
 
 \section{Results} \label{sec:pssresults}
 
-The manner in which the model jointly predicts both Role and Function labels can be considered as a form of multitask learning, as the LSTM layers are shared for both tasks.
+\begin{table*}[]
+	\centering\small
+	\begin{tabular}{@{}lcccc<{\hspace{5pt}}ccc|ccc|ccc@{}}
+		%\toprule
+                          &        & \multicolumn{3}{c}{\textbf{Gold ID}} & \multicolumn{9}{c}{\textbf{Auto ID}}                                                                                                                     \\
+        \cmidrule(r){3-5}\cmidrule(l){6-14}
+                          &         & \textit{Role}                        & \textit{Func.} & \textit{Full} & \multicolumn{3}{c}{\textit{Role}} & \multicolumn{3}{c}{\textit{Func.}} & \multicolumn{3}{c}{\textit{Full}}              \\
+                          & \textbf{Syntax}       & Acc.                                 & Acc.           & Acc.          & P                                 & R                                  & F    & P    & R    & F    & P    & R    & F    \\
+		\midrule
+        MF & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\
+        MF-Prep & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
+        Neural        & gold & 71.7 & 82.5 & 67.5 & 62.0 & 62.5 & 62.2 & 73.1 & 73.8 & 73.4 & 58.7 & 59.2 & 58.9 \\
+        \midrule
+        MF & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
+        MF-Prep & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
+        Neural        & auto & 67.7 & 78.5 & 64.4 & 56.4 & 56.2 & 56.3 & 66.8 & 66.7 & 66.7 & 53.7 & 53.5 & 53.6 \\
+		%\bottomrule
+	\end{tabular}
+	\caption{\label{tab:overall} Overall performance of SNACS disambiguation systems on the test set. Results are reported for the role supersense ({\it Role}), the function supersense ({\it Func.}), and their conjunction ({\it Full}). All figures are percentages. 
+    \textit{Left:} Accuracies with gold standard target identification (480 targets).
+    \textit{Right:} Precision, recall, and $F_1$ with automatic target identification (section \ref{sec:ident}).} %For automatic identification, the unlabeled precision, recall and F-score are reported ({\it ID}).}
+\end{table*}
+
+
+The precision, recall, and $F_1$ score ($P/R/F$) for the best performing models and baselines on the test set, in each setting, are listed in table \ref{tab:results} (todo). For the \textit{gold-id} settings, where $P = R = F$, a single accuracy score is reported. Due to the relatively small size of samples in the test set (480 prepositions), the scores may vary slightly but noticeably between one instance of a trained model to another (which are trained using different random seeds). For that reason, the average of 5 different training instances is reported, along with the standard deviation.
+
+
+
+---
+The manner in which the model jointly predicts both Role and Function labels can be considered as a form of multitask learning, as the LSTM layers are shared for both tasks. 
 
 \section{Analysis} \label{sec:pssanalysis}
 \subsection{Ablation Experiments?}
