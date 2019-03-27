@@ -85,7 +85,7 @@ Each sentence word $w_i$ is first converted into a vector using pretrained word 
 
 $$ e_i = [e^{word}_i;e^{lemma}_i;e^{internal}_i] $$
 
-Hyperparameters control which pretrained embeddings to use (ELMo/SkipGram), and in the case of FastText, whether the pretrained vectors remain fixed or get updated during training. A single ELMo layer in the pretrained model consists of 1000 elements, whereas for FastTask the vectors are of size 300. The dimension of the internal representation (if used) is also determined by a hyperparameter. The size of the full vector is therefore largely dependent of the choice of hyperparameters. A $NONE$ label is used to represent words lacking a pretrained representation, both in training and at test time.
+Hyperparameters control which pretrained embeddings to use (ELMo/SkipGram), and in the case of fastText, whether the pretrained vectors remain fixed or get updated during training. A single ELMo layer in the pretrained model consists of 1000 elements, whereas for fastText the vectors are of size 300. The dimension of the internal representation (if used) is also determined by a hyperparameter. The size of the full vector is therefore largely dependent of the choice of hyperparameters. A $NONE$ label is used to represent words lacking a pretrained representation, both in training and at test time.
 
 The resulting word embeddings $e_1, .. ,e_n$ are then fed into a multilayered BiLSTM, yielding contextualized word representations $c_1, .. ,c_n$. The number of LSTM layers, the dimension of the LSTM output, and whether the bidirectional variant is used, are all controlled by hyperparameters.
 
@@ -148,38 +148,68 @@ Both baselines are evaluated and compared with the full model for each of the fo
 \section{Results} \label{sec:pssresults}
 
 \begin{table*}[]
-	\centering\small
-	\begin{tabular}{@{}lcccc<{\hspace{5pt}}ccc|ccc|ccc@{}}
-		%\toprule
-                          &        & \multicolumn{3}{c}{\textbf{Gold ID}} & \multicolumn{9}{c}{\textbf{Auto ID}}                                                                                                                     \\
-        \cmidrule(r){3-5}\cmidrule(l){6-14}
-                          &         & \textit{Role}                        & \textit{Func.} & \textit{Full} & \multicolumn{3}{c}{\textit{Role}} & \multicolumn{3}{c}{\textit{Func.}} & \multicolumn{3}{c}{\textit{Full}}              \\
-                          & \textbf{Syntax}       & Acc.                                 & Acc.           & Acc.          & P                                 & R                                  & F    & P    & R    & F    & P    & R    & F    \\
+    \newcommand{\score}[2]{#1{\tiny ($\pm$#2)}}
+    \newcommand{\acc}[1]{\multicolumn{3}{c|}{\textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}}}}
+    \newcommand{\accl}[1]{\multicolumn{3}{c}{\textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}}}}
+    \newcommand{\accs}[1]{\multicolumn{3}{c|}{\textcolor{gray}{\rule[2pt]{0.3in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.3in}{0.5pt}}}}
+    \newcommand{\accsl}[1]{\multicolumn{3}{c}{\textcolor{gray}{\rule[2pt]{0.3in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.3in}{0.5pt}}}}
+
+	\centering\footnotesize
+    \setlength{\tabcolsep}{1pt} % Default value: 6pt
+    \renewcommand{\arraystretch}{1} % Default value: 1
+	\begin{tabular}{@{}ccc<{\hspace{5pt}}ccc|ccc|ccc@{}}
+% 		\toprule
+                          & &          & \multicolumn{3}{c}{\textit{Role}} & \multicolumn{3}{c}{\textit{Func.}} & \multicolumn{3}{c}{\textit{Full}}              \\
+                          & \textbf{Syntax} & \textbf{ID}       & P                                 & R                                  & F    & P    & R    & F    & P    & R    & F    \\
 		\midrule
-        MF & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\
-        MF-Prep & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
-        Neural        & gold & 71.7 & 82.5 & 67.5 & 62.0 & 62.5 & 62.2 & 73.1 & 73.8 & 73.4 & 58.7 & 59.2 & 58.9 \\
+        \multirow{2}{*}{MF} & \multirow{2}{*}{N/A} & gold & \acc{15.8} & \acc{19.8} & \accl{14.8} \\
+          &   & auto & 14.3 & 14.4 & 14.3 & 16.5 & 16.7 & 16.6 & 13.2 & 13.3 & 13.3 \\
         \midrule
-        MF & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
-        MF-Prep & N/A  & 40.6 & 53.3 & 37.9 & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        
-        Neural        & auto & 67.7 & 78.5 & 64.4 & 56.4 & 56.2 & 56.3 & 66.8 & 66.7 & 66.7 & 53.7 & 53.5 & 53.6 \\
-		%\bottomrule
+        \multirow{2}{*}{MF-Prep} & \multirow{2}{*}{N/A} & gold & \acc{40.6} & \acc{53.3} & \accl{37.9} \\
+          &   & auto & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        \midrule
+        \multirow{4}{*}{Neural}        & \multirow{2}{*}{gold} & gold & \accs{\score{70.0}{1.6}}& \accs{\score{81.1}{0.6}}& \accsl{\score{65.8}{1.4}}\\
+         &   & auto & \score{61.7}{1.4} & \score{62.2}{1.4} & \score{62.0}{1.4} & \score{70.4}{0.4} & \score{71.0}{0.4} & \score{70.7}{0.4} & \score{57.4}{1.6} & \score{57.8}{1.6} & \score{57.6}{1.6} \\
+         \cmidrule{2-12}                & \multirow{2}{*}{auto} & gold & \accs{\score{68.8}{1.2}} & \accs{\score{80.7}{1.3}}& \accsl{\score{65.8}{1.5}}\\
+         &   & auto & \score{56.2}{1.0} & \score{56.1}{1.0} & \score{56.1}{1.0} & \score{65.3}{0.6} & \score{65.2}{0.6} & \score{65.3}{0.6} & \score{52.4}{1.2} & \score{52.3}{1.2} & \score{52.3}{1.1} \\
+         \midrule
+% 		\bottomrule
 	\end{tabular}
-	\caption{\label{tab:overall} Overall performance of SNACS disambiguation systems on the test set. Results are reported for the role supersense ({\it Role}), the function supersense ({\it Func.}), and their conjunction ({\it Full}). All figures are percentages. 
+	\caption{\label{tab:overall} Overall performance of SNACS disambiguation systems on the test set. Results are reported for the role supersense ({\it Role}), the function supersense ({\it Func.}), and their conjunction ({\it Full}). All figures are percentages.
     \textit{Left:} Accuracies with gold standard target identification (480 targets).
     \textit{Right:} Precision, recall, and $F_1$ with automatic target identification (section \ref{sec:ident}).} %For automatic identification, the unlabeled precision, recall and F-score are reported ({\it ID}).}
 \end{table*}
 
-
 The precision, recall, and $F_1$ score ($P/R/F$) for the best performing models and baselines on the test set, in each setting, are listed in table \ref{tab:results} (todo). For the \textit{gold-id} settings, where $P = R = F$, a single accuracy score is reported. Due to the relatively small size of samples in the test set (480 prepositions), the scores may vary slightly but noticeably between one instance of a trained model to another (which are trained using different random seeds). For that reason, the average of 5 different training instances is reported, along with the standard deviation.
 
-
-
----
-The manner in which the model jointly predicts both Role and Function labels can be considered as a form of multitask learning, as the LSTM layers are shared for both tasks. 
+The neural systems outperform the most-frequent baselines by a large margin for both Role and Function label prediction across all settings. Another observation is that Function prediction is consistently more accurate then Role prediction, by a margin of roughly 10 points. This is probably due to the reduced ambiguity of functions compared to roles (as can be observed in the most-frequent baseline scores). The use of automatic syntax consistently decreases accuracy scores across all systems, especially in the auto-id setting (a 5 point gap). The best performing model hyperparameters in each setting are listed in table \ref{tab:hyperparams}. (todo update after testing with ELMo)
 
 \section{Analysis} \label{sec:pssanalysis}
-\subsection{Ablation Experiments?}
+
+\subsection{Implication of Word Embeddings and Syntax}
+
+Contextualized word embeddings, and ELMo in particular, have consistently been shown to outperform non-contextualized embedding methods such as SkipGram and GloVe in many kinds of prediction tasks (todo - ref relevant papers, including Nelson's). Nelson et al. (todo ref) in particular demonstrate that for PSS disambiguation, a simple linear model over the ELMo representations of prepositions significantly outperforms complex and feature-rich models that make use of non-contextualized embeddings and auxiliary syntactic information. In fact, one of their baselines is a previous version (todo ref ACL paper) of the PSS model described in this chapter, which used pretrained, non-contextualized  Word2Vec  embeddings\footnote{The Word2Vec model was pretrained on the Google News corpus.}. The results presented in this chapter are consistent with these findings, as can be seen by the fact that ELMo embeddings yield the best scores across all settings.
+
+As it becomes apparent that ELMo embeddings are able to capture syntactic and semantic information, it is unclear how useful auxiliary syntactic information is when ELMo embeddings are also provided. To assess this, we evaluate 4 variations of the model, corresponding to the choice of word embeddings (ELMo/fastText) and the presence (or lack of) auxiliary syntax. The rest of the hyperparameters (activations, number of layers, layer dimensions, etc.) are tuned separably for each variation. The accuracy scores for each variation in the gold-id/gold-syntax setting are reported in table \ref{tab:embdsyn}. (todo update and discuss the results)
+
+\begin{table}[]
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5}
+\newcommand{\score}[2]{#1{ ($\pm$#2)}}
+\newcommand{\acc}[1]{\multicolumn{3}{c|}{\textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}}}}
+\newcommand{\accl}[1]{\multicolumn{3}{c}{\textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}}}}
+\centering
+\begin{tabular}{|c|cc|cc|}
+
+\hline
+\multirow{2}{*}{\backslashbox{Embeddings}{Syntax}}   & \multicolumn{2}{|c|}{\textbf{w/o Syntax}} & \multicolumn{2}{|c|}{\textbf{w/ Syntax}}  \\
+& Role & Func. & Role & Func. \\ \hline
+\textbf{fastText} &  \score{12.3}{4.5}     &  \score{12.3}{4.5} &  \score{12.3}{4.5}     &  \score{12.3}{4.5} \\ \hline
+\textbf{ELMo}     &  \score{12.3}{4.5}     &  \score{12.3}{4.5}  &  \score{12.3}{4.5}     &  \score{12.3}{4.5} \\ \hline
+\end{tabular}
+\caption{Average role and func. prediction accuracy scores for the 4 models variations corresponding to the selection of word embeddings and use of syntax, in the gold-id/gold-syntax setting.}
+
+\end{table}
+
 \subsection{Error Analysis}
 \subsubsection{*Confusion matrix}
 \subsubsection{*Cross-Hierarchy Errors}
