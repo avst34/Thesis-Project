@@ -50,22 +50,26 @@ The HPCD version of $compose\_p$ is defined as follows:
    $$ p_1 = tanh(W^1_{dist}[z;c] + b_{dist})   $$
    $$ p_2 = tanh(W^2_{dist}[h;p_1] + b_{dist}) $$
 
-Where $h, z, c \in \mathbb{R}^n$ are vectors for the head, the preposition, and its child respectively; $p_1, p_2 \in \mathbb{R}^n$ are the output vectors for the first and second layers respectively;
-$word\_distance(head, prep)$ is the number of words between the preposition and the head candidate; and $ W^1_{dist}, W^2_{dist} \in \mathbb{R}^{n \× 2n}, b_{dist} \in \mathbb{R} $ are distance-specific model parameters.
+Where $h, z, c$ are vectors for the head, the preposition, and its child respectively; $p_1, p_2$ are the output vectors for the first and second layers respectively;
+$word\_distance(head, prep)$ is the number of words between the preposition and the head candidate; and $ W^1_{dist}, W^2_{dist}, b_{dist}$ are distance-specific model parameters.
 
-Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child; the second layer takes the output vector from the first layer and the vector for the head candidate. The result is the output of the second layer. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different neural network parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used.
+Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child, and the second layer takes the output vector from the first layer and the vector for the head candidate. The result is the output of the second layer. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different neural network parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used.
 
 \subsection{Word Vector Representation}
 
+\begin{figure}
+    \centering
+    \includegraphics{Figures/Electron.pdf}
+    \caption{An illustration of the extended word vectors for the head, preposition and child. In addition to the pretrained word embeddings, the vectors for the child and head are extended with WordNet, VerbNet and syntactic information}
+    \label{fig:hpcdvectors}
+\end{figure}
+
 The word vectors for the head, preposition, and child words ($h, z, c$ in equation todo ref) are constructed using the pretrained word embeddings of the corresponding words, and extended using auxiliary syntactic information and structured knowledge resources such as WordNet and VerbNet. They experiment with two kinds of SkipGram based word embedding models. The first is the standard SkipGram model, where the context of a word is defined by the nearby words in the sentence. The second is a variation of the standard SkipGram by Bansal et al. (2014), where the context of a word is defined using its head, child and corresponding dependency labels according to the dependency tree of the given sentence. These word embeddings (referred to as \textit{syntactic} embeddings) are expected to be better at capturing dependency related information and therefore be relevant for PP-Attachment disambiguation. As their experiments show, the syntactic vectors indeed yield a significant boost in accuracy. The same 100-dimensional pretrained syntactic vectors are also used in this work. 
 
+Both child and head vectors are extended with WordNet information. Specifically, a binary indicator is added for each top hypernym (the top the set of 26 hypernyms in top three layers of the hypernym tree). 
 
+The head vector is also extended with binary indicators corresponding to whether the head is a noun, and in the case of a verb, whether the preposition appears in the corresponding VerbNet frame. The POS tag of the word following the head is embedded into the head vector using one-hot vector encoding. The resulting outline of the full vectors for the head, preposition and child are illustrated in figure \ref{fig:hpcdvectors}
 
-
-
-\subsubsection{*Word Embedding Variations}
-\subsubsection{*Vector Enrichment (WordNet, VerbNet, etc)}
-\subsubsection{*Full Vector Outline}
 \subsection{Training}
 \subsection{Results}
 \subsection{Conclusion}
