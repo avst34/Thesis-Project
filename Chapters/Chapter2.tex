@@ -132,7 +132,7 @@ The aformetioned PSS dismabiguation model heavily relies on two preprocessing st
 
 We take a similar approach with the target identification step: the model is evaluated using the gold-standard identifications in the STREUSLE corpus (\textit{gold-id} settings), and also using the automatic identification heuristic from section \ref{sec:ident} (\textit{auto-id} settings).
 
-The model is evaluated for each of the four combinations of \textit{gold-id/gold-syntax} and \textit{auto-id/auto-syntax}. The training and tuning processes described above are applied to each setting individually.
+The model is evaluated for each of the four combinations of \textit{gold-id/auto-id} and \textit{gold-syntax/auto-syntax}. The training and tuning processes described above are applied to each setting individually.
 
 \section{Baselines} \label{sec:pssbaselines}
 
@@ -162,15 +162,15 @@ Both baselines are evaluated and compared with the full model for each of the fo
                           & &          & \multicolumn{3}{c}{\textit{Role}} & \multicolumn{3}{c}{\textit{Func.}} & \multicolumn{3}{c}{\textit{Full}}              \\
                           & \textbf{Syntax} & \textbf{ID}       & P                                 & R                                  & F    & P    & R    & F    & P    & R    & F    \\
 		\midrule
-        \multirow{2}{*}{MF} & \multirow{2}{*}{N/A} & gold & \acc{15.8} & \acc{19.8} & \accl{14.8} \\
+        \multirow{2}{*}{MF} & \multirow{2}{*}{N/A} & gold & \acc{ 15.8 } & \acc{ 19.8 } & \accl{ 14.8 } \\
           &   & auto & 14.3 & 14.4 & 14.3 & 16.5 & 16.7 & 16.6 & 13.2 & 13.3 & 13.3 \\
         \midrule
-        \multirow{2}{*}{MF-Prep} & \multirow{2}{*}{N/A} & gold & \acc{40.6} & \acc{53.3} & \accl{37.9} \\
+        \multirow{2}{*}{MF-Prep} & \multirow{2}{*}{N/A} & gold & \acc{ 40.6 } & \acc{ 53.3 } & \accl{ 37.9 } \\
           &   & auto & 37.0 & 37.3 & 37.1 & 49.8 & 50.2 & 50.0 & 34.3 & 34.6 & 34.4 \\        \midrule
-        \multirow{4}{*}{Neural}        & \multirow{2}{*}{gold} & gold & \accs{\score{70.0}{1.6}}& \accs{\score{81.1}{0.6}}& \accsl{\score{65.8}{1.4}}\\
-         &   & auto & \score{61.7}{1.4} & \score{62.2}{1.4} & \score{62.0}{1.4} & \score{70.4}{0.4} & \score{71.0}{0.4} & \score{70.7}{0.4} & \score{57.4}{1.6} & \score{57.8}{1.6} & \score{57.6}{1.6} \\
-         \cmidrule{2-12}                & \multirow{2}{*}{auto} & gold & \accs{\score{68.8}{1.2}} & \accs{\score{80.7}{1.3}}& \accsl{\score{65.8}{1.5}}\\
-         &   & auto & \score{56.2}{1.0} & \score{56.1}{1.0} & \score{56.1}{1.0} & \score{65.3}{0.6} & \score{65.2}{0.6} & \score{65.3}{0.6} & \score{52.4}{1.2} & \score{52.3}{1.2} & \score{52.3}{1.1} \\
+        \multirow{4}{*}{Neural}        & \multirow{2}{*}{gold} & gold & \accs{\score{ 79.0 }{ 1.3 } }& \accs{\score{ 86.9 }{ 0.9 } }& \accsl{\score{ 75.8 }{ 1.0 } }\\
+         &   & auto & \score{ 68.3 }{ 0.6 } & \score{ 68.8 }{ 0.6 } & \score{ 68.6 }{ 0.6 } & \score{ 75.8 }{ 0.3 } & \score{ 76.4 }{ 0.4 } & \score{ 76.1 }{ 0.4 } & \score{ 65.0 }{ 0.5 } & \score{ 65.5 }{ 0.5 } & \score{ 65.3 }{ 0.6 } \\
+         \cmidrule{2-12}                & \multirow{2}{*}{auto} & gold & \accs{\score{ 75.9 }{ 3.3 } } & \accs{\score{ 84.1 }{ 2.0 } }& \accsl{\score{ 72.8 }{ 3.5 } }\\
+         &   & auto & \score{ 65.6 }{ 1.0 } & \score{ 65.4 }{ 0.9 } & \score{ 65.5 }{ 1.0 } & \score{ 74.4 }{ 0.5 } & \score{ 74.2 }{ 0.5 } & \score{ 74.3 }{ 0.5 } & \score{ 63.0 }{ 0.6 } & \score{ 62.9 }{ 0.6 } & \score{ 62.9 }{ 0.6 } \\
          \midrule
 % 		\bottomrule
 	\end{tabular}
@@ -181,7 +181,7 @@ Both baselines are evaluated and compared with the full model for each of the fo
 
 The precision, recall, and $F_1$ score ($P/R/F$) for the best performing models and baselines on the test set, in each setting, are listed in table \ref{tab:results} (todo). For the \textit{gold-id} settings, where $P = R = F$, a single accuracy score is reported. Due to the relatively small size of samples in the test set (480 prepositions), the scores may vary slightly but noticeably between one instance of a trained model to another (which are trained using different random seeds). For that reason, the average of 5 different training instances is reported, along with the standard deviation.
 
-The neural systems outperform the most-frequent baselines by a large margin for both Role and Function label prediction across all settings. Another observation is that Function prediction is consistently more accurate then Role prediction, by a margin of roughly 10 points. This is probably due to the reduced ambiguity of functions compared to roles (as can be observed in the most-frequent baseline scores). The use of automatic syntax consistently decreases accuracy scores across all systems, especially in the auto-id setting (a 5 point gap). The best performing model hyperparameters in each setting are listed in table \ref{tab:hyperparams}. (todo update after testing with ELMo)
+The neural systems outperform the most-frequent baselines by a large margin for both Role and Function label prediction across all settings. Another observation is that Function prediction is consistently more accurate then Role prediction, by a margin of roughly 10 points. This is probably due to the reduced ambiguity of functions compared to roles (as can be observed in the most-frequent baseline scores). The use of automatic syntax consistently decreases accuracy scores across all systems ($\sim$3 point gap). The best performing model hyperparameters in each setting are listed in table \ref{tab:hyperparams}. (todo update after testing with ELMo)
 
 \section{Analysis} \label{sec:pssanalysis}
 
@@ -189,7 +189,9 @@ The neural systems outperform the most-frequent baselines by a large margin for 
 
 Contextualized word embeddings, and ELMo in particular, have consistently been shown to outperform non-contextualized embedding methods such as SkipGram and GloVe in many kinds of prediction tasks (todo - ref relevant papers, including Nelson's). Nelson et al. (todo ref) in particular demonstrate that for PSS disambiguation, a simple linear model over the ELMo representations of prepositions significantly outperforms complex and feature-rich models that make use of non-contextualized embeddings and auxiliary syntactic information. In fact, one of their baselines is a previous version (todo ref ACL paper) of the PSS model described in this chapter, which used pretrained, non-contextualized  Word2Vec  embeddings\footnote{The Word2Vec model was pretrained on the Google News corpus.}. The results presented in this chapter are consistent with these findings, as can be seen by the fact that ELMo embeddings yield the best scores across all settings.
 
-As it becomes apparent that ELMo embeddings are able to capture syntactic and semantic information, it is unclear how useful auxiliary syntactic information is when ELMo embeddings are also provided. To assess this, we evaluate 4 variations of the model, corresponding to the choice of word embeddings (ELMo/fastText) and the presence of auxiliary syntax. The rest of the hyperparameters (activations, number of layers, layer dimensions, etc.) are tuned separably for each variation. The accuracy scores for each variation in the gold-id/gold-syntax setting are reported in table \ref{tab:embdsyn}. (todo update and discuss the results)
+As it becomes apparent that ELMo embeddings are able to capture syntactic and semantic information, it is unclear how useful auxiliary syntactic information is when ELMo embeddings are also provided. To assess this, we evaluate 4 variations of the model, corresponding to the choice of word embeddings (ELMo/fastText) and the presence of auxiliary syntax. The rest of the hyperparameters (activations, number of layers, layer dimensions, etc.) are tuned separably for each variation. The accuracy scores for each variation in the gold-id/gold-syntax setting are reported in table \ref{tab:embdsyn}.
+
+As expected, using the non-contextualized fastText embeddings alone yields similar results to the MF-Prep baseline, as the embeddings represent type level prepositions. Adding syntactic signals on top of fastText embeddings introduces the model with crucial contextualized information, and as a result yielding a $\sim$30 point gain in accuracy. Consistent with the findings of Nelson et al. (todo), a system relying solely on contextualized ELMo embeddings (without syntactic signals) performs significantly better then a fastText+syntax based system (a 4-6 point gap). Interestingly, supplying syntactic signals to an ELMo based system yields a small, possibly insignificant gain in performance. 
 
 \begin{table}[]
 \setlength{\tabcolsep}{10pt} % Default value: 6pt
@@ -203,12 +205,13 @@ As it becomes apparent that ELMo embeddings are able to capture syntactic and se
 \hline
 \multirow{2}{*}{\backslashbox{Embeddings}{Syntax}}   & \multicolumn{2}{|c|}{\textbf{w/o Syntax}} & \multicolumn{2}{|c|}{\textbf{w/ Syntax}}  \\
 & Role & Func. & Role & Func. \\ \hline
-\textbf{fastText} &  \score{12.3}{4.5}     &  \score{12.3}{4.5} &  \score{12.3}{4.5}     &  \score{12.3}{4.5} \\ \hline
-\textbf{ELMo}     &  \score{12.3}{4.5}     &  \score{12.3}{4.5}  &  \score{12.3}{4.5}     &  \score{12.3}{4.5} \\ \hline
+\textbf{fastText} &  \score{ 41.1 }{ 0.5 }     &  \score{ 54.0 }{ 0.5 } &  \score{ 71.2 }{ 1.3 }     &  \score{ 82.3 }{ 0.6 } \\ \hline
+\textbf{ELMo} &  \score{ 77.1 }{ 0.5 }     &  \score{ 86.7 }{ 0.2 } &  \score{ 79.4 }{ 1.2 }     &  \score{ 87.5 }{ 0.7 } \\ \hline
 \end{tabular}
 \caption{Average role and func. prediction accuracy scores for the 4 models variations corresponding to the selection of word embeddings and use of syntax, in the gold-id/gold-syntax setting.}
 
 \end{table}
+
 
 \subsection{Error Analysis}
 \subsubsection{*Confusion matrix}

@@ -10,38 +10,28 @@
 %-----------------------------------
 \section{Overview}
 
-\section{PPA work by Belinkov et. al 2014}
-\subsubsection{*Overview, relevance to this work}
-This section introduces the PP-Attachment work by (Belinkov et al. 2014), which we use in our research. We incorporate PSS features onto their top-performing model, measuring the impact on accuracy. 
+The problem of prepositional-phrase attachment (PP-Attachment), a well-known sentence parsing ambiguity, is the task of deciding on the correct attachment of a prepositional phrase to its head word. It is described in detail in section \ref{sec:ppatt}. The work presented in this chapter attempts to examine how beneficial the information provided by PSS labels (section \ref{sec:pss}) is to the PP-Attachment problem. An existing PP-Attachment model is modified to take PSS information as input. Both the original and modified model variations are evaluated on several datasets, expecting to see a performance increase with the latter. The motivation behind using PSS information for PP-Attachment is explained in section todo, followed by a presentation of the PP-Attachment model by Belinkov et al 2014 (todo ref) (section \ref{sec:ppatt-belinkov}) and its PSS-bearing variation (section todo). The models are trained and evaluated using a STREUSLE-based dataset (section todo) and a Penn Treebank based dataset by Belinkov et at. (todo) (section todo). The experiment setup, results and analysis are presented in sections (todo).
 
-\subsubsection{*Intro to Belinkov work}
-(Belinkov et al. 2014 todo) is perhaps the first to present a set of neural PP-Attachment models that make use of pretrained word embeddings. Their top performing model achieved state-of-the-art results, surpassing any previous attempts at this task. They experiment with different sets of word embeddings (skip-gram based and dep-gram based todo: ref), using a PP-Attachment dataset they constructed using the Penn Treebank for English and the CATiB dependency treebank (Habash and Roth, 2009) for Arabic.    
+\section{PPA work by Belinkov et. al 2014} \label{sec:ppatt-belinkov}
 
-\subsubsection{* -- Isolated PPA models}
-\subsubsection{* -- Incorporated to an existing parser}
+(Belinkov et al. 2014 todo) is perhaps the first to present a set of neural PP-Attachment models that make use of pretrained word embeddings. Their top performing model achieved state-of-the-art results, surpassing any previous attempts at this task. They experiment with different kinds of word embeddings methods, using a PP-Attachment dataset they constructed from the Penn Treebank for English and the CATiB dependency treebank (Habash and Roth, 2009 todo) for Arabic. In this work, PSS features are incorporate onto their top-performing model, expecting a positive impact on accuracy. 
+
 The models presented operate in an isolated manner - solving PP-Attachment alone. Instead of the typical V-NP-P-NP2 formulation, which as explained in section todo was shown to be problematic, they took the more realistic approach of allowing multiple head candidates. They do, however, compare against full-scale parsers, and integrate their model into an existing one - the RGB parser (todo: ref) - resulting with an improvement of parsing accuracy in both English and Arabic when compared to using the unmodified RGB parser.
 
-\subsubsection{* -- Model architecture in brief}
-Their model architecture consists of a parameterized neural scoring function, which assigns a score to a given attachment candidate, given the corresponding word embeddings of the preposition, its child (the object) the head candidate, and their corresponding part-of-speech and WordNet, FrameNet attributes. The parameters of the scoring function are learned during training, and at inference the highest scoring candidate is chosen. They experiment with a few different scoring functions, each consists of a slightly different neural network architecture. The variations differ mostly by: (1)  the input - as one variation does not take the preposition as an input, only the head candidate and the object of the preposition; (2) the number of network layers - a single layer or two layers, and (3) the parameterization - for instance, one variation uses a different set of parameters based on the distance between the head candidate and the preposition. They also experiment with two kinds of pre-trained word embeddings: one based on the Skip-Gram model (todo: ref) and a dependency based model following (todo: ref), reporting significant accuracy boost when using the latter. Allowing the word embeddings to update during training was also reported to increase disambiguation accuracy significantly. 
-
-\subsection{Datasets}
-\subsubsection{*Structure, size and other notable stats}
-\subsubsection{*Extraction process}
+Their model architecture consists of a parameterized neural scoring function, which assigns a score to a given attachment candidate, given the corresponding word embeddings of the preposition, its child (the object), the head candidate, and their corresponding Part-of-Speech tags and WordNet/VerbNet attributes. The parameters of the scoring function are learned, and at inference the highest scoring candidate is chosen. They experiment with a few different scoring functions, each consists of a slightly different neural network architecture. The variations differ mostly by: (1)  the input - as one variation does not take the preposition as an input, only the head candidate and the object of the preposition; (2) the number of network layers - a single layer or two layers, and (3) the parameterization - for instance, one variation uses a different set of parameters based on the distance between the head candidate and the preposition. They also experiment with two kinds of pre-trained word embeddings: one based on the original Skip-Gram model (todo: ref) and a dependency-based variation following (todo: ref), reporting significant accuracy boost when using the latter. Allowing the word embeddings to update during training was also reported to increase disambiguation accuracy significantly. 
 
 \subsection{Model}
-\subsubsection{*Model framework}
-The following section assumes that sentence words are represented using a column vector of dimension $n$. Section todo describes how such representation is constructed. 
+The following section assumes that sentence words are represented using a column vector of dimension $n$. 
 
 As described in section todo, the model consists of a scoring function that assigns a score to each attachment candidate. For inference, the highest scoring candidate is selected. The detection of a preposition and its attachment candidates is done in a rule-based process as a preprocessing step, which is used for building the datasets used for training and evaluation (see section todo).
 
-The scoring function $s(c, z, h, \theta)$ takes a preposition $z$ with child $c$, and an attachment candidate $h$ ($\theta$ is the set of learned model parameters). The score is defined to be a linear function on a vector composed from $c, z, h$:
+The scoring function $s(c, z, h, \theta)$ takes the vector representations of a preposition  - $z$, its child - $c$, and an attachment candidate - $h$ ($\theta$ is the set of learned model parameters). Section todo describes how such word vector representations are constructed. The score is defined as a linear function on a vector composed from $c, z, h$:
 
-$$s(c,z,h,\theta) = w * compose\_p(c,z,h, \theta’)$$
+$$s(c,z,h,\theta) = w \cdot compose\_p(c,z,h, \theta’)$$
 
 Where $w \in \mathbb{R}^n$ is a parameter, and $\theta'$ is the set of all parameters, excluding $w$. $compose\_p$ transforms $c, z, h$ into a single column vector $p \in \mathbb{R}^n$ using parameters in $\theta’$.  The score is obtained by taking the dot product of $w$ and $p$. 
 
-\subsubsection{*Score function variations}
-Several variations of $compose\_p$ are suggested, each corresponding to a different model variant. The top performing variant - Head-Prep-Child-Dist (HPCD) - is the one used in this research, and the only one described in detail. The rest of the variants are mainly simpler versions of HPCD.
+Several variations of $compose\_p$ are suggested, each corresponding to a different model variant. The top performing variant - Head-Prep-Child-Dist (HPCD) - is the one used in this work, and the only one described in detail. The rest of the variants are mainly simpler versions of HPCD.
 
 \subsubsection{The HPCD scoring function}
 The HPCD version of $compose\_p$ is defined as follows:
@@ -50,10 +40,10 @@ The HPCD version of $compose\_p$ is defined as follows:
    $$ p_1 = tanh(W^1_{dist}[z;c] + b_{dist})   $$
    $$ p_2 = tanh(W^2_{dist}[h;p_1] + b_{dist}) $$
 
-Where $h, z, c$ are vectors for the head, the preposition, and its child respectively; $p_1, p_2$ are the output vectors for the first and second layers respectively;
+Where $h, z, c$ are vectors for the head, preposition, and child respectively; $p_1, p_2$ are the output vectors for the first and second layers;
 $word\_distance(head, prep)$ is the number of words between the preposition and the head candidate; and $ W^1_{dist}, W^2_{dist}, b_{dist}$ are distance-specific model parameters.
 
-Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child, and the second layer takes the output vector from the first layer and the vector for the head candidate. The result is the output of the second layer. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different neural network parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used.
+Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child, and the second layer takes the output from the first layer and the vector for the head candidate. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used.
 
 \subsection{Word Vector Representation}
 
@@ -66,9 +56,18 @@ Namely, the HPCD scoring function is composed of a two-layered feed-forward neur
 
 The word vectors for the head, preposition, and child words ($h, z, c$ in equation todo ref) are constructed using the pretrained word embeddings of the corresponding words, and extended using auxiliary syntactic information and structured knowledge resources such as WordNet and VerbNet. They experiment with two kinds of SkipGram based word embedding models. The first is the standard SkipGram model, where the context of a word is defined by the nearby words in the sentence. The second is a variation of the standard SkipGram by Bansal et al. (2014), where the context of a word is defined using its head, child and corresponding dependency labels according to the dependency tree of the given sentence. These word embeddings (referred to as \textit{syntactic} embeddings) are expected to be better at capturing dependency related information and therefore be relevant for PP-Attachment disambiguation. As their experiments show, the syntactic vectors indeed yield a significant boost in accuracy. The same 100-dimensional pretrained syntactic vectors are also used in this work. 
 
-Both child and head vectors are extended with WordNet information. Specifically, a binary indicator is added for each top hypernym (the top the set of 26 hypernyms in top three layers of the hypernym tree). 
+Both child and head vectors are extended with WordNet information, by introducing a binary indicator dimension for each top hypernym of the corresponding word (the set of top hypernyms are the 26 hypernyms in top three layers of the WordNet hypernym tree). 
 
 The head vector is also extended with binary indicators corresponding to whether the head is a noun, and in the case of a verb, whether the preposition appears in the corresponding VerbNet frame. The POS tag of the word following the head is embedded into the head vector using one-hot vector encoding. The resulting outline of the full vectors for the head, preposition and child are illustrated in figure \ref{fig:hpcdvectors}
+
+\subsection{Datasets}
+
+Two datasets are used for training and evaluation: one based on the STREUSLE corpus (section todo), and another based on the World-Street-Journal portion of the Penn-Treebank\footnote{The Penn-Treebank based dataset was introduced by Belinkov et al. (todo), and was used to train and evaluate their models.}. Both corpora are equipped with manually annotated dependency trees\footnote{The Penn-Treebank consists of constituency-based parse trees, that are converted into a dependency tree using the Penn-Dependency converter (todo ref).}, from which PP-Attachment cases are extracted. 
+
+The extraction process (by Belinkov et al. todo) is performed as follows: For each preposition (identified by a POS tag of IN or TO) with a child (according to the dependency tree, allowing a maximum distance of 200 words between the preposition and the child), up to 10 words preceding the preposition are scanned for valid head candidates - verbs and nouns (detected according to their POS tags). The head corresponding to the correct attachment is the head of the prepositoin according to the dependency tree. The process filters out prepositions with no detected head candidates, and unambiguou
+
+\subsubsection{*Structure, size and other notable stats}
+\subsubsection{*Extraction process}
 
 \subsection{Training}
 \subsection{Results}
