@@ -10,7 +10,7 @@
 %-----------------------------------
 \section{Overview}
 
-The problem of prepositional-phrase attachment (PP-Attachment), a well-known sentence parsing ambiguity, is the task of deciding on the correct attachment of a prepositional phrase to its head word. It is described in detail in section \ref{sec:ppatt}. The work presented in this chapter attempts to examine how beneficial the information provided by PSS labels (section \ref{sec:pss}) is to the PP-Attachment problem. An existing PP-Attachment model is modified to take PSS information as input. Both the original and modified model variations are evaluated on several datasets, expecting to see a performance increase with the latter. The motivation behind using PSS information for PP-Attachment is explained in section todo, followed by a presentation of the PP-Attachment model by Belinkov et al 2014 (todo ref) (section \ref{sec:ppatt-belinkov}) and its PSS-bearing variation (section todo). The models are trained and evaluated using a STREUSLE-based dataset (section todo) and a Penn Treebank based dataset by Belinkov et at. (todo) (section todo). The experiment setup, results and analysis are presented in sections (todo).
+The problem of prepositional-phrase attachment (PP-Attachment), a well-known sentence parsing ambiguity, is the task of deciding on the correct attachment of a prepositional phrase to its head word. It is described in detail in section \ref{sec:ppatt}. The work presented in this chapter attempts to examine how beneficial the information provided by PSS labels (section \ref{sec:pss}) is to the PP-Attachment problem. An existing PP-Attachment model is modified to take PSS information as input. Both the original and modified model variations are evaluated on several datasets, expecting to see a performance increase with the latter. The motivation behind using PSS information for PP-Attachment is explained in section todo, followed by a presentation of the PP-Attachment model by Belinkov et al 2014 (todo ref) (section \ref{sec:ppatt-belinkov}) and its PSS-bearing variation (s    ection todo). The models are trained and evaluated using a STREUSLE-based dataset (section todo) and a Penn Treebank based dataset by Belinkov et at. (todo) (section todo). The experiment setup, results and analysis are presented in sections (todo).
 
 \section{PPA work by Belinkov et. al 2014} \label{sec:ppatt-belinkov}
 
@@ -45,7 +45,7 @@ $word\_distance(head, prep)$ is the number of words between the preposition and 
 
 Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child, and the second layer takes the output from the first layer and the vector for the head candidate. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used.
 
-\subsection{Word Vector Representation}
+\subsubsection{Word Vector Representation}
 
 \begin{figure}
     \centering
@@ -60,14 +60,17 @@ Both child and head vectors are extended with WordNet information, by introducin
 
 The head vector is also extended with binary indicators corresponding to whether the head is a noun, and in the case of a verb, whether the preposition appears in the corresponding VerbNet frame. The POS tag of the word following the head is embedded into the head vector using one-hot vector encoding. The resulting outline of the full vectors for the head, preposition and child are illustrated in figure \ref{fig:hpcdvectors}
 
+\subsubsection{Incorporating PSS information to HPCD}
+
+The HPCD variation presented in this work is a simple modification of the network, allowing it to take the PSS Role and Function labels of the preposition as additional input signals. This is done by extending the preposition vector $p$ with a vector representation of each label. We experiment with two types of vector representations: one-hot encoding, and a lookup table. The one-hot encoding method requires fewer parameters than the lookup table method, which potentially allows a deeper processing of the PSS signal. The dimension of lookup table vectors is a hyperparameter.
+
 \subsection{Datasets}
 
 Two datasets are used for training and evaluation: one based on the STREUSLE corpus (section todo), and another based on the World-Street-Journal portion of the Penn-Treebank\footnote{The Penn-Treebank based dataset was introduced by Belinkov et al. (todo), and was used to train and evaluate their models.}. Both corpora are equipped with manually annotated dependency trees\footnote{The Penn-Treebank consists of constituency-based parse trees, that are converted into a dependency tree using the Penn-Dependency converter (todo ref).}, from which PP-Attachment cases are extracted. 
 
-The extraction process (by Belinkov et al. todo) is performed as follows: For each preposition (identified by a POS tag of IN or TO) with a child (according to the dependency tree, allowing a maximum distance of 200 words between the preposition and the child), up to 10 words preceding the preposition are scanned for valid head candidates - verbs and nouns (detected according to their POS tags). The head corresponding to the correct attachment is the head of the prepositoin according to the dependency tree. The process filters out prepositions with no detected head candidates, and unambiguou
+The extraction process (by Belinkov et al. todo) is performed as follows: For each preposition (identified by a POS tag of IN or TO) with a child (according to the dependency tree, allowing a maximum distance of 200 words between the preposition and the child), up to 10 words preceding the preposition are scanned for valid head candidates - verbs and nouns (detected according to their POS tags). The head corresponding to the correct attachment is the head of the preposition according to the dependency tree. Unambiguous prepositions are filtered out.
 
-\subsubsection{*Structure, size and other notable stats}
-\subsubsection{*Extraction process}
+Applying the above procedure to the STREUSLE corpus - a collection of web reviews from the English Web Treebank - yields 1,268/108/143 PP-Attachment cases for the 2,723/554/535 sentences in the train/dev/test split. The Penn-Treebank-based dataset consists of sections 2-21 (train), 22 (dev) and 23 (test) of the PTB for English, which contains articles from the Wall Street Journal. The 20,714/872/1157 sentences in the corpus yield 35,478/1494/1957 prepositions for the train/dev/test split. The cases-to-sentence ratio is much larger for PTB, which generally contains longer and more complex sentences. 
 
 \subsection{Training}
 \subsection{Results}
