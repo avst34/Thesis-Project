@@ -62,38 +62,23 @@ The head vector is also extended with binary indicators corresponding to whether
 
 \subsubsection{Incorporating PSS information to HPCD}
 
-The HPCD variation presented in this work is a simple modification of the network, allowing it to take the PSS Role and Function labels of the preposition as additional input signals. This is done by extending the preposition vector $p$ with a vector representation of each label. We experiment with two types of vector representations: one-hot encoding, and a lookup table. The one-hot encoding method requires fewer parameters than the lookup table method, which potentially allows a deeper processing of the PSS signal. The dimension of lookup table vectors is a hyperparameter.
+The HPCD variation presented in this work (HCPD-PSS) is a simple modification of the network, allowing it to take the PSS Role and Function labels of the preposition as additional input signals. This is done by extending the preposition vector $p$ with a vector representation of each label. We experiment with two types of vector representations: one-hot encoding, and a lookup table. The one-hot encoding method requires fewer parameters than the lookup table method, which potentially allows a deeper processing of the PSS signal. The dimension of lookup table vectors is considered a hyperparameter and tuned during training.
 
-\subsection{Datasets}
-
-Two datasets are used for training and evaluation: one based on the STREUSLE corpus (section todo), and another based on the World-Street-Journal portion of the Penn-Treebank\footnote{The Penn-Treebank based dataset was introduced by Belinkov et al. (todo), and was used to train and evaluate their models.}. Both corpora are equipped with manually annotated dependency trees\footnote{The Penn-Treebank consists of constituency-based parse trees, that are converted into a dependency tree using the Penn-Dependency converter (todo ref).}, from which PP-Attachment cases are extracted. 
-
-The extraction process (by Belinkov et al. todo) is performed as follows: For each preposition (identified by a POS tag of IN or TO) with a child (according to the dependency tree, allowing a maximum distance of 200 words between the preposition and the child), up to 10 words preceding the preposition are scanned for valid head candidates - verbs and nouns (detected according to their POS tags). The head corresponding to the correct attachment is the head of the preposition according to the dependency tree. Unambiguous prepositions are filtered out.
-
-Applying the above procedure to the STREUSLE corpus - a collection of web reviews from the English Web Treebank - yields 1,268/108/143 PP-Attachment cases for the 2,723/554/535 sentences in the train/dev/test split. The Penn-Treebank-based dataset consists of sections 2-21 (train), 22 (dev) and 23 (test) of the PTB for English, which contains articles from the Wall Street Journal. The 20,714/872/1157 sentences in the corpus yield 35,478/1494/1957 prepositions for the train/dev/test split. The cases-to-sentence ratio is much larger for PTB, which generally contains longer and more complex sentences. 
-
-\subsection{Training}
-\subsection{Results}
-\subsection{Conclusion}
-\pagebreak
-
-%-----------------------------------
-%	SECTION 2
-%-----------------------------------
 \section{Datasets}
-\subsection{World Stree Journal based dataset}
-\subsubsection{*PSS enrichment of WSJ}
-\subsection{STREUSLE based dataset}
-\subsubsection{*Extracting PPA cases from STREUSLE}
 
-\section{Models}
-\subsection{Baseline Model: HPCD}
-\subsection{HPCD extended with PSS features}
+Two datasets are used for training and evaluation: one based on the STREUSLE corpus - a collection of web reviews from the English Web Treebank with human-annotated PSS labels (section todo), and another based on the World-Street-Journal portion of the Penn-Treebank\footnote{The Penn-Treebank based PP-Attachment dataset was introduced by Belinkov et al. (todo), and was used to train and evaluate their models.}, enriched with automatically extracted PSS annotations using the PSS model presented in chapter \ref{Chapter2}. By evaluating the PP-Attachment models on both datasets, we obtain a rough estimation on the impact of PSS prediction errors on the task.
 
-\section{Training}
-\subsubsection{*Loss function and trainer remain unchanged}
-\subsubsection{*Process of training on both datasets}
-\subsubsection{*Hyperparameter tuning}
+Both corpora are equipped with manually annotated dependency trees\footnote{The Penn-Treebank consists of constituency-based parse trees, that are converted into a dependency tree using the Penn-Dependency converter (todo ref).}, from which PP-Attachment cases are extracted. The extraction process (by Belinkov et al. todo) is performed as follows: For each preposition (identified by a POS tag of IN or TO) with a child (according to the dependency tree, allowing a maximum distance of 200 words between the preposition and the child), up to 10 words preceding the preposition are scanned for valid head candidates - verbs and nouns (detected according to their POS tags). The head corresponding to the correct attachment is the head of the preposition according to the dependency tree. Unambiguous prepositions are filtered out. For STREUSLE, we also filter out prepositions without a PSS annotation (about 9\% of all identified cases).
+
+The Penn-Treebank-based dataset consists of sections 2-21 (train), 22 (dev) and 23 (test) of the PTB for English. By applying the above procedure, the 20,714/872/1157 sentences in the corpus yield 35,478/1494/1957 prepositions for the train/dev/test split. For the STREUSLE corpus, it yields 1,153/99/130 PP-Attachment cases for the 2,723/554/535 sentences in the train/dev/test split. The cases-to-sentence ratio is much larger for PTB, which generally contains longer and more complex sentences. 
+    
+\section{Hyperparameters and Training}
+
+The hyperparameters used are mostly consistent with those reported by Belinkov et al (todo) for the original model: a Dropout probability of $p = 0.5$, $tanh$ activations and a dimension of 100 for the intermediate network layers (corresponding to $p1, p2$ from eq todo). Model parameters are initialized randomly using the Xavier initialization (Glorot and Bengio, 2010 todo ref). Optimization is performed with respect to the Hinge Loss, using Simple Gradient Descent with Backpropogation for 100 epochs and batch size of 500. The validation set is used to tune the learning rate and learning rate decay parameters. It is also used to tune the PSS representation method - one-hot encoding or lookup table, and the representation dimensions in case of the latter.
+
+\section{Experiment Setup}
+
+The HPCD model and its PSS-bearing variant (HPCD-PSS) are evaluated separably on the STRESULE and the Penn-Treebank (PTB) based PP-Attachment datasets. For PTB, we take the straightforward approach of using the train and development sets for training and hyperparameter tuning, and test set for evaluation. Ideally, the same procedure would have been applied on the STREUSLE dataset, but the size of the training set (1,153 samples) is too small for the model to be trained successfully. Instead, we use the training sets from both datasets (assigning them with equal weights during training), and evaluate solely on the STREUSLE test set. 
 
 \section{Results}
 \subsubsection{*Compare HPCD and extended HPCD on each setting and dataset}
