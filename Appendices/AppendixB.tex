@@ -1,0 +1,38 @@
+% Appendix B
+
+\chapter{Hyperparameters for HPCD variants (Chapter 3)} % Main appendix title
+
+\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+
+Table \ref{tab:hyperparams} lists the hyperparameters used by the PP-Attachment models presented in chapter \ref{Chapter3} - vanilla HPCD, and its PSS-bearing variant (HPCD-PSS). The hyperparameters were tuned separately in each of the four settings corresponding to the selection of training set (PTB/PTB+STREUSLE) and model (HPCD/HPCD-PSS). 
+
+\begin{table}[]
+  \small
+	\centering
+	\begin{tabular}{@{}l|cccc@{}}
+		\toprule
+		Hyperparam. & HPCD/PTB & HPCD-PSS/PTB & HPCD/PTB+STREUSLE & HPCD-PSS/PTB+STREUSLE\\
+		\midrule
+            $p_1$ dimension & 100 & 100 & 100 & 100 \\
+%            & 1 & 1 & 1 & 1 \\
+            $p_2$ dimension & 100 & 100 & 100 & 100 \\
+%            & 1 & 1 & 1 & 1 \\
+            Activation & tanh & tanh & tanh & tanh \\
+            Use PSS? & No & Yes & No & Yes \\
+            PSS Embd. type & - & Lookup Table & - & Lookup Table \\
+            PSS Embd. dimension& - & 50 & - & 50 \\
+            Dropout Prob. & 0.5 & 0.5 & 0.5 & 0.5 \\
+            Learning rate & 0.1 & 0.1 & 0.1 & 0.1 \\
+            Learning rate decay& 0 & 0 & 0 & 0 \\
+            Update embeddings? & Yes & Yes & Yes & Yes \\
+%            & No & Yes & No & Yes \\
+%            & SimpleSGDTrainer & SimpleSGDTrainer & SimpleSGDTrainer & SimpleSGDTrainer \\
+%            & 100 & 100 & 100 & 100 \\
+		\bottomrule
+	\end{tabular}
+	\caption{\label{tab:hyperparams}
+        Selected hyperparameters of the PP-Attachment systems for each of the four settings correspoding to the training set (PTB/PTB+STREUSLE) and model (HPCD/HPCD-PSS).
+	}
+
+\end{table}
+

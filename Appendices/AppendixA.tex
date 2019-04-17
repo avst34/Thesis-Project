@@ -1,25 +1,42 @@
 % Appendix A
 
-\chapter{Frequently Asked Questions} % Main appendix title
+\chapter{Hyperparameters for the PSS Neural Model (Chapter 2)} % Main appendix title
 
 \label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-\section{How do I change the colors of links?}
+Table \ref{tab:hyperparams} lists the hyperparameters used by the
+PSS neural system presented in chapter \ref{Chapter2}, tuned separately for each of the four settings corresponding to gold/automatic auxiliary syntax and gold/automatic target identification.
 
-The color of links can be changed to your liking using:
+\begin{table}[]
+  \small
+	\centering
+	\begin{tabular}{@{}l|cccc@{}}
+		\toprule
+		Hyperparam. & Auto ID/Auto Parse & Auto ID/Gold Parse & Gold ID/Auto Parse & Gold ID/Gold Parse\\
+		\midrule
+        Embedding Method & ELMo & ELMo & ELMo & ELMo \\
+        ELMo layer & 1 & 1 & 1 & 1 \\
+        Token internal embd. dimension & 0 & 0 & 10 & 0 \\
+        Use Gov-Obj? & No & Yes & Yes & Yes \\
+        POS embd. dimension  & 0 & 0 & 0 & 10 \\
+        UD dependencies embd. dimension  & 0 & 5 & 0 & 0 \\
+        NER  embd. dimension  & 0 & 5 & 0 & 5 \\
+        GOVOBJ-CONFIG embd. dimension  & 0 & 3 & 3 & 3 \\
+        LEXCAT embd. dimension  & 3 & 3 & 3 & 3 \\
+        MLP layers  & 2 & 0 & 2 & 2 \\
+        MLP layer dimension  & 100 & - & 200 & 200 \\
+        MLP activation  & tanh & - & relu & relu \\
+        MLP Dropout Prob.  & 0.46 & - & 0.14 & 0.34 \\
+        LSTM layers  & 1 & 2 & 1 & 2 \\
+        LSTM hidden layer dimension  & 200 & 200 & 200 & 200 \\
+        Is BiLSTM? & Yes & Yes & Yes & Yes \\
+        LSTM Dropout Prob.  & 0.49 & 0.43 & 0.42 & 0.4 \\
+        Learning rate  & 0.15 & 0.15 & 0.2 & 10^{-1} \\
+        Learning rate decay  & 0 & 0 & 10^{-4} & 0 \\
+		\bottomrule
+	\end{tabular}
+	\caption{\label{tab:hyperparams}
+        Selected hyperparameters of the neural PSS disambiguation system for each of the four settings. The parameters were tuned over the STREUSLE development set using random grid search.
+	}
 
-{\small\verb!\hypersetup{urlcolor=red}!}, or
-
-{\small\verb!\hypersetup{citecolor=green}!}, or
-
-{\small\verb!\hypersetup{allcolor=blue}!}.
-
-\noindent If you want to completely hide the links, you can use:
-
-{\small\verb!\hypersetup{allcolors=.}!}, or even better: 
-
-{\small\verb!\hypersetup{hidelinks}!}.
-
-\noindent If you want to have obvious links in the PDF but not the printed text, use:
-
-{\small\verb!\hypersetup{colorlinks=false}!}.
+\end{table}
