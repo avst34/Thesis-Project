@@ -212,9 +212,7 @@ As expected, using the non-contextualized fastText embeddings alone yields simil
 
 \end{table}
 
-\subsection{Error Analysis}
-
-\subsubsection{Errors Across the SNACS Hierarchy}
+\subsection{Errors Across the SNACS Hierarchy}
 
 The PSS label hierarchy can be used to compute a more fine-grained measurement of disambiguation performance.  Specifically, the accuracy of predicted labels is evaluated when they are coarsened post hoc by moving up the hierarchy to a specific depth, with depth-1 representing the coarsening of the labels into the 3 root labels. The accuracy for each depth in the gold-syntax/gold-id setting is reported in table \ref{tab:coarsening}. These
 results show that the classifiers often mistake a label for another that is nearby in the hierarchy.
@@ -236,10 +234,6 @@ results show that the classifiers often mistake a label for another that is near
     \caption{Accuracy scores (single model, gold identification and syntax) on the test set (480 tokens) with different levels of hierarchy coarsening of its output. “Labels” refers to the number of labels in the training set after coarsening.}
     \label{tab:coarsening}
 \end{table}
-
-
-\subsubsection{*Confusion matrix}
-
 
 \section{Discussion?}
 
