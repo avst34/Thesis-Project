@@ -567,7 +567,7 @@ Unsupervised PP-Attachment methods are mostly based on co-occurrence frequencies
 
 \subsection{PP Attachment in this work} \label{sec:ppatt_thiswork}
 
-Chapter \ref{Chapter3} examines how beneficial PSS information might be to an existing PP-Attachment model. As shown in example \ref{ex:ppatt}, different PP-Attachment candidates represent different semantic interpretations of a sentence. In such cases, each interpretation may yield a different PSS for the corresponding preposition. For instance, consider sentences (1) \emph{"I am reading a book \textbf{with} a hard cover"} and (2) \emph{"I am reading a book \textbf{with} my children"} - in (1), \emph{“with”} would be annotated with (todo CHARACTERISTIC??) while in (2) the correct annotation would be (todo PARTICIPANT??). This provides evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. We experiment with an existing PP-Attachment model from (\cite{hpcd}), by incorporating PSS features onto it, expecting to see a boost in disambiguation accuracy.
+Chapter \ref{Chapter3} examines how beneficial PSS information might be to PP-Attachment disambiguation, as both PSS and PP-Attachment has to do with the semantics of the sentence with regards to the corresponding preposition (this intuition is further explained in Chapter \ref{Chapter3}) . We experiment with an existing PP-Attachment disambiguation model - HPCD (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an increase in disambiguation accuracy.
 
 \pagebreak
 
