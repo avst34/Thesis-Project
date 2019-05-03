@@ -27,7 +27,7 @@ In fact, most prepositions are ambiguous in these aspects. In order to resolve t
 \begin{figure}
     \centering
     \includegraphics{Figures/Electron.pdf}
-    \caption{The SNACS scheme}
+    \caption{The SNACS scheme todo}
     \label{fig:snacs}
 \end{figure}
 
@@ -88,7 +88,7 @@ I.e., the preposition signals a LOCUS, but the door serves as the GOAL with resp
 
 \subsection{The STREUSLE corpus}
 
-The SNACS annotation scheme was manually applied to adpositions in the STREUSLE corpus (\cite{snacs}), a collection of online consumer reviews taken from the English Web Treebank (\cite{ewtb}). Figure ?? shows some real examples from the STREUSLE corpus. Note that prepositions in (1) are annotated with a single supersense, which is the notation for cases where both ROLE and FUNCTION are described using the same supersense. In fact, as shown in ??, this is the common case.
+The SNACS annotation scheme was manually applied to adpositions in the STREUSLE corpus (\cite{snacs}), a collection of online consumer reviews taken from the English Web Treebank (\cite{ewtb}). Figure todo shows some real examples from the STREUSLE corpus. Note that prepositions in (1) are annotated with a single supersense, which is the notation for cases where both ROLE and FUNCTION are described using the same supersense. In fact, as shown in ??, this is the common case.
 
 \subsection{Previous Approaches}
 
@@ -114,14 +114,13 @@ Chapter \ref{Chapter2} presents a neural model for SNACS PSS disambiguation, tra
 %-----------------------------------
 \section{Neural Networks for NLP}
 
-\begin{figure}
+\begin{figure}[htbp]
   \centering
-    \includegraphics[width=0.5\textwidth]{Electron}
+    \includegraphics[width=1\textwidth]{Figures/neurons.pdf}
   \caption{ 
-    (i) A single neuron with N inputs. \\
-    (ii) A feed-forward network with a single output neuron \\
-    (ii) A multiclass network architecture: A feed-forward network with a Softmax output layer of $l$ neurons \\    
-  }
+    (a) A single neuron with N inputs. \\
+    (b) A feed-forward network with two hidden layers of dimension $m$ and a single output neuron. \\
+    (c) A multiclass classifier network architecture: A feed-forward network with a Softmax output layer of dimension $l$.}
   \label{fig:networks}
 \end{figure}
 
@@ -150,7 +149,7 @@ Where \(\vec{x}\) is a vector of inputs, \(\vec{w}\) is a vector of weights, \(b
   Commonly used activation functions \\
   (i) $ ReLU(z) = max(0, z) $\\ 
   (ii) $ tanh(z) = \frac{2}{1 + e^{-2x}} - 1 $ \\
-  }
+  todo}
   \label{fig:activations}
 \end{figure}
 
@@ -280,7 +279,7 @@ $$\frac{\partial t}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})
 \begin{figure}
     \centering
     \includegraphics{Figures/Electron.pdf}
-    \caption{Backpropagation demonstrated on a 3-layered feed forward neural network}
+    \caption{Backpropagation demonstrated on a 3-layered feed forward neural network todo}
     \label{fig:backprop}
 \end{figure}
 
@@ -340,8 +339,8 @@ As the dropout technique involves many model variations, it can be considered as
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{A Recurrent neural network operating on a sequence $x_1,..,x_k$. An RNN function transforms an input $x_t$ and the current state $h_t$ into an output $y_t$ and the next state the $h_{t+1}$}
+    \includegraphics[width=1\textwidth]{Figures/rnn.pdf}
+    \caption{A Recurrent neural network operating on a sequence $x_1,..,x_n$. An RNN function transforms an input $x_t$ and the current state $h_t$ into an output $y_t$ and the next state the $h_{t+1}$.}
     \label{fig:rnn}
 \end{figure}
 
@@ -391,7 +390,7 @@ The set of RNN units $RNN_1,..,RNN_L$ share the same network architecture, with 
 \begin{figure}
     \centering
     \includegraphics{Figures/Electron.pdf}
-    \caption{An LSTM network}
+    \caption{An LSTM network todo}
     \label{fig:lstm}
 \end{figure}
 
@@ -506,7 +505,7 @@ The PP-Attachment problem can be considered as a subtask of sentence parsing - a
 
 \subsubsection{Dependency vs. Constituency Based Parsing}
 
-In \emph{dependency parsing} tasks, the nodes in the tree usually represent words in a sentence, and tree arcs connect a dependent word (and its sub-tree) with its head (or governor), sometimes with a complementary dependency label, indicating the kind of dependency relations between different parts of the sentence. A notable and widely used example of such parsing task is \textbf{Universal Dependencies (UD)} (\cite{nivre-16}), which is also extensively used in this work. The UD project aims to facilitate a dependency annotation scheme that can be applicable to a variety of languages, along with a large corpora of annotated sentences to support it. The basic UD dependency representation (figure todo) forms a dependency tree as described above. The UD schema is explained in greater detail in section (\ref{sec:ud}).
+In \emph{dependency parsing} tasks, the nodes in the tree usually represent words in a sentence, and tree arcs connect a dependent word (and its sub-tree) with its head (or governor), sometimes with a complementary dependency label, indicating the kind of dependency relations between different parts of the sentence. A notable and widely used example of such parsing task is \textbf{Universal Dependencies (UD)} (\cite{nivre-16}), which is also extensively used in this work. The UD project aims to facilitate a dependency annotation scheme that can be applicable to a variety of languages, along with a large corpora of annotated sentences to support it. The basic UD dependency representation forms a dependency tree as described above. The UD schema is explained in greater detail in section (\ref{sec:ud}).
 
 Constituency based parsing tasks assign labels to words and phrases in a sentence. Depending on the task and the corresponding parse-tree schema, the parse-tree may or may not cover the entire sentence, contain multiple layers of labels, and in the latter case - it may or may not be projective (meaning that a labeled phrase cannot only be partially contained in another). Projective schemes typically form a tree similar to that of a context free grammar (and in fact, many constituency based parsing tasks are based on such grammar). The Penn Treebank - a large corpus of annotated sentences from the World Street Journal, uses a prominent projective constituency-based annotation scheme (see figure todo). It is wildey used in the field of NLP in general, and as a training data for PP-Attachment research in particular.
 
@@ -567,7 +566,7 @@ Unsupervised PP-Attachment methods are mostly based on co-occurrence frequencies
 
 \subsection{PP Attachment in this work} \label{sec:ppatt_thiswork}
 
-Chapter \ref{Chapter3} examines how beneficial PSS information might be to PP-Attachment disambiguation, as both PSS and PP-Attachment has to do with the semantics of the sentence with regards to the corresponding preposition (this intuition is further explained in Chapter \ref{Chapter3}) . We experiment with an existing PP-Attachment disambiguation model - HPCD (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an increase in disambiguation accuracy.
+Chapter \ref{Chapter3} examines how beneficial PSS information might be to PP-Attachment disambiguation, as both PSS and PP-Attachment has to do with the semantics of the sentence with regards to the corresponding preposition (this intuition is further explained in Chapter \ref{Chapter3}). We experiment with an existing PP-Attachment disambiguation model - HPCD (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an increase in disambiguation accuracy.
 
 \pagebreak
 
@@ -583,7 +582,7 @@ Some commonly used NLP specifications (and corresponding parsers or data sources
 \begin{figure}
     \centering
     \includegraphics{Figures/Electron.pdf}
-    \caption{An example UD parse tree}
+    \caption{An example UD parse tree todo}
     \label{fig:udparsetree}
 \end{figure}
 
