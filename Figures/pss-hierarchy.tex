@@ -1,0 +1,107 @@
+\newcommand{\hierA}[3]{\textcolor{red}{#1}~~\textsmaller{\textrm{\color{gray}#3}}}
+\newcommand{\hierB}[3]{\textcolor{blue}{#1}~~\textsmaller{\textrm{\color{gray}#3}}}
+\newcommand{\hierC}[3]{\textcolor{mdgreen}{#1}~~\textsmaller{\textrm{\color{gray}#3}}}
+\newcommand{\hierD}[3]{\textcolor{orange}{#1}~~\textsmaller{\textrm{\color{gray}#3}}}
+\newenvironment{ggroup}{{}}{{}}
+\begin{minipage}{\columnwidth}
+\vspace{.2cm}
+\begin{multicols}{3}
+\begin{ggroup}
+  \sffamily\smaller\color{gray}
+\begin{forest}
+  for tree={%
+    folder,
+    grow'=0,
+    fit=band,
+    inner ysep=.75,
+  }
+  [{\hierA{Circumstance}{76, 63}{77}}
+    [{\hierB{Temporal}{0}{0}}
+      [{\hierC{Time}{360, 329}{371}}
+        [{\hierD{StartTime}{28, 28}{28}}]
+        [{\hierD{EndTime}{30, 31}{31}}]
+      ]
+      [{\hierC{Frequency}{9, 7}{9}}]
+      [{\hierC{Duration}{90, 87}{91}}]
+      [{\hierC{Interval}{4, 35}{35}}]
+    ]
+    [{\hierB{Locus}{636, 780}{846}}
+      [{\hierC{Source}{77, 189}{189}}]
+      [{\hierC{Goal}{234, 378}{419}}]
+    ]
+    [{\hierB{Path}{26, 44}{49}}
+      [{\hierC{Direction}{120, 160}{161}}]
+      [{\hierC{Extent}{42, 38}{42}}]
+    ]
+    [{\hierB{Means}{17, 16}{17}}]
+    [{\hierB{Manner}{134, 48}{140}}]
+    [{\hierB{Explanation}{121, 108}{123}}
+      [{\hierC{Purpose}{301, 396}{401}}]
+    ]
+  ]
+\end{forest}
+\columnbreak
+
+\begin{forest}
+  for tree={%
+    folder,
+    grow'=0,
+    fit=band,
+    inner ysep=.75,
+  }
+  [{\hierA{Participant}{0}{0}}
+    [{\hierB{Causer}{9, 10}{15}}
+      [{\hierC{Agent}{158, 37}{170}}
+        [{\hierD{Co-Agent}{35, 65}{65}}]
+      ]
+    ]
+    [{\hierB{Theme}{224, 177}{238}}
+      [{\hierC{Co-Theme}{14, 7}{14}}]
+      [{\hierC{Topic}{213, 289}{296}}]
+    ]
+    [{\hierB{Stimulus}{123, 0}{123}}]
+    [{\hierB{Experiencer}{107, 0}{107}}]
+    [{\hierB{Originator}{134, 0}{134}}]
+    [{\hierB{Recipient}{122, 0}{122}}]
+    [{\hierB{Cost}{48, 30}{48}}]
+    [{\hierB{Beneficiary}{93, 76}{110}}]
+    [{\hierB{Instrument}{23, 19}{30}}]
+  ]
+\end{forest}
+\columnbreak
+
+\begin{forest}
+  for tree={%
+    folder,
+    grow'=0,
+    fit=band,
+    inner ysep=.75,
+  }
+  [{\hierA{Configuration}{0}{0}}
+    [{\hierB{Identity}{64, 77}{85}}]
+    [{\hierB{Species}{39, 39}{39}}]
+    [{\hierB{Gestalt}{165, 699}{709}}
+      [{\hierC{Possessor}{381, 489}{492}}]
+      [{\hierC{Whole}{142, 173}{250}}]
+    ]
+    [{\hierB{Characteristic}{133, 66}{140}}
+      [{\hierC{Possession}{21, 2}{21}}]
+      [{\hierC{PartPortion}{56, 36}{57}}
+        [{\hierD{Stuff}{17, 25}{25}}]
+      ]
+    ]
+    [{\hierB{Accompanier}{28, 47}{49}}]
+    [{\hierB{InsteadOf}{10, 9}{10}}]
+    [{\hierB{ComparisonRef}{176, 184}{215}}]
+    [{\hierB{RateUnit}{5, 5}{5}}]
+    [{\hierB{Quantity}{191, 84}{191}}
+      [{\hierC{Approximator}{76, 73}{76}}]
+    ]
+    [{\hierB{SocialRel}{240, 0}{240}}
+      [{\hierC{OrgRole}{103, 0}{103}}]
+    ]
+  ]
+\end{forest}
+\end{ggroup}
+\end{multicols}
+\end{minipage}

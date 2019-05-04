@@ -25,9 +25,9 @@ In fact, most prepositions are ambiguous in these aspects. In order to resolve t
 \subsection{The SNACS Scheme} \label{sec:snacsscheme}
 
 \begin{figure}
-    \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{The SNACS scheme todo}
+    \centering\small
+    \input{Figures/pss-hierarchy.tex}
+    \caption{The 50 supersense labels in the SNACS scheme and their token counts in the STREUSLE corpus (section \ref{sec:streusle})}
     \label{fig:snacs}
 \end{figure}
 
@@ -389,8 +389,8 @@ The set of RNN units $RNN_1,..,RNN_L$ share the same network architecture, with 
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{An LSTM network todo}
+    \includegraphics[width=1\textwidth]{Figures/lstm.pdf}
+    \caption{An LSTM network (equations \ref{eq:lstm_ft} - \ref{eq:lstm_ht+1}), transforming the current input $x_t$ and state $(h_t,c_t)$ into the corresponding output $y_t$ and the next state $(h_{t+1},c_{t+1})$.}
     \label{fig:lstm}
 \end{figure}
 
@@ -407,11 +407,11 @@ LSTM is an implementation of the RNN interface described above. Its internal sta
    \label{eq:lstm_it}
 \end{equation}
 \begin{equation}
-   \hat{C}_t = tanh(W_C[x_t;h_t] + b_C)
+   \hat{c}_t = tanh(W_c[x_t;h_t] + b_c)
    \label{eq:lstm_cht}
 \end{equation}
 \begin{equation}
-   C_{t + 1} = f_t \circ C_t + i_t \circ \hat{C}
+   c_{t + 1} = f_t \circ C_t + i_t \circ \hat{C}_t
    \label{eq:lstm_ct+1}
 \end{equation}
 \begin{equation}
@@ -419,16 +419,16 @@ LSTM is an implementation of the RNN interface described above. Its internal sta
    \label{eq:lstm_ot}
 \end{equation}
 \begin{equation}
-   y_t = o_t \circ tanh(C_{t + 1})
+   y_t = o_t \circ tanh(c_{t + 1})
    \label{eq:lstm_yt}
 \end{equation}
 \begin{equation}
-   h_{t + 1} = h_{t + 1}
+   h_{t + 1} = y_t
    \label{eq:lstm_ht+1}
 \end{equation}
 
-The LSTM archirtecture is depicted in figure \ref{fig:lstm}. The cell state is updated in two stages: forgetting old information, and inserting new information. $h_t$ and $x_t$ are fed into a sigmoid layer, computing the \emph{forget vector} $f_i$ (sharing the same dimension of the cell state) with all elements ranging from 0 to 1 (eq. \ref{eq:lstm_ft}). Each element represents the portion of the corresponding element in the cell state to forget. Forgetting is then performed by an element-wise multiplication of the current cell state $C_t$ and $f_t$ (first half of eq. \ref{eq:lstm_ct+1}). This updating technique is known as \emph{gating}. 
-Then, the network computes the new information to be added to the cell state $\hat{C}_t$ by feeding $h_t$ and $x_t$ into a $tanh$ layer (eq. \ref{eq:lstm_cht}). They are also used to compute a \emph{insert vector} $i_t$ similar to $f_i$, determining the portion of the new information to be added into the cell state (eq. \ref{eq:lstm_it}). The new information vector $\hat{C}_t$ is then multiplied element-wise by $i_t$ and added to the current cell state (second half of eq. \ref{eq:lstm_ct+1}).
+The LSTM architecture is depicted in figure \ref{fig:lstm}. The cell state is updated in two stages: forgetting old information, and inserting new information. $h_t$ and $x_t$ are fed into a sigmoid layer, computing the \emph{forget vector} $f_i$ (sharing the same dimension of the cell state) with all elements ranging from 0 to 1 (eq. \ref{eq:lstm_ft}). Each element represents the portion of the corresponding element in the cell state to forget. Forgetting is then performed by an element-wise multiplication of the current cell state $C_t$ and $f_t$ (first half of eq. \ref{eq:lstm_ct+1}). This updating technique is known as \emph{gating}. 
+Then, the network computes the new information to be added to the cell state $\hat{C}_t$ by feeding $h_t$ and $x_t$ into a $tanh$ layer (eq. \ref{eq:lstm_cht}). They are also used to compute a \emph{insert vector} $i_t$ similar to $f_i$, determining the portion of the new information to be added into the cell state (eq. \ref{eq:lstm_it}). The new information vector $\hat{c}_t$ is then multiplied element-wise by $i_t$ and added to the current cell state (second half of eq. \ref{eq:lstm_ct+1}).
 Finally, a third sigmoid layer taking $h_t$ and $x_t$ as inputs (producing $o_t$) is used to the determine the portion of the cell state to be used as the LSTM output (eq. \ref{eq:lstm_ot} and \ref{eq:lstm_yt}), which is also used as the next hidden state $h_{t+1}$ (eq. \ref{eq:lstm_ht+1}). 
 
 This architecture explicitly models the notion of state as a memory cell, updated only due to learnable detected triggers. The cell state can be considered as a memory cell, where new information added is to be preserved as long as not explicitly removed. This allows the network to pass detected signals across a long sequence of recurrent iterations.  
@@ -452,18 +452,18 @@ Word embedding models are a class of learning techniques aiming to map a set of 
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{Word2Vec models: SkipGram (left) and Continuous-Bag-of-Words (right) todo}
+    \includegraphics[width=1\textwidth]{Figures/word2vec.pdf}
+    \caption{Word2Vec models: SkipGram (a) and Continuous-Bag-of-Words (b).}
     \label{fig:word2vec}
 \end{figure}
 
 SkipGram and Continuous-Bag-Of-Words (CBOW) are two similar neural word embedding models jointly referred to as \textbf{Word2Vec} (\cite{word2vec}). They have perhaps been the first neural word embedding models to be both rather simple and fast to train, yet very successful at the task. Despite following improvements and progress made in recent years, they are still widely used nowadays due to their simplicity and effectiveness. Many pretrained Word2Vec models are publicly available, eliminating the need to train a model in order to obtain the word vectors. 
 
-Both models follow the \emph{distributional hypothesis}, assuming that distributional properties of a word - specifically, the distribution of context words - correlate with the word and its meaning. They model the relation between the word and its context, by predicting one from the other. The models are deipicted in figure \ref{fig:word2vec}. 
+Both models follow the \emph{distributional hypothesis}, assuming that distributional properties of a word - specifically, the distribution of context words - correlate with the word and its meaning. They model the relation between the word and its context, by predicting one from the other. The models are depicted in figure \ref{fig:word2vec}. 
 
 In the \textbf{SkipGram} model, a word vector for a sentence word $w_t$ is used to predict the presence of a context word $w_{t+d}$ $(1 \leq |d| \leq k)$, where a context word is limited to a window of size $k$ (a hyperparameter). The training set therefore consists of word and context word pairs $(w_t, w_{t+d})$. In the simple (yet impractical) formulation of SkipGram, the word vector for $w_t$ is fed into a softmax layer of size $|V|$, producing a probability for each word in the vocabulary $V$ to appear as a context word. The network is then trained to maximize the probability of the correct context word $w_{t+d}$ by minimizing the cross-entropy loss. The word vectors are learned during training (following the lookup table pattern described in section \ref{section:lookuptables}).
 
-\textbf{Continuous-Bag-Of-Words (CBOW)} goes the other way around, predicting the word $w_t$ is by its context $\{w_{t+i} | 1 \leq |d| \leq k\}$. The average of all context word vectors are fed into a softmax layer assigning each vocabulary word with a probability, similarly to the SkipGram model. 
+\textbf{Continuous-Bag-Of-Words (CBOW)} goes the other way around, predicting the word $w_t$ is by its context $\{w_{t+d} | 1 \leq |d| \leq k\}$. The average of all context word vectors are fed into a softmax layer assigning each vocabulary word with a probability, similarly to the SkipGram model. 
 
 In practice, computing a probability for each word in the vocabulary for every training sample is too computationally expensive. Instead, two approximation methods are suggested: Hierarchical Softmax and Negative Sampling. 
 
