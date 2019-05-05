@@ -74,16 +74,16 @@ false positives and false negatives.
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{The full neural PSS dismabiguation model. Tokens are fed into stacked BiLSTM layers. For each PSS-bearing unit, a feature vector is constructed and fed into two MLP-Softmax layers, predicting label probabilities for Role and Function}
+    \includegraphics[width=\textwidth]{Figures/pssmodel.pdf}
+    \caption{The full neural PSS disambiguation model. Tokens are fed into stacked BiLSTM layers. For each PSS-bearing unit, a feature vector is constructed and fed into two MLP-Softmax layers, predicting label probabilities for Role and Function}
     \label{fig:pssmodel}
 \end{figure}
 
-The neural PSS disambiguation model presented in this work is a multilayer perceptron (MLP) stacked on top of a multilayered BiLSTM. Such architectures have proven to be successful for a variety of NLP tasks (\cite{kiperwasser16simple, elmo}). The model architecture is largely comparable to that of (\cite{gonen16semi}), who experimented with a coarsened version of STREUSLE. The main difference is their use of unlabeled multilingual datasets to improve prediction by exploiting the differences in preposition ambiguities across languages. The model makes use of syntactic information in the form of tokenization, lemmatization, NER annotation, and a full Universal Dependencies parse tree, all which are assume to be given as inputs in addition to the actual sentence and target words.  The full model architecture is depicted in figure \ref{fig:pssmodel}. 
+The neural PSS disambiguation model presented in this work is a multilayer perceptron (MLP) stacked on top of a multilayered BiLSTM. Such architectures have proven to be successful for a variety of NLP tasks (\cite{kiperwasser16simple, elmo}). The model architecture is largely comparable to that of (\cite{gonen16semi}), who experimented with a coarsened version of STREUSLE. The main difference is their use of unlabeled multilingual datasets to improve prediction by exploiting the differences in preposition ambiguities across languages. The model makes use of syntactic information in the form of tokenization, lemmatization, NER annotation, and a full Universal Dependencies parse tree, all which are assume to be given as inputs in addition to the actual sentence and target words.  The full model architecture is illustrated in figure \ref{fig:pssmodel}. 
 
 Each sentence word $w_i$ is first converted into a vector using pretrained word embeddings, and a vocabulary-sized lookup table for an internal representation of each word. We experiment with contextualized (ELMo) and non-contextualized (SkipGram) pretrained embeddings\footnote{See section \ref{section:wordembeddings} for more details regarding each embedding method.}. For ELMo, the pretrained model from the AllenNLP python module (\cite{allennlp}) is used. For skip gram, the pretrained FastText vectors are used (\cite{fasttext}). The full word embedding $e_i$ is therefore a concatenation of three vectors: the pretrained embeddings of the word $e^{word}_i$ and lemma $e^{lemma}_i$, and the internal word representation $e^{internal}_i$. 
 
-$$ e_i = [e^{word}_i;e^{lemma}_i;e^{internal}_i] $$
+$$ e_i = [e^{word}_i;e^{lemma}_i;e^{internal}_i] $$ 
 
 Hyperparameters control which pretrained embeddings to use (ELMo/SkipGram), and in the case of fastText, whether the pretrained vectors remain fixed or get updated during training. A single ELMo layer in the pretrained model consists of 1000 elements, whereas for fastText the vectors are of size 300. The dimension of the internal representation (if used) is also determined by a hyperparameter. The size of the full vector is therefore largely dependent of the choice of hyperparameters. A $NONE$ label is used to represent words lacking a pretrained representation, both in training and at test time.
 

@@ -274,14 +274,7 @@ Where $OutEdges(\textbf{v})$ is the set out all outgoing edges from node $\textb
 
 $$\frac{\partial t}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})} \delta_{e} $$ 
 
- Where $\textbf{w}$ is the corresponding $\theta$\textit{-node} for $\theta_i$. Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate\footnote{This also applies for convex functions which are non-differentiable (e.g $ReLU$), in which case a subgradient is used.}. The process of computing the gradient on a 3-layered network is described in figure \ref{fig:backprop}.
-
-\begin{figure}
-    \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{Backpropagation demonstrated on a 3-layered feed forward neural network todo}
-    \label{fig:backprop}
-\end{figure}
+ Where $\textbf{w}$ is the corresponding $\theta$\textit{-node} for $\theta_i$. Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate\footnote{This also applies for convex functions which are non-differentiable (e.g $ReLU$), in which case a subgradient is used.}.
 
 \subsection{Model Regularization and Overfitting} \label{regulaization}
 
