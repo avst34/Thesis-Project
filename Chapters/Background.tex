@@ -144,12 +144,13 @@ Where \(\vec{x}\) is a vector of inputs, \(\vec{w}\) is a vector of weights, \(b
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.5\textwidth]{Electron}
+    \includegraphics[width=\textwidth]{Figures/activations.pdf}
   \caption{
   Commonly used activation functions \\
   (i) $ ReLU(z) = max(0, z) $\\ 
   (ii) $ tanh(z) = \frac{2}{1 + e^{-2x}} - 1 $ \\
-  todo}
+  (iii) $ Sigmoid(z) = \frac{1}{1 + e^{-x}} $ \\
+  }
   \label{fig:activations}
 \end{figure}
 
@@ -574,8 +575,8 @@ Some commonly used NLP specifications (and corresponding parsers or data sources
 
 \begin{figure}
     \centering
-    \includegraphics{Figures/Electron.pdf}
-    \caption{An example UD parse tree todo}
+    \input{Figures/uddep.tex}
+    \caption{A UD parse-tree example.}
     \label{fig:udparsetree}
 \end{figure}
 
