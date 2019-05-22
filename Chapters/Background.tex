@@ -31,68 +31,79 @@ In fact, most prepositions are ambiguous in these aspects. In order to resolve t
     \label{fig:snacs}
 \end{figure}
 
-A recent class-based approach for characterizing such semantic relations, which this work focuses on, is \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by (\cite{snacs}). SNACS covers adpositions, cases and a broad range of preposition-like phrases, such as: multiword prepositions (e.g., \emph{out of} , \emph{in front of}), intransitive particles (\emph{He flew \textbf{away}}), purpose infinitive clauses (\emph{Open the door \textbf{to} let in some air}), prepositions with clausal complements (\emph{It rained \textbf{before} the party started}), and idiomatic prepositional phrases (\textit{at large}). It consists of an hierarchical inventory of labels (which from here on will be referred to as preposition supersenses or PSS), representing different semantic relations (See figure \ref{fig:snacs}). The SNACS hierarchy aims to cover a broad range of semantic ideas on the one hand, but on the other doing so using a relatively small and annotator-friendly set of supersenses.
+A recent class-based approach for characterizing such semantic relations, which this work focuses on, is \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by (\cite{snacs}). SNACS covers adpositions, cases and a broad range of preposition-like phrases, such as: multiword prepositions (e.g., \emph{out of} , \emph{in front of}), intransitive particles (\emph{He ran \textbf{away}}), purpose infinitive clauses (\emph{Open the window \textbf{to} let in some air}), prepositions with clausal complements (\emph{It rained \textbf{after} the match started}), and idiomatic prepositional phrases (\textit{at large}). It consists of an hierarchical inventory of labels (which from here on will be referred to as preposition supersenses or PSS), representing different semantic relations (See figure \ref{fig:snacs}). The SNACS hierarchy aims to cover a broad range of semantic ideas using a relatively small and annotator-friendly set of supersense labels.
 
 \subsubsection{SNACS Label Hierarchy}
 
 The SNACS hierarchy is comprised of 50 supersenses at 4 levels of depth. The top-level categories are:
 \begin{itemize}
-    \item CIRCUMSTANCE :  Circumstantial information, usually non-core properties of events (e.g., location, time, means, purpose)
-    \item PARTICIPANT : Entity playing a role in an event
-    \item CONFIGURATION : Thing, usually an entity or property, involved in a static relationship to some other entity
+    \item \psst{Circumstance}:  Circumstantial complementary information of events (e.g., location, time, means, purpose)
+    \item \psst{Participant}: Entity taking part in an event
+    \item \psst{Configuration}: A static relationship between two entities (e.g., possession, comparison).
 \end{itemize}
 
-The 3 subtrees loosely parallel adverbial adjuncts, event arguments, and adnominal complements, respectively. The PARTICIPANT and CIRCUMSTANCE subtrees primarily reflect semantic relationships prototypical to verbal arguments/adjuncts. Many CIRCUMSTANCE subtypes, like LOCUS (the concrete or abstract location of something), can be governed by eventive and non-eventive nominals as well as verbs: \emph{eat \textbf{in} the restaurant, a party \textbf{in} the restaurant, a table \textbf{in} the restaurant}. CONFIGURATION mainly encompasses non-spatiotemporal relations holding between entities, such as quantity, possession, and part/whole. SNACS does not use multiple inheritance, so there is no overlap between the 3 regions. The supersenses can be understood as roles in fundamental types of scenes (or schemas) such as: 
+The 3 subtrees loosely correspond to adverbial adjuncts, event arguments, and adnominal complements, respectively. The \psst{Participant} and \psst{Circumstance} subtrees largely correspond to semantic relationships between a verb and its arguments. Many \psst{Circumstance} subtypes, however, like  \psst{Locus} (the location of an entity or event), can be governed by either a noun or a verb, both may or may not represent an event: \emph{work \textbf{at} the office, a meeting \textbf{at} the office, a desk \textbf{at} the office}. \psst{Configuration} covers other kinds of semantic relations, typically not dealing with space and time (e.g., possession, comparison). Each label covers its own range of semantic relations, that may be refined by a child label according to the SNACS hierarchy (no multiple inheritance). 
+
+(\cite{snacs}) provide a general definition of SNACS labels by embedding them in the following scene prototypes: 
 
 \begin{itemize}
-\item LOCATION - THEME is located at LOCUS;
-\item MOTION - THEME moves from SOURCE along PATH to GOAL ;
-\item TRANSITIVE ACTION - AGENT acts on THEME , perhaps using an INSTRUMENT ;
-\item POSSESSION - POSSESSION belongs to POSSESSOR ;
-\item TRANSFER - THEME changes possession from ORIGINATOR to RECIPIENT , perhaps with COST;
-\item PERCEPTION - EXPERIENCER is mentally affected by STIMULUS; 
-\item COGNITION - EXPERIENCER contemplates TOPIC;
-\item COMMUNICATION - information (TOPIC) flows from ORIGINATOR to RECIPIENT, perhaps via an INSTRUMENT. 
+\item Location - \psst{Theme} is located at \psst{Locus}
+\item Motion - \psst{Theme} moves from \psst{Source} along \psst{Path} to \psst{Goal} 
+\item Transitive Action - \psst{Agent} acts on \psst{Theme} , perhaps using an \psst{Instrument} 
+\item Possession - \psst{Possesion} belongs to \psst{Possesor} 
+\item Transfer - \psst{Experiencer} changes possession from \psst{Originator} to \psst{Recepient}, perhaps with \psst{Cost}
+\item Perception - \psst{Experiencer} is mentally affected by \psst{Stimulus}
+\item Cognition - \psst{Experiencer} contemplates \psst{Topic}
+\item Communication - information (\psst{Topic}) flows from \psst{Originator} to \psst{Recipient}, perhaps via an \psst{Instrument}
 \end{itemize}
 
-For AGENT , CO-AGENT , EXPERIENCER , ORIGINATOR , RECIPIENT, BENEFICIARY , POSSESSOR , and SOCIAL REL, the object of the preposition is prototypically animate. Because prepositions and possessives cover a vast swath of semantic space, the limit of 50 categories requires addressing a great many nonprototypical, borderline, and special cases, yielding a 75-page annotation manual with over 400 example sentences (\cite{schneider-18-arxiv}). SNACS can be considered as an refinement of Universal Semantic Tagset (\cite{abzianidze-17}) - a crosslinguistic inventory of semantic classes for content and function words. In their specification, prepositions and possessives are simply tagged with REL, which does not disambiguate the nature of the relational meaning. SNACS supersenses categories can thus be understood as refinements to REL.
+For \psst{Agent}, \psst{Co-Agent}, \psst{Experiencer}, \psst{Originator}, \psst{Recipient}, \psst{Beneficiary}, \psst{Possessor}, and \psst{SocialRel}, the object of the preposition is prototypically animate.
+
+The broad range of semantic space covered by prepositions and possessives requires addressing a great many nonprototypical, borderline, and special cases, yielding a 75-page annotation manual with over 400 example sentences (\cite{schneider-18-arxiv}). SNACS can be considered as an refinement of Universal Semantic Tagset (\cite{abzianidze-17}) - a crosslinguistic inventory of semantic classes for content and function words. In their specification, prepositions and possessives are tagged with a single label - REL - which does not disambiguate the actual meaning of the relation. SNACS supersense categories can thus be understood as refinements to REL.
 
 \subsubsection{Construal Analysis} \label{sec:construal}
 
-The SNACS schema assigns an instance of an adposition with two supersenses: a role supersense and a function supersense (both from the SNACS hierarchy). The choice to use not one but two supersenses for each adposition, arises from the construal analysis performed by (\cite{hwang-17}). They shows how in some cases, the supersense suggested by the preposition and the verb (corresponding to the function supersense) would be different than the situation of the established scene (corresponding to the role supersense). For instance, consider the following sentences:
+The SNACS schema assigns an instance of an adposition with two supersenses: a \textit{role} supersense, and a \textit{function} supersense (both from the SNACS hierarchy). The choice to use not one but two supersenses for each adposition, arises from the construal analysis performed by (\cite{hwang-17}). They shows how in some cases, the supersense suggested by the preposition and the verb (corresponding to the function supersense) are different than the situation of the established scene (corresponding to the role supersense). For instance, consider the following sentences:
 
 \begin{enumerate}
-    \item Vernon works \textbf{at} Grunnings.
-    \item Vernon works \textbf{for} Grunnings.
+    \item Thomas works \textbf{at} MetaCortex.
+    \item Thomas works \textbf{for} MetaCortex.
 \end{enumerate}
 
-The semantics of the scene in (1, 2) is the same: it is an employment relationship, and the PP contains the employer. SNACS has the label ORG ROLE for this purpose. At the same time, \textbf{at} in (2) strongly suggests a locational relationship, which would correspond to the label LOCUS; consistent with this hypothesis, Where does Vernon work? is a perfectly good way to ask a question that could be answered by the prepositional phrase ‘at Grunings’. In this example, then, there is an overlap between locational meaning and organizational-belonging meaning. (2) is similar except the \textbf{for} suggests a notion of BENEFICIARY: the employee is working on behalf of the employer. Following (\cite{hwang-17}), SNACS chose to handle this overlap by assigning not one but two supersenses (using the same inventory) for each preposition:
+Both sentences emit the same semantics of an employment relationship between the subject "Thomas" and the object of the preposition "MetaCortex". The corresponding SNACS label for such semantics is \psst{OrgRole}. On the other hand, one could argue that "at" in (1) implies a locational relationship, corresponds to the \psst{Locus} label (as evident from the fact that (1) is a valid answer for "Where does Thomas work?"). A similar overlap of preposition semantics is demonstrated in (2), as "for" also fits the notion of \psst{Beneficiary}: the employer is the beneficiary of the work done by the employee. 
+
+Following (\cite{hwang-17}), SNACS chose to handle this overlap by assigning not one but two supersenses (using the same inventory) for each preposition:
 
 \begin{itemize}
-    \item Function supersense - representing the lexical semantic contribution of the preposition.
-    \item Role supersense - representing the semantic role or relation mediated by the preposition.
+    \item Role supersense - representing the fundamental semantic role or relation mediated by the preposition.
+    \item Function supersense - representing the layer of semantic contribution added through the lexicality of the preposition (the \textit{construal}).
 \end{itemize}
 
-The innovative claim is that, in addition to a preposition’s relationship with its head, the prepositional choice introduces another layer of meaning or \textbf{construal} that brings additional nuance, creating the difficulty we see in the annotation of (1,2). Following the ROLE->FUNCTION notation, (1) would be annotated as ORG ROLE->LOCUS and (2) as ORG-ROLE->BENEFICIARY to expose their common truth-semantic meaning but slightly different portrayals owing to the different prepositions.
+Following the \rf{Role}{Function} notation, (1) would be annotated as \rf{OrgRole}{Locus} and (2) as \rf{OrgRole}{Beneficiary}.
 
-Another useful application of the construal analysis is with the verb \textbf{\emph{put}}, which can combine with any locative PP to express a destination:
+A few more cases cases of role and function divergence are presented in the following sentences:
 
 \begin{itemize}
-    \item[(6)] Put it on / by / behind / on top of /. . . the door. 
-    
-    GOAL->LOCUS 
+    \item Put the book \p{on}/\rf{Goal}{Locus} the shelf.
+          
+          "on" implies a locative sense (\psst{Locus}), yet in the established scene the location described is a destination (\psst{Goal}).
+    \item I care \p{about}/\rf{Stimulus}{Topic} the environment.
+          
+          "the environment" triggers the caring action (\psst{Stimulus}) but "about" implies that it is also the \psst{Topic} of caring.
+    \item The road runs \p{through}/\rf{Locus}{Path} the forest.
+          
+          This sentence specifies the location of the road (\psst{Locus}), yet "runs through" implies a motion, or \psst{Path}.
 \end{itemize}
 
-
-I.e., the preposition signals a LOCUS, but the door serves as the GOAL with respect to the scene. This approach also allows for resolution of various semantic phenomena including perceptual scenes (e.g., \emph{I care \textbf{about} education}), where \textbf{about} is both the topic of cogitation and perceptual stimulus of caring: STIMULUS->TOPIC ), and fictive motion (\cite{talmy-96}), where static location is described using motion verbiage (as in \emph{The road runs \textbf{through} the forest}: LOCUS->PATH). 
-
-\subsection{The STREUSLE corpus}
-
-The SNACS annotation scheme was manually applied to adpositions in the STREUSLE corpus (\cite{snacs}), a collection of online consumer reviews taken from the English Web Treebank (\cite{ewtb}). Figure todo shows some real examples from the STREUSLE corpus. Note that prepositions in (1) are annotated with a single supersense, which is the notation for cases where both ROLE and FUNCTION are described using the same supersense. In fact, as shown in ??, this is the common case.
+Empirical evidence suggests that in the majority of cases, the role an function labels collide: In the STREUSLE corpus of PSS annotated prepositions (presented in \ref{sec:streusle}), around 70\% of prepositions are annotated with the same PSS label for role and function. 
 
 \subsection{Previous Approaches}
 
-Several attempts have been made in characterizing these semantic relations. Studies of preposition semantics in linguistics and cognitive science have generally focused on the domains of space and time \citep[e.g.,][]{herskovits-86,bowerman-01,regier-96,khetarpal-09,xu-10,zwarts-00} or on motivated polysemy structures that cover additional meanings beyond core spatial senses \citep{brugman-81,lakoff-87,tyler-03,lindstromberg-10}.
+Several attempts have been made in characterizing the semantic relations conveyed by prepositions. 
+
+Studies of preposition semantics in linguistics and cognitive science have generally focused on the domains of space and time \citep[e.g.,][]{herskovits-86,bowerman-01,regier-96,khetarpal-09,xu-10,zwarts-00} or on motivated polysemy structures that cover additional meanings beyond core spatial senses \citep{brugman-81,lakoff-87,tyler-03,lindstromberg-10}.
+
+
 Possessive constructions can likewise denote a number of semantic relations, and various factors---including semantics---influence whether attributive possession in English will be expressed with \p{of}, or with \p{'s} and possessive pronouns \citep[the `genitive alternation';][]{taylor-96,nikiforidou-91,rosenbach-02,heine-06,wolk-13,shih-15}.
 
 Corpus-based computational work on semantic disambiguation specifically of prepositions and possessives\footnote{Of course, meanings marked by prepositions\slash possessives are to some extent captured in predicate-argument or graph-based meaning representations \citep[e.g.,][]{palmer-05,framenet,oepen-16,amr} and domain-centric representations like TimeML and \mbox{ISO-Space} \citep{timeml,isospace}.} % see also \citet{abend-17-semrep}
@@ -105,7 +116,7 @@ The semantic class approach, which we follow here, focuses on commonalities in m
 
 \subsection{PSS in This Work}
 
-Chapter \ref{Chapter2} presents a neural model for SNACS PSS disambiguation, trained and evaluated on the STREUSLE corpus over several settings. Chapter \ref{Chapter3} examines whether PSS information could contribute to the PP-Attachment problem (section \ref{sec:ppatt}), by adding it as a new feature to an existing PP-Attachment disambiguation model (section \ref{sec:ppatt-belinkov}).
+Chapter \ref{Chapter2} presents a neural model for SNACS PSS disambiguation, trained and evaluated on the STREUSLE corpus over several settings. Chapter \ref{Chapter3} examines whether PSS information could contribute to the PP-Attachment problem (section \ref{sec:ppatt}), by adding it as a new feature to an existing PP-Attachment disambiguation model (section \ref{sec:ppatt-belinkov}). Chapter \ref{Chapter4} examines the transferability of the knowledge acquired by a PSS disambiguator between different languages and domains, by evaluating a PSS model trained on the STREUSLE corpus (English web reviews), on a recently introduced Chinese PSS corpus (\textit{The Little Prince})
 
 \pagebreak
 

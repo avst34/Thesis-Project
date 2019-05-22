@@ -24,14 +24,16 @@ The PSS model presented in Chapter \ref{Chapter2} was slightly altered to better
 
 \section{Results} 
 
-The modified PSS model was trained as described in Chapter \ref{Chapter2}, using the STREUSLE training set for training, and the development set for hyperparameter tuning. The model, trained solely on English sentences, is then evaluated on the Chinese corpus with the use of the word-aligend, parallel English translation. The disambiguation accuracy of the model, as well as the MF-Prep baseline (section \ref{sec:pssbaselines}), are reported in table \ref{tab:chineseresults}.
+The modified PSS model was trained as described in Chapter \ref{Chapter2}, using the STREUSLE training set for training, and the development set for hyperparameter tuning. The model, trained solely on English sentences, is then evaluated on the Chinese corpus with the use of the word-aligend, parallel English translation. The disambiguation accuracy of the model, as well as the MF-Prep baseline (section \ref{sec:pssbaselines}), are reported in table \ref{tab:chineseresults}. We also report the overall Chinese accuracy of a combined model, which uses the neural model for aligned prepositions, and the MF-Prep baseline model for the rest.
+
+As expected, the disambiguation accuracy is highly dependent on the alignment - Chinese prepositions aligned to English prepositions are almost twice as accurate than the average Chinese preposition. Still, the change of domain and language have a critical negative impact on the neural model performance (a 40-50 pt. drop overall, and a 10-20 pt. drop on the subset of Chinese prepositions aligned to English prepositions). Moreover, the neural model accuracy is of the same order of magnitude as the MF-Prep baseline across all reported Chinese subsets - indicating that any complex pattern it might have detected in the training data was not useful for Chinese predictions. The combined model (Neural + MF-Prep) performs similarly to both the neural model and MF-Prep, which is another indication that they behave similarly on Chinese.
 
 \begin{table}[]
     % \setlength{\tabcolsep}{6pt} % Default value: 6pt
     \newcommand\Tstrut{\rule{0pt}{2.6ex}}       % "top" strut
     \newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}} % "bottom" strut
     \newcommand{\TBstrut}{\Tstrut\Bstrut} % top&bottom struts
-    
+
     \renewcommand{\arraystretch}{1}
     \newcommand{\score}[2]{#1 {\footnotesize ($\pm$#2)}}
     \newcolumntype{C}{c}
@@ -39,22 +41,25 @@ The modified PSS model was trained as described in Chapter \ref{Chapter2}, using
     \begin{tabular}{*{9}{C}}
          \toprule
          System    & \multicolumn{2}{C}{STREUSLE acc.} & \multicolumn{6}{C}{Chinese acc.}  \\ \cmidrule(lr){4-9}
-                   &    \multicolumn{2}{C}{} & \multicolumn{2}{C}{All (?)}      & \multicolumn{2}{C}{Aligned (?)} & \multicolumn{2}{C}{Aligned To Prep. (?)} \\ 
+                   &    \multicolumn{2}{C}{} & \multicolumn{2}{C}{All (518)}      & \multicolumn{2}{C}{Aligned (147)} & \multicolumn{2}{C}{Aligned To Prep. (98)} \\
          \cmidrule(lr){2-3}
          \cmidrule(lr){4-5}
          \cmidrule(lr){6-7}
          \cmidrule(lr){8-9}
                                     & Role & Fxn.     & Role  & Fxn.   & Role  & Fxn.  & Role  &  Fxn. \Bstrut \\
          \hline
-         
-         MF-Prep & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 \Tstrut \\
-         Neural  & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 & 12.34 \\
-         
+
+         MF-Prep & 40.62 & 53.33 & 36.67 & 41.69 & 48.29 & 49.65 & 68.36 & 69.38  \Tstrut \\
+         Neural  & 79.69 & 88.74 & 36.1 & 36.29 & 52.38 & 51.02 & 68.36 & 66.32  \\
+         Neural + MF-Prep  & - & - & 37.83 & 42.08 & - & - & - & - \\
          \bottomrule
     \end{tabular}
-    \caption{PP-Attachment disambiguation accuracy of the best performing model in each setting (average and standard deviation over 5 different training instances).}
+    \caption{PSS disambiguation accuracy of the MF-Prep baseline, the neural model, and a combined model, on the STREUSLE test set, and the Chinese corpus. For Chinese, we also report the accuracy over the subset of prepositions that received and alignment, and the subset which was aligned to English prepositions.}
     \label{tab:chineseresults}
 \end{table}
+
+
+
 
 
 
