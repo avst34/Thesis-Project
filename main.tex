@@ -206,7 +206,18 @@ headsepline, % Uncomment to get a line under the header
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 % The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
-\todo{write abstract here}
+Function words such as adpositions and possessives are crucial for conveying the semantic relations between different parts of a sentence. This work focuses on a recently introduced schema attempting to characterize these relations - \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by (\cite{snacs}). The schema consists of 50 labels - \textit{Preposition Supersenses} (PSS) - each representing some class of semantic relations attributed to a preposition in a sentence. 
+
+Chapter 1 deals with supervised methods for automatic disambiguation of preposition supersenses. We present a neural PSS model, trained and evaluated on the STREUSLE corpus of PSS annotated English web reviews (\cite{snacs}). We experiment with several settings of model architecture, auxiliary information acquisition and target identification. Specifically, we find that a model using contextualized word embeddings significantly outperforms a model using non-contextualized word embeddings with auxiliary syntactic information, as previously demonstrated by (\cite{nelson}). 
+
+Chapter 2 examines how beneficial the information provided by PSS is to the Prepositional-Phrase (PP) Attachment problem - the task of resolving the ambiguity of which phrase is referred to by a prepositional phrase, as demonstrated by the following sentence: “I [saw]VP [the man]NP [with the telescope]PP”. The prepositional phrase - \textit{“with the telescope”} may acts as a modifier to the verb \textit{saw} (the speaker used the telescope), or to the noun phrase - \textit{"the man"} (the man had the telescope). In such scenarios, each interpretation may yield a different preposition supersense for the corresponding preposition, thus providing evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. We experiment with an existing PP-Attachment model, by incorporating PSS features onto it, expecting to see an improvement in disambiguation accuracy. Empirical results show a small, possibly insignificant improvement in accuracy of the PSS-enhanced model. Another observation obtained by experimenting with several datasets indicates that PSS information behaves as a normalizing factor between different domains of content.
+
+Chapter 3 examines the transferability of the knowledge acquired by a PSS
+disambiguator between different languages and domains, by evaluating
+the PSS model presented in chapter \ref{Chapter2} - trained solely using the STREUSLE corpus of English web reviews - on the recently introduced Mandarine Chinese PSS corpus
+by (\cite{chinesecorpus}), with the use of parallel text and word alignment models. We find that domain and language have a critical impact on model peformence, as the accuracies on the Chinese corpus drop to a near-baseline level.
+
+% \include{Chapters\Abstract.tex}
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -295,7 +306,7 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter2}
 \include{Chapters/Chapter3} 
 \include{Chapters/Chapter4} 
-%\include{Chapters/Chapter5} 
+\include{Chapters/Conclusions} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

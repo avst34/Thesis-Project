@@ -253,42 +253,20 @@ $$ \hat{t}(\theta) = \frac{1}{BATCH\_SIZE}\sum_{(\vec{x_i}, \vec{y_i}) \in Batch
 
 $$ \theta \leftarrow \theta - \textit{lr} \cdot \nabla \hat{t}(\theta) $$
 
-This update step can be thought of as training the network on a batch of samples. An \emph{epoch} represents a full pass of training over the entire set of batches in the training set. It is very common to train a network through several epochs, while shuffling the order of samples between each epoch. The right amount of epochs depends on the convergence rate and the size of the training set.
+This update step can be thought of as training the network on a batch of samples. An \emph{epoch} represents a full pass of training over the entire set of batches in the training set. It is very common to train a network through several epochs, while shuffling the order of samples between each epoch. The optimal amount of epochs depends on the convergence rate and the size of the training set.
 
-The following are a few commonly used variations of SGD:
-\begin{itemize}
-    \item \textbf{Adaptive Gradient Algorithm (AdaGrad)}: ???todo???
-    \item \textbf{Root Mean Square Propagation (RMSProp)}: ???todo???
-    \item \textbf{Adaptive Moment estimation (Adam}: ???todo???    
-\end{itemize}
-
-SGD (along with its variations) is a heuristic process and is not guaranteed to converge to a global minima. Emprical results consistently show, however, that neural networks can be trained successfully even when using plain SGD.
+Some popular variants of SGD, such as AdaGrad (\cite{adagrad}) and Adam (\cite{adam}), aim to improve both the quality and rate of convergence. SGD (along with its variations) is a heuristic process and is not guaranteed to converge to a global minima. Emprical results consistently show, however, that neural networks can be trained successfully even when using plain SGD.
 
 The gradient for a single sample in the training set -  $\nabla_\theta \mathcal{L}(\textbf{f}(\vec{x_i}, \theta), \vec{y_i})$ - can be computed efficiently in a process known as \textbf{Backpropagation}. The Backpropagation
 algorithm is able to efficiently compute the gradient of a real function $t(\theta)$, provided that it holds several key properties: (a) $t$ is a composition of real functions, (b) each function takes only elements from $\theta$ or an output of another function as inputs, and (c) the partial derivatives of each function can be computed efficiently.  
 
-It follows from (a), (b) that $t$ can be described as a directed acyclic graph, where each graph node $\textbf{v}$ represents an element from $\theta$ (a \textit{$\theta$-node}), or an output of an intermediate function (where the function and output are notated as $\textbf{f}_{\textbf{v}}$ and $o_{\textbf{v}}$ respectively). An edge $\textbf{u}\rightarrow\textbf{v}$ is present when $o_{\textbf{u}}$ is an input of $\textbf{f}_\textbf{v}$. It holds for the (single) sink node $\textbf{s}$ that $o_{\textbf{s}} = t(\theta)$. The \textit{$\theta$-nodes} are the only ones with no incoming edges. 
+It follows from (a), (b) that $t$ can be described as a directed acyclic graph, where each node represents an element from $\theta$, or an output of an intermediate function. The (single) sink-node in the graph represents the final output of $t$. This graph is known as  the \textit{computational graph} for $t$.
 
-The Backpropagation process computes a partial derivative value of $t$ for each \emph{edge} in the graph. It begins with edges connected to the sink node, and going backwards in reversed topological order (utilizing the chain rule for function derivation). The partial derivative of each element in $\theta$ is then the sum of partial derivatives over all outgoing edges from the corresponding \textit{$\theta$-node}.
+The Backpropagation process computes a partial derivative value of $t$ for each \emph{edge} in the graph. It begins with edges connected to the sink node, and going backwards in reversed topological order (utilizing the chain rule for function derivation). The partial derivative of each element in $\theta$ is then the sum of partial derivatives over all outgoing edges from the corresponding nodes.
 
-The following briefly outlines a single Backpropagation step, i.e computing the partial derivative for a single edge $\textbf{u}\rightarrow\textbf{v}$ (notated as $\delta_{\textbf{u}\rightarrow\textbf{v}}$):   
+Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate\footnote{This also applies for convex functions which are non-differentiable (e.g $ReLU$), in which case a subgradient is used.}.
 
-\begin{equation}
-    \delta_{\textbf{u}\rightarrow\textbf{v}} = \frac{\partial o_{\textbf{v}}}{\partial o_{\textbf{u}}} \cdot
-    \begin{cases}
-     \sum\limits_{e \in OutEdges(\textbf{v})} \delta_{e}     & \text{if $OutEdges(\textbf{v}) \neq \emptyset$}\\
-    1       & \text{otherwise}
-    \end{cases}
-    \label{backprop}
-\end{equation}
-
-Where $OutEdges(\textbf{v})$ is the set out all outgoing edges from node $\textbf{v}$. The partial derivative of $t(\theta)$ w.r.t $\theta_i$, is then:
-
-$$\frac{\partial t}{\partial \theta_i} = \sum\limits_{e \in OutEdges(\textbf{w})} \delta_{e} $$ 
-
- Where $\textbf{w}$ is the corresponding $\theta$\textit{-node} for $\theta_i$. Backpropagation thus can be used to compute the gradient for the loss of a given training sample in a feed-forward network, provided that the activation functions and loss function are easy to differentiate\footnote{This also applies for convex functions which are non-differentiable (e.g $ReLU$), in which case a subgradient is used.}.
-
-\subsection{Model Regularization and Overfitting} \label{regulaization}
+\subsection{Model Regularization and Overfitting} \label{sec:regulaization}
 
 As with any machine learning model, neural networks are also capable of overfitting the training data. This is especially true for deep networks, which have a very large amount of parameters and therefore more complexity. Simply picking the set of parameters that minimizes the loss on the training set is likely to overfit, at least to some degree. The common method of applying a regularization term (e.g $l_1$, $l_2$ regularization) in addition to the loss, can also be applied to the training process of a neural network. First, we define the \emph{cost} of a parameter vector $\theta$ w.r.t a of training sample $(\vec{x_i}, \vec{y_i})$ as the sum of its loss and a regularization term $R(\theta)$:
 
@@ -399,7 +377,7 @@ The set of RNN units $RNN_1,..,RNN_L$ share the same network architecture, with 
     \label{fig:lstm}
 \end{figure}
 
-Vanilla RNNs are limited in their ability to capture long range dependencies. For instance, consider the task of assigning the syntactic heads of sentence words. An RNN learning this task could be significantly affected by this limitation, as the distance between a word and its head might be long, causing the network to "forget" the existence of the head by the time the word is reached. \textbf{Long-Short-Term-Memory (LSTM) networks} todo-check (\cite{lstm}) is an RNN implementation designed to overcome this limitation. It was shown to be extremely successful at a variety of tasks, which made it tremendously popular and one of the most widely used RNN architectures across the literature.  
+Vanilla RNNs are limited in their ability to capture long range dependencies. For instance, consider the task of assigning the syntactic heads of sentence words. An RNN learning this task could be significantly affected by this limitation, as the distance between a word and its head might be long, causing the network to "forget" the existence of the head by the time the word is reached. \textbf{Long-Short-Term-Memory (LSTM) networks} (\cite{lstm}) is an RNN implementation designed to overcome this limitation. It was shown to be extremely successful at a variety of tasks, which made it tremendously popular and one of the most widely used RNN architectures across the literature.  
 
 LSTM is an implementation of the RNN interface described above. Its internal state is split into two vectors: the cell state $c_t$ and the hidden state $h_t$. The LSTM architecture is comprised of the following equations, defining the current output $y_t$ and next cell state $c_{t + 1}, h_{t + 1}$ as a function of the current cell state $c_t, h_t$ and input sequence item $x_t$:
 
@@ -512,51 +490,41 @@ The PP-Attachment problem can be considered as a subtask of sentence parsing - a
 
 In \emph{dependency parsing} tasks, the nodes in the tree usually represent words in a sentence, and tree arcs connect a dependent word (and its sub-tree) with its head (or governor), sometimes with a complementary dependency label, indicating the kind of dependency relations between different parts of the sentence. A notable and widely used example of such parsing task is \textbf{Universal Dependencies (UD)} (\cite{nivre-16}), which is also extensively used in this work. The UD project aims to facilitate a dependency annotation scheme that can be applicable to a variety of languages, along with a large corpora of annotated sentences to support it. The basic UD dependency representation forms a dependency tree as described above. The UD schema is explained in greater detail in section (\ref{sec:ud}).
 
-Constituency based parsing tasks assign labels to words and phrases in a sentence. Depending on the task and the corresponding parse-tree schema, the parse-tree may or may not cover the entire sentence, contain multiple layers of labels, and in the latter case - it may or may not be projective (meaning that a labeled phrase cannot only be partially contained in another). Projective schemes typically form a tree similar to that of a context free grammar (and in fact, many constituency based parsing tasks are based on such grammar). The Penn Treebank - a large corpus of annotated sentences from the World Street Journal, uses a prominent projective constituency-based annotation scheme (see figure todo). It is wildey used in the field of NLP in general, and as a training data for PP-Attachment research in particular.
+Constituency based parsing tasks assign labels to words and phrases in a sentence. Depending on the task and the corresponding parse-tree schema, the parse-tree may or may not cover the entire sentence, contain multiple layers of labels, and in the latter case - it may or may not be projective (meaning that a labeled phrase cannot only be partially contained in another). Projective schemes typically form a tree similar to that of a context free grammar (and in fact, many constituency based parsing tasks are based on such grammar). The Penn Treebank - a large corpus of annotated sentences from the World Street Journal, uses a prominent projective constituency-based annotation scheme. It is wildey used in the field of NLP in general, and as a training data for PP-Attachment research in particular.
 
 \subsubsection{Syntactic vs. Semantic Parsers}
 
-A key distinguisher between different parsers is the kind of information that they capture, and whether it has to do with syntax (i.e part-of-speech, low-level dependencies such as: "A is a modifier of B", "C is a determiner of D"), or with semantics (such as: “A is a SCENE that B is a PARTICIPANT of, and C is an ACTION performed by B on OBJECT D”, where A,B,C,D are sentence words or phrases and SCENE, PARTICIPANT, ACTION, OBJECT are from a bank of labels). The distinction between semantic and syntactic information is not well defined, and most parsing schemes are in fact somewhere in the middle of this spectrum. While UD and Penn-Treebank are considered to be mostly syntactic, Abstract Meaning Representation (AMR) and Universal Conceptual Cognitive Annotation (UCCA) are two recent parsing schemas that are closer to the semantic edge of the spectrum. As demonstrated in figure todo, they both add a layer of semantic information in the form of a directed-acyclic-graph (todo: verify for AMR). 
+A key distinguisher between different parsers is the kind of information that they capture, and whether it has to do with syntax (i.e part-of-speech, low-level dependencies such as: "A is a modifier of B", "C is a determiner of D"), or with semantics (such as: “A is a SCENE that B is a PARTICIPANT of, and C is an ACTION performed by B on OBJECT D”, where A,B,C,D are sentence words or phrases and SCENE, PARTICIPANT, ACTION, OBJECT are from a bank of labels). The distinction between semantic and syntactic information is not well defined, and most parsing schemes are in fact somewhere in the middle of this spectrum. While UD and Penn-Treebank are considered to be mostly syntactic, Abstract Meaning Representation (\cite{amr}) and Universal Conceptual Cognitive Annotation (\cite{ucca}) are two parsing schemas that are closer to the semantic edge of the spectrum. They both add a layer of semantic information in the form of a directed-acyclic-graph. 
 
 \subsection{The PP-Attachment problem}
 
-The PP-Attachment problem involves deciding which part of a sentence  - typically a noun-phrase (NP) or a verb-phrase (VP) - is modified by a prepositional phrase (PP). That part of the sentence (or its head word) is considered to be the governor or head of the PP. In most cases, a preposition is followed by a NP, which is considered to be the object of the preposition. Though it may seem mostly syntax related, the decision process significantly involves the semantics of the sentence. For instance, consider the following sentences and their corresponding parse trees: 
+The PP-Attachment problem involves deciding which part of a sentence  - typically a noun-phrase (NP) or a verb-phrase (VP) - is modified by a prepositional phrase (PP). That part of the sentence (or its head word) is considered to be the governor or head of the PP. In most cases, a preposition is followed by a NP, which is considered to be the object of the preposition. Though it may seem mostly syntax related, the decision process significantly involves the semantics of the sentence. For instance, consider the following sentences:
 
 \begin{enumerate} \label{ex:ppatt}
     \item[1.] [I]$_{NP}$ [am reading]$_{VP}$ [a book]$_{NP}$ [with [a hard cover]$_{NP}$]$_{PP}$. 
 
-    (todo: two parse trees, both valid but only the NP attached one is correct)
-
-[with a hard cover]$_{PP}$ modifies [the book]$_{NP}$ (the book has a hard cover), hence (b) is the parse tree with the correct attachment. “book” is the governor of “with” and “cover” is the object.
+[with a hard cover]$_{PP}$ modifies [the book]$_{NP}$ (the book has a hard cover). “book” is the governor of “with” and “cover” is the object.
 
     \item[2.] [I]$_{NP}$ [am reading]$_{VP}$ [a book]$_{NP}$ [with  [my children]$_{NP}$]$_{PP}$. 
 
-    (todo: two parse trees, both valid but only the VP attached one is correct)
-
-[with my children]$_{PP}$ modifies [am reading]$_{VP}$ (I am reading with my children), hence (a) is the parse tree with the correct attachment. “reading” is the governor of “with” and “children” is the object.
+    [with my children]$_{PP}$ modifies [am reading]$_{VP}$ (I am reading with my children). “reading” is the governor of “with” and “children” is the object.
 
     \item[3.] [I]$_{NP}$ [am reading]$_{VP}$ [a book]$_{NP}$ [about [psychology]$_{NP}$]$_{PP}$. 
-
-    (todo: two parse trees, both valid and both may be correct)
-
-In this example, both attachments are semantically correct: [about psychology]$_{PP}$ could be attached to [a book]$_{NP}$ (The book was about psychology), but it could also be attached to [am reading]$_{VP}$ (I am reading about psychology).
+    
+    In this example, both attachments are semantically correct: [about psychology]$_{PP}$ could be attached to [a book]$_{NP}$ (The book was about psychology), but it could also be attached to [am reading]$_{VP}$ (I am reading about psychology).
 
     \item[4.] [I]$_{NP}$ [was watching]$_{VP}$ [the movie]$_{NP}$ [with my friends]$_{PP}$. 
-
-    (todo: two parse trees, both valid but only one is correct, we don’t know which one but one is more likely) 
-
-    The parse trees reflect two valid but different interpretations to this sentence: in one, [with my friends]$_{PP}$ is attached to [was watching]$_{VP}$ (the speaker was with her friends while watching the movie), and in the other, it is attached to [the movie]$_{NP}$ (the speaker’s friends appeared in the movie).
+    There are two valid but different interpretations to this sentence: in one, [with my friends]$_{PP}$ is attached to [was watching]$_{VP}$ (the speaker was with her friends while watching the movie), and in the other, it is attached to [the movie]$_{NP}$ (the speaker’s friends appeared in the movie).
 
 \end{enumerate}
- 
 
-All parse trees presented here are syntactically valid, thus deciding which is correct requires a deeper understanding of the semantics conveyed by the sentence and its context.
+The possible attachments in this examples are all syntactically valid, thus deciding which is correct requires a deeper understanding of the semantics conveyed by the sentence and its context.
 Sentences (1) and (2) differ only in the object of the preposition (a hard cover/my children), and it’s our knowledge of the real world which dictates that “a hard cover” is a property of a book and that “my children” are participants in the reading activity. Sentence (3) shows a case where there is more than one correct attachment - demonstrating that PP-Attachment is not always binary that sense. Sentence (4) is an even harder example - it has two semantically-valid interpretations, which requires a context broader than sentence level for disambiguation.  
 \subsection{PP Attachment Disambiguation Approaches}
 
 \subsubsection{As a sub-task of sentence parsing}
 As demonstrated in the example above, the choice of attachment has a direct effect on the structure of a corresponding prediction of a syntactic parse tree. Furthermore, considering that different attachments correspond to different sentence meanings, semantic parsers are also to be affected by this choice. 
-(todo - show a ucca and ud parsing mistakes that arise from pp-att)
+
 This makes PP-Attachment a sub-task of many parsing tasks, though many parsers do not address it explicitly. Transition-based parsing for example, is a parsing architecture that generates the output parse-tree incrementally by applying a set of transitions - each can modify the tree, or the internal state of the parser. The next transition to perform is chosen depending on the current internal state, the input, and a set of (learned, model dependent) parameters. Hence, the architecture of such parsers does not deal explicitly with PP-Attachment, or any syntax ambiguity, but instead they rely on the underlying decision-making model to capture implicit, learned representations of such ambiguities through the process of training over human annotated corpora. 
 
 

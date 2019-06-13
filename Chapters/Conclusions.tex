@@ -1,9 +1,23 @@
-\chapter{Conclusions}
+\chapter{Conclusion}
+\label{Conclusions}
+In this thesis, we examined different practical aspects of the SNACS schema of preposition supersenses: ambiguity resolution, application, and further analysis of cross-language and domain transferability. 
 
-*1. PSS labels can be predicted with a high accuracy using a neural model
-*2. PSS signal may be useful for PP Attachment
-*3. PSS may be useful for normalizing different domains and languages
-*4. (a) future work - further assess PSS contribution to pp-att
-(b) and to other preposition related tasks: translation, entity-relation extraction
-(c) integrate with additional schemes both to facilitate a more complete scheme, and for joint-learning.
-(d) further experiment with the cross lingual setting - better alignment, more data, multilingual embeddings
+In chapter \ref{Chapter2}, we presented a family of neural models for PSS disambiguation, achieving an accuracy of approximately 78\%/85\% for Role/Function prediction. We confirmed that contextualized word embeddings have a crucial role for model performance, as attested by (\cite{nelson}). 
+
+Chapter \ref{Chapter3} presents an attempt to apply PSS information for the problem of PP-Attachment. We measured the performance impact of incorporating PSS information as an auxiliary input signal of an existing PP-Attachment model by (\cite{hpcd}). Results are inconclusive, as a small and possibly insignificant gain in performance was observed (a rough 0.5 points on PTB and 1-3 points on STREUSLE). Another observation obtained by experimenting on multiple datasets is that PSS information may act as a normalizing factor between different domains, allowing a PP-Attachment model to better generalize when tested and trained on different corpora. 
+
+In chapter \ref{Chapter4}, we examined the transferability of the knowledge acquired by a PSS model between different domains and languages. The PSS model presented in chapter \ref{Chapter2}, trained on the STREUSLE corpus of English web reviews, was then evaluated on a PSS corpus based on the Mandarine Chinese version of \textit{The Little Prince}. The English model was applied on Chinese sentences with the use of a parallel English corpus and a pretrained English-Chinese word aligner by (\cite{liu2014contrastive}). As the alignment model is noisy and incomplete, the PSS model was slightly altered to better handle the cases of unaligned words. As indicated by the near-baseline levels of disambiguation accuracy on the Chinese corpus, domain and language have a crucial impact on model performance. 
+
+\section{Future Work}
+
+Investigating the following points could provide a greater insight into the various aspects of preposition supersenses examined in this research:
+
+\begin{itemize}
+    \item Examining the use of state-of-the-art contextualized word embedding methods such as BERT (\cite{bert}) with the full PSS model. 
+    \item Testing the effectiveness and generalizability of fine-tuning the contextualized word embeddings model as part of training the full PSS model.
+    \item The results of the PP-Attachment experiments on the STREUSLE corpus are difficult to interpret due to the relatively small amount of PP-Attachment cases extracted from the corpus. The experiment should be repeated on a larger corpus, if one becomes available.
+    \item Similarly to the PP-Attachment problem, PSS information may be beneficial for other preposition-related tasks such as translation (where, for instance, the sense of the source preposition may provide a strong signal for the target preposition) and relation extraction (as these relations are often conveyed through a preposition).
+    \item SNACS can be integrated into other schemes of knowledge representation such as UCCA (\cite{ucca}) and AMR (\cite{amr}), in order to both facilitate a more complete scheme, and to enable the use of joint-learning methods.
+    \item Using a more accurate (perhaps manual) word aligner for the multilingual experiment may shed more light on the source of PSS prediction errors. 
+    \item Alternatively, multi-lingual word embeddings can be used instead of (or in addition to) parallel corpora and word alignment. Multi-lingual word embedding models learn word representations for multiple languages in a shared vector space. Typically, this should allow a more seamless transition from one language to another.
+\end{itemize}

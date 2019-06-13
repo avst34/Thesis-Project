@@ -217,6 +217,10 @@ As expected, using the non-contextualized fastText embeddings alone yields simil
 The PSS label hierarchy can be used to compute a more fine-grained measurement of disambiguation performance.  Specifically, the accuracy of predicted labels is evaluated when they are coarsened post hoc by moving up the hierarchy to a specific depth, with depth-1 representing the coarsening of the labels into the 3 root labels. The accuracy for each depth in the gold-syntax/gold-id setting is reported in table \ref{tab:coarsening}. These
 results show that the classifiers often mistake a label for another that is nearby in the hierarchy.
 
+For \textit{role}, around 25\% of the errors are when the correct label is either \psst{OrgRole}, \psst{Topic}, or \psst{Locus}.  \psst{OrgRole} is often confused with  \psst{Possessor}; \psst{Topic} with \psst{Beneficiary} and \psst{Circumstance}; and \psst{Locus} with the more specific \psst{Goal} and \psst{Source}. 
+\psst{Topic} and \psst{Locus} are also a large source of errors for \textit{function}, as well as \psst{ComparisonRef} and \psst{Theme}, which together account for 35\% of the errors.
+
+
 
 \begin{table}[]
     \setlength{\tabcolsep}{10pt} % Default value: 6pt
@@ -234,8 +238,4 @@ results show that the classifiers often mistake a label for another that is near
     \caption{Accuracy scores (single model, gold identification and syntax) on the test set (480 tokens) with different levels of hierarchy coarsening of its output. “Labels” refers to the number of labels in the training set after coarsening.}
     \label{tab:coarsening}
 \end{table}
-
-\section{Discussion?}
-
-\section{Future Work}
 

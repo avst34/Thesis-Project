@@ -19,9 +19,9 @@ As demonstrated in example \ref{ex:ppatt}, different PP-Attachment candidates re
     \item[2.] \emph{"I am reading a book \textbf{with} my children"}
 \end{enumerate}
 
-In (1), the correct head attachment for \textit{“with”} is \textit{"book"}, and the corresponding PSS label is (todo CHARACTERISTIC??). In (2), the correct correct head attachment is \textit{"reading"} and the PSS label is (todo PARTICIPANT??). The correspondence between the head attachment and the PSS label provides evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. 
+In (1), the correct head attachment for \textit{“with”} is \textit{"book"}, and the corresponding PSS label is \psst{Characteristic}. In (2), the correct correct head attachment is \textit{"reading"} and the PSS label is \psst{Accompanier}. The correspondence between the head attachment and the PSS label provides evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. 
 
-The PP-Attachment model by \cite{hpcd} is presented in section \ref{sec:ppatt-belinkov}, along with its PSS-bearing variation (section \ref{sec:hpcd_pss}). The models are trained and evaluated using two datasets based on the STREUSLE corpus, and the Penn Treebank (section\ref{sec:hpcd_pss}). The experiment setup, results and analysis are presented in sections \ref{sec:ppatt_setup}, \ref{sec:ppatt_results}.
+The PP-Attachment model by (\cite{hpcd}) is presented in section \ref{sec:ppatt-belinkov}, along with its PSS-bearing variation (section \ref{sec:hpcd_pss}). The models are trained and evaluated using two datasets based on the STREUSLE corpus, and the Penn Treebank (section\ref{sec:hpcd_pss}). The experiment setup, results and analysis are presented in sections \ref{sec:ppatt_setup}, \ref{sec:ppatt_results}.
 
 \section{PP-Attachment work by \cite{hpcd}} \label{sec:ppatt-belinkov}
 
@@ -121,10 +121,3 @@ The HPCD model and its PSS-bearing variant (HPCD-PSS) are evaluated separably on
 PP-Attachment accuracy scores for the best performing model in each setting are reported in table \ref{tab:hpcdresults}. For each system, the average accuracy and standard deviation over 5 different training instances are reported. The results somehow indicate a slight improvement in accuracy for the PSS-bearing HPCD model over vanilla HPCD (a rough 0.5 point for PTB, and 1-3 points for STREUSLE). The statistical significance of these results is unclear, as the standard deviation is well within the improvement range (0.5-1.5 points for PTB and 1-2 points for STREUSLE). Further research is thus needed to determine the significance of these accuracy gains. 
 
 Some side observations can me made regarding the impact of training with multiple domains. As one might expect, training with both PTB and STREUSLE data decreases PTB accuracy ($\sim$2 points), and increases STREUSLE accuracy (1-3 points) when compared to training solely on PTB. The largest gain in accuracy ($\sim$3 points) is observed in the cross-domain setting, where the models are trained solely on PTB and evaluated on STREUSLE. A similar gain in performance is observed in the case of vanilla HPCD when adding STREUSLE data to the training set, which may indicate that PSS labels contribute as a normalizing factor between different domains.
-
-\section{Analysis}
-\subsection{Error Analysis}
-\subsubsection{*Errors shared between both models}
-\subsubsection{*Errors due to wrong PSS? (sampling)}
-
-\section{Conclusions}
