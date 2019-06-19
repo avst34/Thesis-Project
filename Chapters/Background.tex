@@ -99,7 +99,16 @@ Empirical evidence suggests that in the majority of cases, the role an function 
 
 \subsection{Previous Approaches}
 
-Several attempts have been made in characterizing the semantic relations conveyed by prepositions. 
+Several attempts have been made in characterizing and disambiguating the semantic relations conveyed by prepositions and possesives. They generally fall into two categories: the \textit{lexicographic} approach, and the \textit{semantic class} approach. 
+
+Lexicographic approaches aim to facilitate a comprehensive, fine-grained repository of preposition senses. \textit{The Preposition Project (TPP)} (\cite{litkowski-05}) is one example of such repository, which is based on the 847 senses assigned by \textit{The Oxford Dictionary of English} to 373 prepositions. Using FrameNet (\cite{baker-98}), they fine-tuned the repository and enriched it with the syntactic and semantic properties of each sense's complement and attachment point. Initial results in the SemEval-2007 task of supervised preposition sense disambiguation achieved an accuracy of $\sim$70\%, on a FrameNet-based corpus, using a maximum entropy system with a wide variety of syntactic and semantic
+features (\cite{ye2007melb}). An unsupervised model by (\cite{hovy-11}) achieved an accuracy of $56\%$ on the same corpus. Subsequent research lead to improved performance in the supervised setting, most notably by (\cite{tratz2011semantically}), who achieved an accuracy of $88\%$. 
+However, these results did not extend well to other corpora. (\cite{litkowski2013preposition}) reported a reduction of accuracy to $39\%$ when evaluating on a different corpus developed by Oxford, which suggests that the FrameNet-based corpus may not have been representative. (\cite{dahlmeier-09}) presented a statistical model which jointly learns TPP senses and PropBank (\cite{kingsbury2002treebank}) semantic roles, achieving an an overall accuracy of $72\%$ for semantic role labeling, and $58\%$ for TPP senses, on a PropBank based corpus.
+
+Lexicographic approaches such as the one described above are able to capture a large set of word senses which can accurately apply to variety of relations, at the potential cost of idiosyncraticity and incompleteness. Instead, SNACS follows the semantic class approach, which focuses on the similarities between different lexical items. By grouping similar items into a set of classes, this approach aims to better generalize to unseen usages of prepositions.
+
+
+---
 
 Studies of preposition semantics in linguistics and cognitive science have generally focused on the domains of space and time \citep[e.g.,][]{herskovits-86,bowerman-01,regier-96,khetarpal-09,xu-10,zwarts-00} or on motivated polysemy structures that cover additional meanings beyond core spatial senses \citep{brugman-81,lakoff-87,tyler-03,lindstromberg-10}.
 
@@ -110,6 +119,8 @@ Corpus-based computational work on semantic disambiguation specifically of prepo
 falls into two categories: 
 the \textbf{lexicographic\slash word sense disambiguation} approach \citep{litkowski-05,litkowski-07,litkowski-14,ye-07,prepnet,dahlmeier-09,tratz-09,hovy-10,hovy-11,tratz-13},
 and the \textbf{semantic class} approach \citep[see also \citealp{muller-12} for German]{moldovan-04,badulescu-09,ohara-09,srikumar-11,srikumar-13,schneider-15,schneider-16,hwang-17}.
+
+
 The lexicographic approach can capture finer-grained meaning distinctions, at a risk of relying upon idiosyncratic and potentially incomplete dictionary definitions. 
 The semantic class approach, which we follow here, focuses on commonalities in meaning across multiple lexical items, and aims to generalize more easily to new types and usages.
 
