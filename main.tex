@@ -22,24 +22,28 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
+% % \RequirePackage{babel} % Required for automatically changing names of document elements to languages besides english
+\RequirePackage[utf8x]{inputenc} % Required for inputting 
 \documentclass[
 11pt, % The default document font size, options: 10pt, 11pt, 12pt
-%oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
-english, % ngerman for German
+oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
+hebrew, english,
 singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
 %draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
 %parskip, % Uncomment to add space between paragraphs
-%nohyperref, % Uncomment to not load the hyperref package
+nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
+\selectlanguage{english}
 
-\usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
+% \usepackage[utf8x]{inputenc} % Required for inputting international characters
+% \usepackage[english,hebrew]{babel}
+% \usepackage[OT1]{fontenc} % Output font encoding for international characters
 \usepackage{todonotes}
 \usepackage{mathpazo} % Use the Palatino font by default
 \usepackage{amsmath}
@@ -47,6 +51,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{multicol}
 \usepackage{soul}
 \usepackage{diagbox}
+% \usepackage[utf8x]{inputenc}
 % \usepackage{pgfplots}
 % \usepgfplotslibrary{external}
 % \tikzexternalize[prefix=tikz/]
@@ -58,8 +63,10 @@ headsepline, % Uncomment to get a line under the header
 
 \addbibresource{example.bib} % The filename of the bibliography
 
-\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\newcommand{\href}[1]{#1}
 
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\newcommand{\lbl}[1]{\textsc{#1}} % class label
 \newcommand{\sst}[1]{\lbl{#1}} % supersense tag label
 
 \newcommand{\rf}[2]{\psst{#1}$\leadsto$\psst{#2}}
@@ -103,11 +110,11 @@ headsepline, % Uncomment to get a line under the header
 \group{{Computational Linguistics and Natural Language Processing lab}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
 \faculty{\href{https://www.cs.huji.ac.il/}{Benin School of Computer Science and Engineering}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
 
-\AtBeginDocument{
-\hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
-\hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
-\hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
-}
+% \AtBeginDocument{
+% \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
+% \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
+% \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+% }
 \usepackage{svg}
 \usepackage[edges]{forest}
 \usepackage{xytree}
@@ -163,31 +170,31 @@ headsepline, % Uncomment to get a line under the header
 \end{center}
 \end{titlepage}
 
-%----------------------------------------------------------------------------------------
-%	DECLARATION PAGE
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	DECLARATION PAGE
+% %----------------------------------------------------------------------------------------
 
-\begin{declaration}
-\addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
-\noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
+% \begin{declaration}
+% \addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+% \noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
 
-\begin{itemize} 
-\item This work was done wholly or mainly while in candidature for a research degree at this University.
-\item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
-\item Where I have consulted the published work of others, this is always clearly attributed.
-\item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
-\item I have acknowledged all main sources of help.
-\item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
-\end{itemize}
+% \begin{itemize} 
+% \item This work was done wholly or mainly while in candidature for a research degree at this University.
+% \item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+% \item Where I have consulted the published work of others, this is always clearly attributed.
+% \item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+% \item I have acknowledged all main sources of help.
+% \item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
+% \end{itemize}
  
-\noindent Signed:\\
-\rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
+% \noindent Signed:\\
+% \rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
  
-\noindent Date:\\
-\rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
-\end{declaration}
+% \noindent Date:\\
+% \rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
+% \end{declaration}
 
-\cleardoublepage
+% \cleardoublepage
 
 % %----------------------------------------------------------------------------------------
 % %	QUOTATION PAGE
@@ -199,6 +206,40 @@ headsepline, % Uncomment to get a line under the header
 
 % \hfill Dave Barry
 
+% ----------------------------------------------------------------------------------------
+% 	ABSTRACT PAGE - HEBREW
+% ----------------------------------------------------------------------------------------
+\begin{hebabstract}
+\addchaptertocentry{Abstract (Hebrew)} % Add the abstract to the table of contents
+\selectlanguage{hebrew}
+למילות קישור תפקיד משמעותי בהעברת פשר היחסים הסמנטיים בין חלקים שונים במשפט. עבודה זו מתמקדת בסכמה שהוצגה להאחרונה המאפיינת את היחסים הללו -
+\L{\textbf{Semantic Network of Adposition and Case Supersense (SNACS)}}
+מאת \L{\cite{snacs}}.
+הסכמה בנויה מ-\L{50} תגיות המכונות "מובני-על", כאשר כל מובן-על מייצג מחלקה כלשהי של קשרים סמנטיים המועברים על ידי מילת קישור במשפט. הסכמה מגדירה כיצד להתאים למילת קישור את מובני-העל המיוצגים על ידה. 
+
+החלק הראשון בעבודה זו )פרק 2( מציג מודל למידה-מונחית המבוסס על רשתות נוירונים מלאכותיות, ללמידה והסקה אוטומטית של מובני-העל השייכים למילות קישור. 
+אנו מודדים את התרומה של מידע דקדוקי חיצוני על ביצועי המודל )בין אם תויג ידנית או חולץ בעזרת כלים אוטומטים(. בנוסף, אנו משווים בין שיטות שיבוץ מילים \L{(word embeddings)}
+מבוססות הקשר, לכאלה שאינן, ובהתאם למסקנות מעבודות קודמות \L{(\cite{nelson})}
+אנו מראים כי שיטות מבוססות הקשר משפרות את ביצועי המודל באופן משמעותי. 
+
+% לצורך אימון המודל ומדידת ביצועיו, נעשה שימוש ב-\L{STREUSLE} \L{(\cite{snacs})} - מאגר של ביקורות גולשים באנגלית המכיל תיוגים ידניים של מובני-על.
+
+ החלק השני )פרק 3( בוחן את התועלת שבשימוש במידע המיוצג על ידי מובני-על של מילות קישור, עבור בעיית ההתאמה של ביטויים יחסיים \L{(Prepositional-Phrase Attachment)}.
+ בעייה זו באה לידי ביטוי במשפטים כגון - "אני ראיתי את האדם עם המשקפת". הביטוי היחסי "עם המשקפת" עשוי להתייחס לפועל "ראיתי" )הדובר אוחז במשקפת(, או לשם העצם "האדם" )האדם נצפה אוחז במשקפת(. במקרים של דו משמעות כגון זה, מובני-העל של מילת הקישור עשוי להשתנות בהתאם לפרשנות, ולכן ניתן לשער כי אלגוריתם לפתרון הבעיה יוכל להפיק מתוכם תועלת. אנו בוחנים את השערה זו על ידי הרחבה של מודל קיים מאת \L{\cite{hpcd}}
+ כך שיקבל את מובני-העל כקלט נוסף, בציפייה לשיפור בביצועי המודל כתוצאה מכך. 
+התוצאות מראות שיפור קטן לטובת המודל המורחב, אך ייתכן כי שיפור זה אינו מובהק. בנוסף, תוצאות ניסויים המערבים מספר מקורות מידע מראים כי מובני-על עשויים לשמש כגורם מנרמל בין תחומי תוכן שונים.
+
+החלק השלישי )פרק 4( בוחן האם וכיצד ניתן להשתמש בידע הנלמד על ידי מודל לחיזוי מובני-על, במעבר בין שפות ותחומי תוכן שונים. 
+אנו משתמשים במודל שהוצג בפרק 1, שאומן על אוסף ביקורות גולשים באנגלית, על מנת לחזות מובני-על של מילות קישור בטקסט מתוייג מתוך התרגום הסיני של "הנסיך הקטן" \L{(\cite{chinesecorpus})}. התוצאות מראות כי לתחומי תוכן ושפה השפעה קריטית על ביצועי המודל - רמת הדיוק הנצפית על המאגר הסיני דומה לזו של מודל חיזוי בסיסי, ונמוכה משמעותית מרמת הדיוק על המאגר האנגלי.
+
+
+
+
+
+\selectlanguage{english}
+\end{hebabstract}
+
+
 %----------------------------------------------------------------------------------------
 %	ABSTRACT PAGE
 %----------------------------------------------------------------------------------------
@@ -208,16 +249,15 @@ headsepline, % Uncomment to get a line under the header
 % The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
 Function words such as adpositions and possessives are crucial for conveying the semantic relations between different parts of a sentence. This work focuses on a recently introduced schema attempting to characterize these relations - \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by (\cite{snacs}). The schema consists of 50 labels - \textit{Preposition Supersenses} (PSS) - each representing some class of semantic relations attributed to a preposition in a sentence. 
 
-Chapter 1 deals with supervised methods for automatic disambiguation of preposition supersenses. We present a neural PSS model, trained and evaluated on the STREUSLE corpus of PSS annotated English web reviews (\cite{snacs}). We experiment with several settings of model architecture, auxiliary information acquisition and target identification. Specifically, we find that a model using contextualized word embeddings significantly outperforms a model using non-contextualized word embeddings with auxiliary syntactic information, as previously demonstrated by (\cite{nelson}). 
+Chapter 2 deals with supervised methods for automatic disambiguation of preposition supersenses. We present a neural PSS model, trained and evaluated on the STREUSLE corpus of PSS annotated English web reviews (\cite{snacs}). We experiment with several settings of model architecture, auxiliary information acquisition and target identification. Specifically, we find that a model using contextualized word embeddings significantly outperforms a model using non-contextualized word embeddings with auxiliary syntactic information, as previously demonstrated by (\cite{nelson}). 
 
-Chapter 2 examines how beneficial the information provided by PSS is to the Prepositional-Phrase (PP) Attachment problem - the task of resolving the ambiguity of which phrase is referred to by a prepositional phrase, as demonstrated by the following sentence: “I [saw]VP [the man]NP [with the telescope]PP”. The prepositional phrase - \textit{“with the telescope”} may acts as a modifier to the verb \textit{saw} (the speaker used the telescope), or to the noun phrase - \textit{"the man"} (the man had the telescope). In such scenarios, each interpretation may yield a different preposition supersense for the corresponding preposition, thus providing evidence to believe that a PP-Attachment disambiguator might benefit from using PSS information. We experiment with an existing PP-Attachment model, by incorporating PSS features onto it, expecting to see an improvement in disambiguation accuracy. Empirical results show a small, possibly insignificant improvement in accuracy of the PSS-enhanced model. Another observation obtained by experimenting with several datasets indicates that PSS information behaves as a normalizing factor between different domains of content.
+Chapter 3 examines how beneficial the information provided by PSS is to the Prepositional-Phrase (PP) Attachment problem - the task of resolving the ambiguity of which phrase is referred to by a prepositional phrase, as demonstrated by the following sentence: “I [saw]VP [the man]NP [with the telescope]PP”. The prepositional phrase - \textit{“with the telescope”} may acts as a modifier to the verb \textit{saw} (the speaker used the telescope), or to the noun phrase - \textit{"the man"} (the man had the telescope). In such scenarios, each interpretation may yield a different preposition supersense for the corresponding preposition, thus providing evidence to believe that a PP-Attachment resolver might benefit from using PSS information. We experiment with an existing PP-Attachment model (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an improvement in disambiguation accuracy. Empirical results show a small, possibly insignificant improvement in accuracy of the PSS-enhanced model. Another observation obtained by experimenting with several datasets indicates that PSS information behaves as a normalizing factor between different domains of content.
 
-Chapter 3 examines the transferability of the knowledge acquired by a PSS
+Chapter 4 examines the transferability of the knowledge acquired by a PSS
 disambiguator between different languages and domains, by evaluating
 the PSS model presented in chapter \ref{Chapter2} - trained solely using the STREUSLE corpus of English web reviews - on the recently introduced Mandarine Chinese PSS corpus
-by (\cite{chinesecorpus}), with the use of parallel text and word alignment models. We find that domain and language have a critical impact on model peformence, as the accuracies on the Chinese corpus drop to a near-baseline level.
+by (\cite{chinesecorpus}), with the use of parallel text and word alignment models. We find that domain and language have a critical impact on model peformance, as the accuracies on the Chinese corpus drop to a near-baseline level.
 
-% \include{Chapters\Abstract.tex}
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -236,24 +276,24 @@ by (\cite{chinesecorpus}), with the use of parallel text and word alignment mode
 
 \tableofcontents % Prints the main table of contents
 
-\listoffigures % Prints the list of figures
+% \listoffigures % Prints the list of figures
 
-\listoftables % Prints the list of tables
+% \listoftables % Prints the list of tables
 
-%----------------------------------------------------------------------------------------
-%	ABBREVIATIONS
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	ABBREVIATIONS
+% %----------------------------------------------------------------------------------------
 
-\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
+% \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
-% \textbf{LAH} & \textbf{L}ist \textbf{A}bbreviations \textbf{H}ere\\
-\textbf{PSS} & \textbf{P}reposition \textbf{S}uper\textbf{s}ens\\
-\textbf{PP} & \textbf{P}repositional \textbf{P}hrase\\
-\textbf{NP} & \textbf{N}oun \textbf{P}hrase\\
-\textbf{VP} & \textbf{V}erb \textbf{P}hrase\\
-\textbf{PPA} & \textbf{P}repositional \textbf{P}hrase \textbf{A}ttachment\\
+% % \textbf{LAH} & \textbf{L}ist \textbf{A}bbreviations \textbf{H}ere\\
+% \textbf{PSS} & \textbf{P}reposition \textbf{S}uper\textbf{s}ens\\
+% \textbf{PP} & \textbf{P}repositional \textbf{P}hrase\\
+% \textbf{NP} & \textbf{N}oun \textbf{P}hrase\\
+% \textbf{VP} & \textbf{V}erb \textbf{P}hrase\\
+% \textbf{PPA} & \textbf{P}repositional \textbf{P}hrase \textbf{A}ttachment\\
 
-\end{abbreviations}
+% \end{abbreviations}
 
 % %----------------------------------------------------------------------------------------
 % %	PHYSICAL CONSTANTS/OTHER DEFINITIONS
@@ -284,12 +324,12 @@ by (\cite{chinesecorpus}), with the use of parallel text and word alignment mode
 
 % \end{symbols}
 
-%----------------------------------------------------------------------------------------
-%	DEDICATION
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	DEDICATION
+% %----------------------------------------------------------------------------------------
 
-\dedicatory{For/Dedicated to/To my\ldots} 
-\todo{Write dedication}
+% \dedicatory{For/Dedicated to/To my\ldots} 
+% \todo{Write dedication}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS

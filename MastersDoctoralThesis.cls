@@ -316,6 +316,10 @@ KOMA-script documentation for details.}]{fancyhdr}
 	\if@twocolumn\hbox{}\newpage\fi\fi\fi%
 }
 
+
+% \DeclareDocumentCommand\cleardoublepage{}{\clearpage}
+
+
 %----------------------------------------------------------------------------------------
 %	ABBREVIATIONS PAGE DESIGN
 %----------------------------------------------------------------------------------------
@@ -378,6 +382,47 @@ KOMA-script documentation for details.}]{fancyhdr}
 		\vfill\null
 	}
 }
+
+\ifbool{consistentlayout}{
+	\DeclareDocumentEnvironment{hebabstract}{ O{} }{%
+		\addchap*{\abstractname}%
+		{\chapteralign\normalsize\abstractauthorfont \authorname \par}% Author name
+		\vspace{\baselineskip}
+		{\chapteralign\parbox{.7\linewidth}{\chapteralign\normalsize\itshape\abstracttitlefont\@title}\par}% Thesis title
+		\bigskip\noindent\ignorespaces
+	}%
+	{}%end alt-abstract
+}{%
+	\DeclareDocumentEnvironment{hebabstract}{ O{\null\vfill} }{
+		\checktoopen
+		\tttypeout{\abstractname}
+		#1%added to be able to have abstract more than one page long
+		\thispagestyle{plain}
+		\begin{center}
+		    \selectlanguage{hebrew}
+			{\normalsize האוניברסיטה העברית בירושלים \par}% University name in capitals
+			\bigskip
+			{\normalsize  בית הספר להנדסה ולמדעי המחשב על שם רחל וסלים בנין  \par}% Department name
+			\bigskip			
+			{\huge\textit{תקציר} \par}
+			\bigskip
+			{\Large\bfseries מובני-על של מילות קישור: למידה, יישום, וניתוח \par}% Thesis title
+			\bigskip			
+% 			{\normalsize \facname \par}% Faculty name
+			{\normalsize עבודת גמר לתואר מוסמך במדעי המחשב\par}% Degree name
+			\bigskip
+			{\normalsize אבירם שטרן \par}% Author name
+			\medskip
+			{\normalsize מנחה: ד"ר עמרי אבנד \par}% Author name
+			\bigskip
+			\selectlanguage{english}
+		\end{center}
+	}
+	{
+		\vfill\null
+	}
+}
+
 
 \DeclareDocumentEnvironment{extraAbstract}{ O{\null\vfill} }{
 	\checktoopen

@@ -12,9 +12,9 @@
 
 The problem of \textbf{Prepositional-Phrase Attachment (PP-Attachment)} \footnote{The PP-Attachment problem is described in detail in section \ref{sec:ppatt}}, a well-known sentence parsing ambiguity, is the task of deciding on the correct attachment of a prepositional phrase to its head word. The work presented in this chapter attempts to examine how beneficial the information provided by PSS labels (section \ref{sec:pss}) is to PP-Attachment disambiguation. An existing PP-Attachment model is modified to take PSS information as input. Both the original and modified model variations are evaluated on several datasets, expecting to see a performance increase with the latter. 
 
-As demonstrated in example \ref{ex:ppatt}, different PP-Attachment candidates represent different semantic interpretations of a sentence, which may correspond to a different PSS labeling of the preposition. To facilitate the motivation behind using PSS information for PP-Attachment, consider sentences (1) and (2) from the example:
+As demonstrated in example \ref{ex:_ppatt}, different PP-Attachment candidates represent different semantic interpretations of a sentence, which may correspond to a different PSS labeling of the preposition. To facilitate the motivation behind using PSS information for PP-Attachment, consider sentences (1) and (2) from the example:
 
-\begin{enumerate} \label{ex:ppatt}
+\begin{enumerate} \label{ex:_ppatt}
     \item[1.] \emph{"I am reading a book \textbf{with} a hard cover"}
     \item[2.] \emph{"I am reading a book \textbf{with} my children"}
 \end{enumerate}
@@ -29,7 +29,7 @@ The PP-Attachment model by (\cite{hpcd}) is presented in section \ref{sec:ppatt-
     \centering\small
     \includegraphics[width=\textwidth]{Figures/hpcd.pdf}
     \caption{An outline of the HPCD PP-Attachement model by (\cite{hpcd}).}
-    \label{fig:my_label}
+    \label{fig:hpcd}
 \end{figure}
 
 (\cite{hpcd}) are perhaps the first to present a set of neural PP-Attachment models that make use of pretrained word embeddings. Their top performing model achieved state-of-the-art results, surpassing any previous attempts at this task. They experiment with different kinds of word embeddings methods, using a PP-Attachment dataset they constructed from the Penn Treebank for English and the CATiB dependency treebank (\cite{habash09mada}) for Arabic. In this work, PSS features are incorporated onto their top-performing model, expecting a positive impact on accuracy. 
