@@ -25,7 +25,7 @@ The PP-Attachment model by (\cite{hpcd}) is presented in section \ref{sec:ppatt-
 
 \section{PP-Attachment work by \cite{hpcd}} \label{sec:ppatt-belinkov}
 
-\begin{figure}
+\begin{figure}[h]
     \centering\small
     \includegraphics[width=\textwidth]{Figures/hpcd.pdf}
     \caption{An outline of the HPCD PP-Attachement model by (\cite{hpcd}).}
@@ -36,7 +36,8 @@ The PP-Attachment model by (\cite{hpcd}) is presented in section \ref{sec:ppatt-
 
 The models presented operate in an isolated manner - solving PP-Attachment alone. Instead of the typical V-NP-P-NP2 formulation, which as explained in section \ref{sec:ppatt_isolated} was shown to be problematic, they took the more realistic approach of allowing multiple head candidates. They do, however, compare against full-scale parsers, and integrate their model into an existing one - the RGB parser (\cite{lei-etal-14-low}) - resulting in an improvement of parsing accuracy for both English and Arabic when compared to using the unmodified RGB parser.
 
-Their model architecture consists of a parameterized neural scoring function, which assigns a score to an attachment candidate, given the corresponding word embeddings of the preposition, its child (the object), the head candidate, and their corresponding Part-of-Speech tags and WordNet/VerbNet attributes. The parameters of the scoring function are learned, and at inference time the highest scoring candidate is selected. The detection of a preposition and its attachment candidates is done in a rule-based process (section \ref{sec:ppatt_datasets}) as a preprocessing step, which is used for building the datasets used for training and evaluation. They experiment with a few different scoring functions, each consists of a slightly different neural network architecture. The variations differ mostly by: (1)  the input - as one variation does not take the preposition as an input, only the head candidate and the object of the preposition; (2) the number of network layers - a single layer or two layers, and (3) the parameterization - for instance, one variation uses a different set of parameters based on the distance between the head candidate and the preposition. They also experiment with two kinds of pre-trained word embeddings: one based on the original Skip-Gram model (\cite{word2vec}) and a dependency-based variation following (\cite{bansal}), reporting significant accuracy boost when using the latter. Allowing the word embeddings to update during training was also reported to increase disambiguation accuracy significantly. 
+Their model architecture consists of a parameterized neural scoring function, which assigns a score to an attachment candidate, given the corresponding word embeddings of the preposition, its child (the object), the head candidate, and their corresponding Part-of-Speech tags and WordNet/VerbNet attributes. The parameters of the scoring function are learned, and at inference time the highest scoring candidate is selected. The detection of a preposition and its attachment candidates is done in a rule-based process (section \ref{sec:ppatt_datasets}) as a preprocessing step, which is used for building the datasets used for training and evalu
+ation. They experiment with a few different scoring functions, each consists of a slightly different neural network architecture. The variations differ mostly by: (1)  the input - as one variation does not take the preposition as an input, only the head candidate and the object of the preposition; (2) the number of network layers - a single layer or two layers, and (3) the parameterization - for instance, one variation uses a different set of parameters based on the distance between the head candidate and the preposition. They also experiment with two kinds of pre-trained word embeddings: one based on the original Skip-Gram model (\cite{word2vec}) and a dependency-based variation following (\cite{bansal}), reporting significant accuracy boost when using the latter. Allowing the word embeddings to update during training was also reported to increase disambiguation accuracy significantly. 
 
 \subsection{Model}
 The following section provides a more formal description of the PP-Attachment model of \cite{hpcd}. For the purpose of this description, we assume a vector representation of dimension $n$ for each sentence word. The exact specification of this representation is outlined later in this section).
@@ -49,7 +50,7 @@ Where $w \in \mathbb{R}^n$ is a parameter, and $\theta'$ is the set of all param
 
 Several variations of $compose\_p$ are suggested, each corresponding to a different model variant. The top performing variant - Head-Prep-Child-Dist (HPCD) - is the one used in this work, and the only one described in detail. The rest of the variants are mainly simpler versions of HPCD.
 
-\subsubsection{The HPCD scoring function}
+\tocless\subsubsection{The HPCD scoring function}
 The HPCD version of $compose\_p$ is defined as follows:
 
 \begin{equation}
@@ -65,7 +66,7 @@ $word\_distance(head, prep)$ is the number of words between the preposition and 
 
 Namely, the HPCD scoring function is composed of a two-layered feed-forward neural network. The first layer takes the vectors for the preposition and its child, and the second layer takes the output from the first layer and the vector for the head candidate. The HPCD variant takes into account the distance between the head candidate and the preposition (i.e the number of words between them), by using different parameters for each distance, up to a predefined threshold (MAX\_DIST = 5). For any distance larger than the threshold, the parameters corresponding to threshold value are used. The model is illustrated in figure \ref{fig:hpcd}.
 
-\subsubsection{Word Vector Representation} \label{section:hpcd_wordvectors}
+\tocless\subsubsection{Word Vector Representation} \label{section:hpcd_wordvectors}
 
 \begin{figure}
     \centering

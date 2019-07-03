@@ -4,44 +4,41 @@
 
 \label{AppendixC} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-Table \ref{tab:hyperparamsC} lists the hyperparameters used by the
-PSS neural system presented in chapter \ref{Chapter4}, trained and tuned on the STREUSLE PSS corpus in English, and evaluated on the Chinese PSS corpus based on \textit{The Little Prince}.
+% \begin{table}[h]
+%   \small
+% 	\centering
+% 	\begin{tabular}{@{}l|cccc@{}}
+% 		\toprule
+% 		Hyperparam. & \thead{Auto ID\\Auto Parse} & \thead{Auto ID\\Gold Parse} & \thead{Gold ID\\Auto Parse} & \thead{Gold ID\\Gold Parse}\\
+% 		\midrule
+%         Embedding Method & ELMo & ELMo & ELMo & ELMo \\
+%         ELMo layer & 1 & 1 & 1 & 1 \\
+%         Token internal embd. dimension & 0 & 0 & 10 & 0 \\
+%         Use Gov-Obj? & No & Yes & Yes & Yes \\
+%         POS embd. dimension  & 0 & 0 & 0 & 10 \\
+%         UD dependencies embd. dimension  & 0 & 5 & 0 & 0 \\
+%         NER  embd. dimension  & 0 & 5 & 0 & 5 \\
+%         GOVOBJ-CONFIG embd. dimension  & 0 & 3 & 3 & 3 \\
+%         LEXCAT embd. dimension  & 3 & 3 & 3 & 3 \\
+%         MLP layers  & 2 & 0 & 2 & 2 \\
+%         MLP layer dimension  & 100 & - & 200 & 200 \\
+%         MLP activation  & tanh & - & relu & relu \\
+%         MLP Dropout Prob.  & 0.46 & - & 0.14 & 0.34 \\
+%         LSTM layers  & 1 & 2 & 1 & 2 \\
+%         LSTM hidden layer dimension  & 200 & 200 & 200 & 200 \\
+%         Is BiLSTM? & Yes & Yes & Yes & Yes \\
+%         LSTM Dropout Prob.  & 0.49 & 0.43 & 0.42 & 0.4 \\
+%         Learning rate  & 0.15 & 0.15 & 0.2 & $10^{-1}$ \\
+%         Learning rate decay  & 0 & 0 & $10^{-4}$ & 0 \\
+% 		\bottomrule
+% 	\end{tabular}
+% 	\caption{\label{tab:hyperparamsC}
+%         Selected hyperparameters of the neural PSS disambiguation system presented in chapter \ref{Chapter4}.
+% 	}
 
-\begin{table}[]
-  \small
-	\centering
-	\begin{tabular}{@{}l|cccc@{}}
-		\toprule
-		Hyperparam. & Auto ID/Auto Parse & Auto ID/Gold Parse & Gold ID/Auto Parse & Gold ID/Gold Parse\\
-		\midrule
-        Embedding Method & ELMo & ELMo & ELMo & ELMo \\
-        ELMo layer & 1 & 1 & 1 & 1 \\
-        Token internal embd. dimension & 0 & 0 & 10 & 0 \\
-        Use Gov-Obj? & No & Yes & Yes & Yes \\
-        POS embd. dimension  & 0 & 0 & 0 & 10 \\
-        UD dependencies embd. dimension  & 0 & 5 & 0 & 0 \\
-        NER  embd. dimension  & 0 & 5 & 0 & 5 \\
-        GOVOBJ-CONFIG embd. dimension  & 0 & 3 & 3 & 3 \\
-        LEXCAT embd. dimension  & 3 & 3 & 3 & 3 \\
-        MLP layers  & 2 & 0 & 2 & 2 \\
-        MLP layer dimension  & 100 & - & 200 & 200 \\
-        MLP activation  & tanh & - & relu & relu \\
-        MLP Dropout Prob.  & 0.46 & - & 0.14 & 0.34 \\
-        LSTM layers  & 1 & 2 & 1 & 2 \\
-        LSTM hidden layer dimension  & 200 & 200 & 200 & 200 \\
-        Is BiLSTM? & Yes & Yes & Yes & Yes \\
-        LSTM Dropout Prob.  & 0.49 & 0.43 & 0.42 & 0.4 \\
-        Learning rate  & 0.15 & 0.15 & 0.2 & $10^{-1}$ \\
-        Learning rate decay  & 0 & 0 & $10^{-4}$ & 0 \\
-		\bottomrule
-	\end{tabular}
-	\caption{\label{tab:hyperparamsC}
-        Selected hyperparameters of the neural PSS disambiguation system presented in chapter \ref{Chapter4}.
-	}
+% \end{table}
 
-\end{table}
-
-\begin{table}[]
+\begin{table}[h]
   \small
 	\centering
 	\begin{tabular}{@{}l|c@{}}
@@ -50,22 +47,25 @@ PSS neural system presented in chapter \ref{Chapter4}, trained and tuned on the 
 		\midrule
         Embedding Method & ELMo \\
         ELMo layer & 1 \\
-        Token internal embd. dimension & 50 \\
+        Token internal embd. dimension & 0 \\
         Use Parent? & Yes \\
         Use Grandparent? & Yes \\
-        POS embd. dimension  & 5 \\
+        POS embd. dimension  & 10 \\
         UD dependencies embd. dimension  & 0 \\
         NER  embd. dimension  & 0 \\
-        MLP layers  & 2 \\
-        MLP layer dimension  & 100 \\
-        MLP activation  & cube \\
-        MLP Dropout Prob.  & 0.04 \\
-        LSTM layers  & 1 \\
-        LSTM hidden layer dimension  & 200 \\
-        Is BiLSTM? & No \\
-        LSTM Dropout Prob.  & 0.49 \\
+        MLP layers  & 0 \\
+        MLP layer dimension  & - \\
+        MLP activation  & - \\
+        MLP Dropout Prob.  & - \\
+        Parent Dropout Prob. & 0.2 \\
+        Grandparent Dropout Prob. & 0.3 \\
+        Prep. Dropout Prob. & 0.3 \\
+        LSTM layers  & 0 \\
+        LSTM hidden layer dimension  & - \\
+        Is BiLSTM? & - \\
+        LSTM Dropout Prob.  & - \\
         Learning rate  & 0.15 \\
-        Learning rate decay  & $10^{-4}$ \\
+        Learning rate decay  & 0 \\
 		\bottomrule
 	\end{tabular}
 	\caption{\label{tab:hyperparams}
@@ -73,3 +73,7 @@ PSS neural system presented in chapter \ref{Chapter4}, trained and tuned on the 
 	}
 
 \end{table}
+
+Table \ref{tab:hyperparamsC} lists the hyperparameters used by the
+PSS neural system presented in chapter \ref{Chapter4}, trained and tuned on the STREUSLE PSS corpus in English, and evaluated on the Chinese PSS corpus based on \textit{The Little Prince}.
+

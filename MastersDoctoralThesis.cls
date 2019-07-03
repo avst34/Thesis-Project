@@ -393,7 +393,7 @@ KOMA-script documentation for details.}]{fancyhdr}
 	}%
 	{}%end alt-abstract
 }{%
-	\DeclareDocumentEnvironment{hebabstract}{ O{\null\vfill} }{
+	\DeclareDocumentEnvironment{hebabstract}{ O{\null} }{
 		\checktoopen
 		\tttypeout{\abstractname}
 		#1%added to be able to have abstract more than one page long

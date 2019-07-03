@@ -113,6 +113,7 @@ A single feature vector for a word $w_i$ is obtained by concatenating its contex
 \subsection{Extracting the Governor and Object of a Preposition} \label{sec:govobj}
 
 The governor and object of a preposition may provide a great deal of information regarding the semantics of the preposition. The heuristic process used for identifying the governor and object of a preposition, by (\cite{snacs}) was developed as part of a collaborative effort on the task of PSS disambiguation. In addition to identification, it also sorts the prepositions into 5 lexical categories: stranded (\emph{"The book I told you \textbf{about}"}), predicative (\emph{"The dog is \textbf{under} the table"}), possessive (\emph{"The dog\textbf{'s} food"}), subordinating (\emph{"I will arrive \textbf{before} sunset"}), or none of these. The heuristic applies a set of rules using the UD parse tree and POS labels: first, the UD dependency label of the preposition is examined. For prepositions with \emph{case} or \emph{mark}, the parent and grandparent of the preposition in the UD tree are usually the object and governor, respectively. Prepositions with different labels are typically not attached to an object, with their parent being the governor.  The \emph{nmod:poss} UD label is an indication of a possessive preposition. The heuristic process then attempts to handle exceptions to the above, by explicitly matching against patterns corresponding to stranded prepositions and copular constructions.  
+
 \section{Training the Model} \label{sec:psstraining}
 
 The model was trained using the cross-entropy loss function. More specifically, the loss of a single identified PSS target is defined as the negated log-sum of the probabilities assigned to the correct labels: 
@@ -122,7 +123,7 @@ Where $p_r$ and $p_f$ are the probabilities assigned by the model to the correct
 
 Model parameters are initialized randomly using the Xavier initialization (\cite{glorot10xavier}). Inverted dropout was applied for the LSTM and MLP layers. Training was performed using SGD with Backpropagation for 130 epochs, and a minibatch of size 20. To avoid overfitting, the model parameters corresponding to the best performing epoch on the development set are selected. The dropout probabilities, SGD learning rate and learning rate decay factor are all hyperparameters. The model was implemented with the DyNet library (\cite{dynet}).
 
-\subsubsection{Hyperparameter Tuning}
+\subsection{Hyperparameter Tuning}
 
 The development section of the STREUSLE corpus was used to tune hyperparameters using a random search process. Hyperparameters are iteratively sampled and used to train a model in the process described above. The best performing set of hyperparameters is selected. Hyperparameters were used in this manner for tuning the structure of the network (number of layers, dimensions, activations), tuning the optimizer (learning rate and learning rate decay), and feature selection (e.g. which syntactic information and word embeddings to use). The complete list of hyperparameters is available in table (\ref{tab:hyperparams}).
 
@@ -187,7 +188,7 @@ The neural systems outperform the most-frequent baselines by a large margin for 
 \subsection{Implication of Word Embeddings and Syntax}
 
 \begin{table}\label{tab:embdsyn}
-\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\setlength{\tabcolsep}{6pt} % Default value: 6pt
 \renewcommand{\arraystretch}{1.5}
 \newcommand{\score}[2]{#1{ ($\pm$#2)}}
 \newcommand{\acc}[1]{\multicolumn{3}{c|}{\textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}} #1 \textcolor{gray}{\rule[2pt]{0.5in}{0.5pt}}}}
@@ -213,14 +214,6 @@ As expected, using the non-contextualized fastText embeddings alone yields simil
 
 \subsection{Errors Across the SNACS Hierarchy}
 
-The PSS label hierarchy can be used to compute a more fine-grained measurement of disambiguation performance.  Specifically, the accuracy of predicted labels is evaluated when they are coarsened post hoc by moving up the hierarchy to a specific depth, with depth-1 representing the coarsening of the labels into the 3 root labels. The accuracy for each depth in the gold-syntax/gold-id setting is reported in table \ref{tab:coarsening}. These
-results show that the classifiers often mistake a label for another that is nearby in the hierarchy.
-
-For \textit{role}, around 25\% of the errors are when the correct label is either \psst{OrgRole}, \psst{Topic}, or \psst{Locus}.  \psst{OrgRole} is often confused with  \psst{Possessor}; \psst{Topic} with \psst{Beneficiary} and \psst{Circumstance}; and \psst{Locus} with the more specific \psst{Goal} and \psst{Source}. 
-\psst{Topic} and \psst{Locus} are also a large source of errors for \textit{function}, as well as \psst{ComparisonRef} and \psst{Theme}, which together account for 35\% of the errors.
-
-
-
 \begin{table}[]
     \setlength{\tabcolsep}{10pt} % Default value: 6pt
     \renewcommand{\arraystretch}{1.5}
@@ -237,4 +230,11 @@ For \textit{role}, around 25\% of the errors are when the correct label is eithe
     \caption{Accuracy scores (single model, gold identification and syntax) on the test set (480 tokens) with different levels of hierarchy coarsening of its output. “Labels” refers to the number of labels in the training set after coarsening.}
     \label{tab:coarsening}
 \end{table}
+
+The PSS label hierarchy can be used to compute a more fine-grained measurement of disambiguation performance.  Specifically, the accuracy of predicted labels is evaluated when they are coarsened post hoc by moving up the hierarchy to a specific depth, with depth-1 representing the coarsening of the labels into the 3 root labels. The accuracy for each depth in the gold-syntax/gold-id setting is reported in table \ref{tab:coarsening}. These
+results show that the classifiers often mistake a label for another that is nearby in the hierarchy.
+
+For \textit{role}, around 25\% of the errors are when the correct label is either \psst{OrgRole}, \psst{Topic}, or \psst{Locus}.  \psst{OrgRole} is often confused with  \psst{Possessor}; \psst{Topic} with \psst{Beneficiary} and \psst{Circumstance}; and \psst{Locus} with the more specific \psst{Goal} and \psst{Source}. 
+\psst{Topic} and \psst{Locus} are also a large source of errors for \textit{function}, as well as \psst{ComparisonRef} and \psst{Theme}, which together account for 35\% of the errors.
+
 

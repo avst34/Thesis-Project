@@ -4,15 +4,12 @@
 
 \label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-Table \ref{tab:hyperparamsA} lists the hyperparameters used by the
-PSS neural system presented in chapter \ref{Chapter2}, tuned separately for each of the four settings corresponding to gold/automatic auxiliary syntax and gold/automatic target identification.
-
-\begin{table}[]
+\begin{table}[h]
   \small
 	\centering
 	\begin{tabular}{@{}l|cccc@{}}
 		\toprule
-		Hyperparam. & Auto ID/Auto Parse & Auto ID/Gold Parse & Gold ID/Auto Parse & Gold ID/Gold Parse\\
+		Hyperparam. & \thead{Auto ID\\Auto Parse} & \thead{Auto ID\\Gold Parse} & \thead{Gold ID\\Auto Parse} & \thead{Gold ID\\Gold Parse}\\
 		\midrule
         Embedding Method & ELMo & ELMo & ELMo & ELMo \\
         ELMo layer & 1 & 1 & 1 & 1 \\
@@ -40,3 +37,7 @@ PSS neural system presented in chapter \ref{Chapter2}, tuned separately for each
 	}
 
 \end{table}
+
+Table \ref{tab:hyperparamsA} lists the hyperparameters used by the
+PSS neural system presented in chapter \ref{Chapter2}, tuned separately for each of the four settings corresponding to gold/automatic auxiliary syntax and gold/automatic target identification.
+

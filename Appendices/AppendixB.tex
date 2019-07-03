@@ -4,14 +4,12 @@
 
 \label{AppendixB} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-Table \ref{tab:hyperparamsB} lists the hyperparameters used by the PP-Attachment models presented in chapter \ref{Chapter3} - vanilla HPCD, and its PSS-bearing variant (HPCD-PSS). The hyperparameters were tuned separately in each of the four settings corresponding to the selection of training set (PTB/PTB+STREUSLE) and model (HPCD/HPCD-PSS). 
-
-\begin{table}[]
+\begin{table}[h]
   \small
 	\centering
 	\begin{tabular}{@{}l|cccc@{}}
 		\toprule
-		Hyperparam. & HPCD/PTB & HPCD-PSS/PTB & HPCD/PTB+STREUSLE & HPCD-PSS/PTB+STREUSLE\\
+		Hyperparam. & \thead{HPCD\\PTB} & \thead{HPCD-PSS\\PTB} & \thead{HPCD\\PTB+STREUSLE} & \thead{HPCD-PSS\\PTB+STREUSLE}\\
 		\midrule
             $p_1$ dimension & 100 & 100 & 100 & 100 \\
 %            & 1 & 1 & 1 & 1 \\
@@ -35,4 +33,6 @@ Table \ref{tab:hyperparamsB} lists the hyperparameters used by the PP-Attachment
 	}
 
 \end{table}
+
+Table \ref{tab:hyperparamsB} lists the hyperparameters used by the PP-Attachment models presented in chapter \ref{Chapter3} - vanilla HPCD, and its PSS-bearing variant (HPCD-PSS). The hyperparameters were tuned separately in each of the four settings corresponding to the selection of training set (PTB/PTB+STREUSLE) and model (HPCD/HPCD-PSS). 
 

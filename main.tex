@@ -51,6 +51,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{multicol}
 \usepackage{soul}
 \usepackage{diagbox}
+\usepackage{makecell}
 % \usepackage[utf8x]{inputenc}
 % \usepackage{pgfplots}
 % \usepgfplotslibrary{external}
@@ -63,8 +64,9 @@ headsepline, % Uncomment to get a line under the header
 
 \addbibresource{example.bib} % The filename of the bibliography
 
-\newcommand{\href}[1]{#1}
-
+\newcommand{\href}[2]{#2}
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 \newcommand{\lbl}[1]{\textsc{#1}} % class label
 \newcommand{\sst}[1]{\lbl{#1}} % supersense tag label
@@ -105,10 +107,10 @@ headsepline, % Uncomment to get a line under the header
 
 \subject{Preposition Supersenses} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
 \keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
-\university{\href{http://www.huji.ac.il}{The Hewbrew University of Jerusalem}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
-\department{\href{https://www.cs.huji.ac.il/}{Benin School of Computer Science and Engineering}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
+\university{{The Hewbrew University of Jerusalem}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\department{{Benin School of Computer Science and Engineering}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
 \group{{Computational Linguistics and Natural Language Processing lab}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
-\faculty{\href{https://www.cs.huji.ac.il/}{Benin School of Computer Science and Engineering}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
+\faculty{{Benin School of Computer Science and Engineering}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
 
 % \AtBeginDocument{
 % \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
@@ -151,7 +153,7 @@ headsepline, % Uncomment to get a line under the header
 \begin{minipage}[t]{0.4\textwidth}
 \begin{flushright} \large
 \emph{Supervisor:} \\
-\href{http://www.cs.huji.ac.il/~oabend/}{\supname} % Supervisor name - remove the \href bracket to remove the link  
+{\supname} % Supervisor name - remove the \href bracket to remove the link  
 \end{flushright}
 \end{minipage}\\[3cm]
  
