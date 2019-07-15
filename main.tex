@@ -227,11 +227,11 @@ headsepline, % Uncomment to get a line under the header
 % לצורך אימון המודל ומדידת ביצועיו, נעשה שימוש ב-\L{STREUSLE} \L{(\cite{snacs})} - מאגר של ביקורות גולשים באנגלית המכיל תיוגים ידניים של מובני-על.
 
  החלק השני )פרק 3( בוחן את התועלת שבשימוש במידע המיוצג על ידי מובני-על של מילות קישור, עבור בעיית ההתאמה של ביטויים יחסיים \L{(Prepositional-Phrase Attachment)}.
- בעייה זו באה לידי ביטוי במשפטים כגון - "אני ראיתי את האדם עם המשקפת". הביטוי היחסי "עם המשקפת" עשוי להתייחס לפועל "ראיתי" )הדובר אוחז במשקפת(, או לשם העצם "האדם" )האדם נצפה אוחז במשקפת(. במקרים של דו משמעות כגון זה, מובני-העל של מילת הקישור עשוי להשתנות בהתאם לפרשנות, ולכן ניתן לשער כי אלגוריתם לפתרון הבעיה יוכל להפיק מתוכם תועלת. אנו בוחנים את השערה זו על ידי הרחבה של מודל קיים מאת \L{\cite{hpcd}}
+ בעייה זו באה לידי ביטוי במשפטים כגון - "אני ראיתי את האדם עם המשקפת". הביטוי היחסי "עם המשקפת" עשוי להתייחס לפועל "ראיתי" )הדובר אוחז במשקפת(, או לשם העצם "האדם" )האדם נצפה אוחז במשקפת(. במקרים של דו משמעות כגון זה, מובני-העל של מילת הקישור עשויים להשתנות בהתאם לפרשנות, ולכן ניתן לשער כי אלגוריתם לפתרון הבעיה יוכל להפיק מתוכם תועלת. אנו בוחנים את השערה זו על ידי הרחבה של מודל קיים מאת \L{\cite{hpcd}}
  כך שיקבל את מובני-העל כקלט נוסף, בציפייה לשיפור בביצועי המודל כתוצאה מכך. 
 התוצאות מראות שיפור קטן לטובת המודל המורחב, אך ייתכן כי שיפור זה אינו מובהק. בנוסף, תוצאות ניסויים המערבים מספר מקורות מידע מראים כי מובני-על עשויים לשמש כגורם מנרמל בין תחומי תוכן שונים.
 
-החלק השלישי )פרק 4( בוחן האם וכיצד ניתן להשתמש בידע הנלמד על ידי מודל לחיזוי מובני-על, במעבר בין שפות ותחומי תוכן שונים. 
+החלק השלישי )פרק 4( בוחן האם וכיצד ניתן להשתמש בידע הנלמד על ידי מודל לחיזוי מובני-על, במעבר בין שפות ותחומי תוכן. 
 אנו משתמשים במודל שהוצג בפרק 1, שאומן על אוסף ביקורות גולשים באנגלית, על מנת לחזות מובני-על של מילות קישור בטקסט מתוייג מתוך התרגום הסיני של "הנסיך הקטן" \L{(\cite{chinesecorpus})}. התוצאות מראות כי לתחומי תוכן ושפה השפעה קריטית על ביצועי המודל - רמת הדיוק הנצפית על המאגר הסיני דומה לזו של מודל חיזוי בסיסי, ונמוכה משמעותית מרמת הדיוק על המאגר האנגלי.
 
 
@@ -249,16 +249,16 @@ headsepline, % Uncomment to get a line under the header
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 % The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
-Function words such as adpositions and possessives are crucial for conveying the semantic relations between different parts of a sentence. This work focuses on a recently introduced schema attempting to characterize these relations - \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by (\cite{snacs}). The schema consists of 50 labels - \textit{Preposition Supersenses} (PSS) - each representing some class of semantic relations attributed to a preposition in a sentence. 
+Function words such as adpositions and possessives are crucial for conveying the semantic relations between different parts of a sentence. This work focuses on a recently introduced schema attempting to characterize these relations - \textbf{Semantic Network of Adposition and Case Supersense} (SNACS) by \cite{snacs}. The schema consists of 50 labels - \textit{Preposition Supersenses} (PSS) - each representing some class of semantic relations attributed to a preposition in a sentence. 
 
-Chapter 2 deals with supervised methods for automatic disambiguation of preposition supersenses. We present a neural PSS model, trained and evaluated on the STREUSLE corpus of PSS annotated English web reviews (\cite{snacs}). We experiment with several settings of model architecture, auxiliary information acquisition and target identification. Specifically, we find that a model using contextualized word embeddings significantly outperforms a model using non-contextualized word embeddings with auxiliary syntactic information, as previously demonstrated by (\cite{nelson}). 
+Chapter 2 deals with supervised methods for automatic disambiguation of preposition supersenses. We present a neural PSS model, trained and evaluated on the STREUSLE corpus of PSS annotated English web reviews (\cite{snacs}). We experiment with several settings of model architecture, auxiliary information acquisition and target identification. Specifically, we find that a model using contextualized word embeddings significantly outperforms a model using non-contextualized word embeddings with auxiliary syntactic information, as previously demonstrated by \cite{nelson}. 
 
-Chapter 3 examines how beneficial the information provided by PSS is to the Prepositional-Phrase (PP) Attachment problem - the task of resolving the ambiguity of which phrase is referred to by a prepositional phrase, as demonstrated by the following sentence: “I [saw]VP [the man]NP [with the telescope]PP”. The prepositional phrase - \textit{“with the telescope”} may acts as a modifier to the verb \textit{saw} (the speaker used the telescope), or to the noun phrase - \textit{"the man"} (the man had the telescope). In such scenarios, each interpretation may yield a different preposition supersense for the corresponding preposition, thus providing evidence to believe that a PP-Attachment resolver might benefit from using PSS information. We experiment with an existing PP-Attachment model (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an improvement in disambiguation accuracy. Empirical results show a small, possibly insignificant improvement in accuracy of the PSS-enhanced model. Another observation obtained by experimenting with several datasets indicates that PSS information behaves as a normalizing factor between different domains of content.
+Chapter 3 examines how beneficial the information provided by PSS is to the Prepositional-Phrase (PP) Attachment problem - the task of resolving the ambiguity of which phrase is referred to by a prepositional phrase, as demonstrated by the following sentence: “I [saw]VP [the man]NP [with the telescope]PP”. The prepositional phrase - \textit{“with the telescope”} may acts as a modifier to the verb \textit{saw} (the speaker used the telescope), or to the noun phrase - \textit{"the man"} (the man had the telescope). In such scenarios, each interpretation may yield a different supersense for the corresponding preposition, thus providing evidence to believe that a PP-Attachment resolver might benefit from using PSS information. We experiment with an existing PP-Attachment model (\cite{hpcd}), by incorporating PSS features onto it, expecting to see an improvement in disambiguation accuracy. Empirical results show a small, possibly insignificant improvement in accuracy of the PSS-enhanced model. Another observation obtained by experimenting with several datasets indicates that PSS information behaves as a normalizing factor between different domains of content.
 
 Chapter 4 examines the transferability of the knowledge acquired by a PSS
 disambiguator between different languages and domains, by evaluating
 the PSS model presented in chapter \ref{Chapter2} - trained solely using the STREUSLE corpus of English web reviews - on the recently introduced Mandarine Chinese PSS corpus
-by (\cite{chinesecorpus}), with the use of parallel text and word alignment models. We find that domain and language have a critical impact on model peformance, as the accuracies on the Chinese corpus drop to a near-baseline level.
+by \cite{chinesecorpus}, with the use of parallel text and word alignment models. We find that domain and language have a critical impact on model peformance, as the accuracies on the Chinese corpus drop to a near-baseline level.
 
 \end{abstract}
 
@@ -269,7 +269,12 @@ by (\cite{chinesecorpus}), with the use of parallel text and word alignment mode
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 % The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
-\todo{Write acknowledgments}
+
+I would like to express my deep and sincere gratitude to my advisor Dr. Omri Abend for the opportunity to conduct this research, your guidance and advice throughout this project have been invaluable. Thank you for the continuous support and enlightening discussions - I could not have imagined having a better advisor. 
+
+I would also like to thank my fellow labmates - Daniel Hershcovich, Elior Sulem, Leshem Choshen, Adi Bitan, Zohar Aizenbud, Dotan Dvir, Michal Kessler for their help during research and while writing this thesis, but also for the friendly environment and fun conversations. 
+
+Last but not least - I would like to thank my wife Dafna and my daughter Adar for their moral support, constant encouragement and long patience.
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
